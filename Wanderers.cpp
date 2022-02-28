@@ -2,52 +2,84 @@
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 
-#include <math.h>
+#include "glm/glm.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext.hpp"
 
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+#include <iostream>
+
+#include "ShaderProgram.h"
+
+#include "OrbitalSystem.h"
+
+#include "Icosahedron.h"
+
+#include "SpaceRenderer.h"
+
+#include "Camera.h"
+
+#include "Controller.h"
+
+#include "SolarSystemGenerator.h"
+
+#define ENABLE_VERTICAL_SYNCHRONIZATION true
+
+GLFWwindow* setupWindow() {
+	const char* window_title{ "Wanderers" };
+	constexpr int window_width{ 1920 };
+	constexpr int window_height{ 1080 };
+
+	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr) };
+
+	glfwMakeContextCurrent(window);
+	glfwSwapInterval(ENABLE_VERTICAL_SYNCHRONIZATION);
+
+	return window;
+}
+
+void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
+	double last_time{ glfwGetTime() };
+
+	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
+		double dt = glfwGetTime() - last_time;
+		last_time += dt;
+
+		simulation->elapseTime(dt);
+
+		renderer->preRender();
+		renderer->render(simulation);
+		renderer->postRender();
+	}
+}
 
 int main(int argc, char** args) {
 	glfwInit();
 
-	constexpr int window_width{ 1920 };
-	constexpr int window_height{ 1080 };
-
-	const char* window_title = "Wanderers";
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-	GLFWwindow* window = glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr);
+	GLFWwindow* window{ setupWindow() };
 
-	glfwMakeContextCurrent(window);
 	gladLoadGL(glfwGetProcAddress);
-	glfwSwapInterval(1);
 
-	glfwSetKeyCallback(window, key_callback);
+	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
 
-	int render_width, render_height;
+	ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
+	shader.link();
 
-	while (!glfwWindowShouldClose(window)) {
-		glfwGetFramebufferSize(window, &render_width, &render_height);
+	SpaceRenderer* space_renderer = new SpaceRenderer{ shader, camera };
 
-		glViewport(0, 0, render_width, render_height);
-		glClear(GL_COLOR_BUFFER_BIT);
+	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
 
-		glClearColor(static_cast<GLfloat>(0.5 + 0.5*sin(glfwGetTime())), 
-			         static_cast<GLfloat>(0.5 + 0.5*sin(glfwGetTime()+2)),
-			         static_cast<GLfloat>(0.5 + 0.5*sin(glfwGetTime()+4)), 1.0f);
+	Controller::initController(camera, *solar_system);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+	renderLoop(solar_system, space_renderer);
 
-	}
+	Controller::deinitController();
+
+	delete space_renderer;
+	delete solar_system;
 
 	glfwDestroyWindow(window);
-
 	glfwTerminate();
-}
-
-static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods){
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }

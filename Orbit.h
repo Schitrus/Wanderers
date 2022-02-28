@@ -1,0 +1,35 @@
+#ifndef ORBIT_H
+#define ORBIT_H
+
+#include "AstronomicalObject.h"
+
+class Orbit {
+public:
+	Orbit(AstronomicalObject* object);
+
+	Orbit(AstronomicalObject* object, float radius, float angular_velocity, glm::vec3 orbital_axis, float orbital_angle);
+
+	~Orbit();
+
+	glm::mat4 getOrbitMatrix();
+
+	void elapseTime(double seconds);
+
+private:
+	AstronomicalObject* orbitor_;
+
+	float radius_;
+
+	float angular_velocity_;
+	glm::vec3 orbital_axis_;
+	float orbital_angle_;
+
+	static constexpr float kDefaultRadius{ 4.0f };
+	static constexpr float kDefaultAngularVelocity{ 10.0f };
+	static constexpr glm::vec3 kDefaultOrbitalAxis{0.0f, 1.0f, 0.0f};
+	static constexpr float kDefaultStartingOrbitalAngle{ 0.0f };
+
+	friend class SpaceRenderer;
+};
+
+#endif // ORBIT_H

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -146,7 +146,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AstronomicalObject.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Icosahedron.cpp" />
+    <ClCompile Include="Orbit.cpp" />
+    <ClCompile Include="Planet.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="Solar.cpp" />
+    <ClCompile Include="OrbitalSystem.cpp" />
+    <ClCompile Include="SolarSystemGenerator.cpp" />
+    <ClCompile Include="SpaceRenderer.cpp" />
     <ClCompile Include="Wanderers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AstronomicalObject.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Controller.h" />
+    <ClInclude Include="Icosahedron.h" />
+    <ClInclude Include="Orbit.h" />
+    <ClInclude Include="Planet.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="Solar.h" />
+    <ClInclude Include="OrbitalSystem.h" />
+    <ClInclude Include="SolarSystemGenerator.h" />
+    <ClInclude Include="SpaceRenderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
