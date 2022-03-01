@@ -1,3 +1,12 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * This program simulates a procedurally generated solarsystem.              *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+/* External Includes */
 #include "glad/gl.h"
 #define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
@@ -6,8 +15,7 @@
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext.hpp"
 
-#include <iostream>
-
+/* Internal Includes */
 #include "render_engine/camera.h"
 #include "render_engine/space_renderer.h"
 #include "render_engine/shader/shader_program.h"
@@ -17,8 +25,15 @@
 
 #include "control/controller.h"
 
+/* STL Includes */
+#include <iostream>
+
+/* DEFINITIONS */
 #define ENABLE_VERTICAL_SYNCHRONIZATION true
 
+/*
+ *  Setup window for rendering. 
+ */
 GLFWwindow* setupWindow() {
 	const char* window_title{ "Wanderers" };
 	constexpr int window_width{ 1920 };
@@ -32,6 +47,12 @@ GLFWwindow* setupWindow() {
 	return window;
 }
 
+/*
+ *  Render loop:
+ *  - Until exit is requested.
+ *    - Proceed simulation.
+ *    - Render.
+ */
 void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
@@ -47,7 +68,14 @@ void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
 	}
 }
 
+/*
+ *  Program entry point:
+ *  - Init graphics.
+ *  - Setup simulation, render engine and controller.
+ *  - Enter render loop until program exit is requested.
+ */
 int main(int argc, char** args) {
+	// Init graphics.
 	glfwInit();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -57,19 +85,23 @@ int main(int argc, char** args) {
 
 	gladLoadGL(glfwGetProcAddress);
 
-	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	// Setup simulation.
+	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
 
+	// Setup render engine.
 	ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
 
+	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
 	SpaceRenderer* space_renderer = new SpaceRenderer{ shader, camera };
 
-	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
-
+	// Setup controller
 	Controller::initController(camera, *solar_system);
 
+	// Render loop until exit is requested.
 	renderLoop(solar_system, space_renderer);
 
+	// Program exit.
 	Controller::deinitController();
 
 	delete space_renderer;
