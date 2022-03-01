@@ -18,6 +18,35 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="wanderers\src\control\controller.cpp" />
+    <ClCompile Include="wanderers\src\render_engine\camera.cpp" />
+    <ClCompile Include="wanderers\src\render_engine\shader\shader.cpp" />
+    <ClCompile Include="wanderers\src\render_engine\shader\shader_program.cpp" />
+    <ClCompile Include="wanderers\src\render_engine\space_renderer.cpp" />
+    <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\orbit.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\planet.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\solar.cpp" />
+    <ClCompile Include="wanderers\src\wanderers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wanderers\include\control\controller.h" />
+    <ClInclude Include="wanderers\include\render_engine\camera.h" />
+    <ClInclude Include="wanderers\include\render_engine\shader\shader.h" />
+    <ClInclude Include="wanderers\include\render_engine\shader\shader_program.h" />
+    <ClInclude Include="wanderers\include\render_engine\space_renderer.h" />
+    <ClInclude Include="wanderers\include\simulation\generator\solar_system_generator.h" />
+    <ClInclude Include="wanderers\include\simulation\object\astronomical_object.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
+    <ClInclude Include="wanderers\include\simulation\object\orbit.h" />
+    <ClInclude Include="wanderers\include\simulation\object\orbital_system.h" />
+    <ClInclude Include="wanderers\include\simulation\object\planet.h" />
+    <ClInclude Include="wanderers\include\simulation\object\solar.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -92,7 +121,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)/include/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/include/;$(ProjectDir)/wanderers/include/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,35 +174,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="AstronomicalObject.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="Icosahedron.cpp" />
-    <ClCompile Include="Orbit.cpp" />
-    <ClCompile Include="Planet.cpp" />
-    <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderProgram.cpp" />
-    <ClCompile Include="Solar.cpp" />
-    <ClCompile Include="OrbitalSystem.cpp" />
-    <ClCompile Include="SolarSystemGenerator.cpp" />
-    <ClCompile Include="SpaceRenderer.cpp" />
-    <ClCompile Include="Wanderers.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="AstronomicalObject.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="Icosahedron.h" />
-    <ClInclude Include="Orbit.h" />
-    <ClInclude Include="Planet.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderProgram.h" />
-    <ClInclude Include="Solar.h" />
-    <ClInclude Include="OrbitalSystem.h" />
-    <ClInclude Include="SolarSystemGenerator.h" />
-    <ClInclude Include="SpaceRenderer.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
