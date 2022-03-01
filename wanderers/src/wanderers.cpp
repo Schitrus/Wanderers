@@ -48,8 +48,8 @@ GLFWwindow* setupWindow() {
 }
 
 /*
- *  Render loop:
- *  - Until exit is requested.
+ *  Loop for rendering simulation.
+ *  - Until exit is requested:
  *    - Proceed simulation.
  *    - Render.
  */
@@ -69,7 +69,7 @@ void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
 }
 
 /*
- *  Program entry point:
+ *  Program entry point.
  *  - Init graphics.
  *  - Setup simulation, render engine and controller.
  *  - Enter render loop until program exit is requested.
