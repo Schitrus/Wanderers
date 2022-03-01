@@ -15,82 +15,82 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Wanderers.cpp">
+    <ClCompile Include="wanderers\src\control\controller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
+    <ClCompile Include="wanderers\src\render_engine\shader\shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShaderProgram.cpp">
+    <ClCompile Include="wanderers\src\render_engine\shader\shader_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OrbitalSystem.cpp">
+    <ClCompile Include="wanderers\src\render_engine\camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Icosahedron.cpp">
+    <ClCompile Include="wanderers\src\render_engine\space_renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Solar.cpp">
+    <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Planet.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AstronomicalObject.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Orbit.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\orbit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SpaceRenderer.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\planet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Controller.cpp">
+    <ClCompile Include="wanderers\src\simulation\object\solar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SolarSystemGenerator.cpp">
+    <ClCompile Include="wanderers\src\wanderers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="wanderers\include\control\controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShaderProgram.h">
+    <ClInclude Include="wanderers\include\render_engine\shader\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OrbitalSystem.h">
+    <ClInclude Include="wanderers\include\render_engine\shader\shader_program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Solar.h">
+    <ClInclude Include="wanderers\include\render_engine\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Planet.h">
+    <ClInclude Include="wanderers\include\render_engine\space_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Icosahedron.h">
+    <ClInclude Include="wanderers\include\simulation\generator\solar_system_generator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="AstronomicalObject.h">
+    <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Orbit.h">
+    <ClInclude Include="wanderers\include\simulation\object\astronomical_object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SpaceRenderer.h">
+    <ClInclude Include="wanderers\include\simulation\object\orbit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="wanderers\include\simulation\object\orbital_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Controller.h">
+    <ClInclude Include="wanderers\include\simulation\object\planet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SolarSystemGenerator.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="wanderers\include\simulation\object\solar.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
