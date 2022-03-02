@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="wanderers\include\wanderers.h" />
+    <ClCompile Include="wanderers\main.cpp" />
     <ClCompile Include="wanderers\src\control\controller.cpp" />
     <ClCompile Include="wanderers\src\render_engine\camera.cpp" />
     <ClCompile Include="wanderers\src\render_engine\shader\shader.cpp" />

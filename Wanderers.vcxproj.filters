@@ -54,6 +54,12 @@
     <ClCompile Include="wanderers\src\wanderers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wanderers\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\include\wanderers.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wanderers\include\control\controller.h">
