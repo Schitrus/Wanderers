@@ -1,8 +1,15 @@
 #include "render_engine/shader/shader.h"
 
+/* External Includes */
+#include "glad/gl.h"
+
+/* STL Includes */
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
+Shader::Shader(unsigned int shader_type, std::string shader_path) 
+	: shader_id_{0}, shader_type_{ shader_type }, shader_path_{ shader_path }, shader_content_{nullptr} {}
 
 int Shader::read() {
 	std::ifstream shader_file;
@@ -44,6 +51,6 @@ const char* Shader::fileContent() {
 	return shader_content_;
 }
 
-GLuint Shader::getShaderID() {
+unsigned int Shader::getShaderID() {
 	return shader_id_;
 }

@@ -1,8 +1,10 @@
 #ifndef WANDERERS_SIMULATION_OBJECT_MODEL_ICOSAHEDRON_H_
 #define WANDERERS_SIMULATION_OBJECT_MODEL_ICOSAHEDRON_H_
 
+/* External Includes */
 #include "glm/glm.hpp"
 
+/* STL Includes */
 #include <vector>
 
 class Icosahedron {

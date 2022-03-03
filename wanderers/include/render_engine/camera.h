@@ -1,6 +1,7 @@
 #ifndef WANDERERS_RENDER_ENGINE_CAMERA_H_
 #define WANDERERS_RENDER_ENGINE_CAMERA_H_
 
+/* External Includes */
 #include "glm/glm.hpp"
 
 class Camera {

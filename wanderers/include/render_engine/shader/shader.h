@@ -1,15 +1,12 @@
 #ifndef WANDERERS_RENDER_ENGINE_SHADER_SHADER_H_
 #define WANDERERS_RENDER_ENGINE_SHADER_SHADER_H_
 
-#include "glad/gl.h"
-
+/* STL Includes */
 #include <string>
 
 class Shader{
 public:
-	Shader(GLuint shader_type, std::string shader_path) : shader_type_{shader_type}, shader_path_ { shader_path } {}
-
-	~Shader() {}
+	Shader(unsigned int shader_type, std::string shader_path);
 
 	int read();
 
@@ -17,12 +14,12 @@ public:
 
 	const char* fileContent();
 
-	GLuint getShaderID();
+	unsigned int getShaderID();
 
 private:
-	GLuint shader_id_;
+	unsigned int shader_id_;
 
-	const GLuint shader_type_;
+	const unsigned int shader_type_;
 
 	std::string shader_path_;
 

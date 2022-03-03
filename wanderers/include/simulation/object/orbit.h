@@ -1,6 +1,7 @@
 #ifndef WANDERERS_SIMULATION_OBJECT_ORBIT_H_
 #define WANDERERS_SIMULATION_OBJECT_ORBIT_H_
 
+/* Internal Includes */
 #include "simulation/object/astronomical_object.h"
 
 class Orbit {

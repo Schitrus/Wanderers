@@ -1,8 +1,12 @@
 #include "render_engine/shader/shader_program.h"
 
+/* External Includes */
+#include "glad/gl.h"
+
+/* STL Includes */
 #include <iostream>
 
-ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path) {
+ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path) : program_id_{ 0 }, shaders_{}  {
 	Shader vertex_shader{ GL_VERTEX_SHADER, vertex_path };
 	Shader fragment_shader{ GL_FRAGMENT_SHADER, fragment_path };
 

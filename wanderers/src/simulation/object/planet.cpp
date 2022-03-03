@@ -1,8 +1,10 @@
 #include "simulation/object/planet.h"
 
-#include <iostream>
-
+/* External Includes */
 #include "glm/ext.hpp"
+
+/* STL Includes */
+#include <iostream>
 
 Planet::Planet() : surface_color_{ kDefaultSurfaceColor },
 				   radius_{ kDefaultRadius },

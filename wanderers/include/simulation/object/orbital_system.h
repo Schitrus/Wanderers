@@ -1,10 +1,12 @@
 #ifndef WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
 #define WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
 
-#include <vector>
-
+/* Internal Includes */
 #include "simulation/object/astronomical_object.h"
 #include "simulation/object/orbit.h"
+
+/* STL Includes */
+#include <vector>
 
 class OrbitalSystem : public AstronomicalObject {
 public:

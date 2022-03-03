@@ -1,7 +1,9 @@
 #include "simulation/object/solar.h"
 
+/* External Includes */
 #include "glm/ext.hpp"
 
+/* STL Includes */
 #include <iostream>
 
 Solar::Solar() : temperature_{ kDefaultTemperature }, 

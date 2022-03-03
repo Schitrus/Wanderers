@@ -1,10 +1,10 @@
 #ifndef WANDERERS_RENDER_ENGINE_SPACE_RENDERER_H_
 #define WANDERERS_RENDER_ENGINE_SPACE_RENDERER_H_
 
-#include "glad/gl.h"
-#include "glfw/glfw3.h"
+/* External Includes */
 #include "glm/glm.hpp"
 
+/* Internal Includes*/
 #include "render_engine/shader/shader_program.h"
 #include "render_engine/camera.h"
 

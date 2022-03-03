@@ -1,9 +1,10 @@
 #include "simulation/object/orbit.h"
 
+/* External Includes */
 #include "glm/ext.hpp"
-
 #include "glm/gtx/rotate_vector.hpp"
 
+/* STL Includes */
 #include <iostream>
 
 Orbit::Orbit(AstronomicalObject* object) : orbitor_{ object }, 

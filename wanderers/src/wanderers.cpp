@@ -5,24 +5,16 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
- /* DEFINITIONS */
-#define ENABLE_VERTICAL_SYNCHRONIZATION true
-#define GLFW_INCLUDE_NONE
+#include "wanderers.h"
 
 /* External Includes */
 #include "glad/gl.h"
-#include "glfw/glfw3.h"
-
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext.hpp"
 
 /* Internal Includes */
-#include "wanderers.h"
-
 #include "render_engine/camera.h"
-#include "render_engine/space_renderer.h"
 #include "render_engine/shader/shader_program.h"
 #include "simulation/object/orbital_system.h"
 #include "simulation/generator/solar_system_generator.h"
@@ -46,7 +38,7 @@ GLFWwindow* setupWindow() {
 	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr) };
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(ENABLE_VERTICAL_SYNCHRONIZATION);
+	glfwSwapInterval(1);
 
 	return window;
 }

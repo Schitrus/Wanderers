@@ -1,6 +1,7 @@
 #ifndef WANDERERS_SIMULATION_GENERATOR_SOLAR_SYSTEM_GENERATOR_H_
 #define WANDERERS_SIMULATION_GENERATOR_SOLAR_SYSTEM_GENERATOR_H_
 
+/* Internal Includes */
 #include "simulation/object/planet.h"
 #include "simulation/object/solar.h"
 #include "simulation/object/orbit.h"

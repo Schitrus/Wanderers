@@ -1,11 +1,13 @@
 #ifndef WANDERERS_RENDER_ENGINE_SHADER_SHADER_PROGRAM_H_
 #define WANDERERS_RENDER_ENGINE_SHADER_SHADER_PROGRAM_H_
 
-#include "glad/gl.h"
+/* External Includes */
 #include "glm/glm.hpp"
 
+/* Internal Includes */
 #include "render_engine/shader/shader.h"
 
+/* STL Includes */
 #include <string>
 #include <vector>
 
@@ -21,9 +23,9 @@ public:
 	void setUniform(glm::vec3 vector, const char* name);
 	void setUniform(int integer, const char* name);
 
-	GLuint getProgramID();
+	unsigned int getProgramID();
 private:
-	GLuint program_id_;
+	unsigned int program_id_;
 
 	std::vector<Shader> shaders_;
 };

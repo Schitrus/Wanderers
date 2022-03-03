@@ -1,8 +1,10 @@
 #ifndef WANDERERS_SIMULATION_OBJECT_PLANET_H_
 #define WANDERERS_SIMULATION_OBJECT_PLANET_H_
 
-#include <glm/glm.hpp>
+/* External Includes */
+#include "glm/glm.hpp"
 
+/* Internal Includes */
 #include "simulation/object/astronomical_object.h"
 
 class Planet : public AstronomicalObject {

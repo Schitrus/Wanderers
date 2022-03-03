@@ -5,10 +5,9 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-/* Internal Includes */
 #include "control/controller.h"
 
+/* Internal Includes */
 #include "simulation/generator/solar_system_generator.h"
 
 /* STL Includes */

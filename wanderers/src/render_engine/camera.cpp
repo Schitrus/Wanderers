@@ -1,8 +1,10 @@
 #include "render_engine/camera.h"
 
+/* External Includes */
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
+/* STL Includes */
 #include <iostream>
 
 Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},

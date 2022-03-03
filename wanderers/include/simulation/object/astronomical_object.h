@@ -1,10 +1,13 @@
 #ifndef WANDERERS_SIMULATION_OBJECT_ASTRONOMICAL_OBJECT_H_
 #define WANDERERS_SIMULATION_OBJECT_ASTRONOMICAL_OBJECT_H_
 
+/* External Includes */
 #include "glm/glm.hpp"
 
+/* Internal Includes */
 #include "simulation/object/model/icosahedron.h"
 
+/* STL Includes */
 #include <vector>
 
 class AstronomicalObject {

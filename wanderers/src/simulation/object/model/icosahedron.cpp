@@ -1,6 +1,8 @@
 #include "simulation/object/model/icosahedron.h"
 
+/* External Includes */
 #include "glad/gl.h"
+#include "glfw/glfw3.h"
 
 std::vector<glm::vec3>& Icosahedron::generateIcosahedron() {
 	static std::vector<glm::vec3> vertices{

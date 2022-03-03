@@ -1,7 +1,11 @@
 #include "render_engine/space_renderer.h" 
 
+/* External Includes */
+#include "glad/gl.h"
+#include "glfw/glfw3.h"
 #include "glm/ext.hpp"
 
+/* STL Includes */
 #include <iostream>
 
 SpaceRenderer::SpaceRenderer(ShaderProgram& shader, Camera& camera)
