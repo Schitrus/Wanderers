@@ -20,10 +20,8 @@
 #include "simulation/generator/solar_system_generator.h"
 #include "control/controller.h"
 
-/* STL Includes */
-#include <iostream>
-
 namespace wanderers {
+
 
 /*  
  *  setupWindow:
