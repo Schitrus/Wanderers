@@ -8,7 +8,7 @@
 /* STL Includes */
 #include <iostream>
 
-SpaceRenderer::SpaceRenderer(ShaderProgram& shader, Camera& camera)
+SpaceRenderer::SpaceRenderer(render_engine::shader::ShaderProgram& shader, Camera& camera)
 	: shader_{ shader }, camera_{ camera }, view_{}, projection_{} { }
 
 void SpaceRenderer::preRender() {

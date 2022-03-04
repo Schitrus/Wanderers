@@ -83,7 +83,7 @@ void run() {
 	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
 	
 	// Setup render engine.
-	ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
+	render_engine::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
 	
 	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };

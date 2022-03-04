@@ -17,7 +17,7 @@
 
 class SpaceRenderer {
 public:
-	SpaceRenderer(ShaderProgram& shader, Camera& camera);
+	SpaceRenderer(render_engine::shader::ShaderProgram& shader, Camera& camera);
 
 	void preRender();
 	void postRender();
@@ -33,7 +33,7 @@ private:
 	int render_width_{};
 	int render_height_{};
 
-	ShaderProgram& shader_;
+	render_engine::shader::ShaderProgram& shader_;
 
 	Camera& camera_;
 

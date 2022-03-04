@@ -8,9 +8,18 @@
 #include <iostream>
 #include <sstream>
 
+namespace render_engine {
+namespace shader {
+
 Shader::Shader(unsigned int shader_type, std::string shader_path) 
 	: shader_id_{0}, shader_type_{ shader_type }, shader_path_{ shader_path }, shader_content_{nullptr} {}
 
+/*
+ * Shader read:
+ * - Read whole file if it exists.
+ * - Store content of the file in a char pointer.
+ * - Return 0 if succesful.
+ */
 int Shader::read() {
 	std::ifstream shader_file;
 	std::stringstream shader_content;
@@ -31,6 +40,12 @@ int Shader::read() {
 	return 0;
 }
 
+/*
+ * Shader compile:
+ * - Create shader from the read file content.
+ * - Compile shader.
+ * - Return 0 if successful.
+ */
 int Shader::compile() {
 	shader_id_ = glCreateShader(shader_type_);
 
@@ -44,7 +59,7 @@ int Shader::compile() {
 		glGetShaderInfoLog(shader_id_, 512, nullptr, info_log);
 		std::cout << "Error: Shader compilation failed for "<< shader_path_ << ".\n" << info_log << std::endl;
 	}
-	return success;
+	return !success; // if the compilation was successful return 0
 }
 
 const char* Shader::fileContent() {
@@ -54,3 +69,6 @@ const char* Shader::fileContent() {
 unsigned int Shader::getShaderID() {
 	return shader_id_;
 }
+
+} // namespace shader
+} // namespace render_engine
