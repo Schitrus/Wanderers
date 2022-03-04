@@ -23,8 +23,6 @@ public:
 
 private:
 	Icosahedron* surface_;
-
-	friend class SpaceRenderer;
 };
 
 #endif // WANDERERS_SIMULATION_OBJECT_ASTRONOMICAL_OBJECT_H_

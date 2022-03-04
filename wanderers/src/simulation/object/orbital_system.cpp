@@ -3,6 +3,14 @@
 OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : orbitee_{orbitee},
                                                             orbits_{}, is_paused{false} {}
 
+AstronomicalObject* OrbitalSystem::getOrbitee() {
+	return orbitee_;
+}
+
+std::vector<Orbit*> OrbitalSystem::getOrbits() {
+	return orbits_;
+}
+
 void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
 
 void OrbitalSystem::elapseTime(double seconds) {

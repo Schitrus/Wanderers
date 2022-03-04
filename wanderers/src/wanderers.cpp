@@ -47,7 +47,7 @@ GLFWwindow* setupWindow() {
  *    - Proceed simulation.
  *    - Render.
  */
-void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
+void renderLoop(OrbitalSystem* simulation, render_engine::SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
 	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
@@ -86,8 +86,8 @@ void run() {
 	render_engine::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
 	
-	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
-	SpaceRenderer* space_renderer = new SpaceRenderer{ shader, camera };
+	render_engine::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	render_engine::SpaceRenderer* space_renderer = new render_engine::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
 	control::Controller::initController(camera, *solar_system);

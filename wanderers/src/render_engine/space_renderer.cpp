@@ -1,3 +1,10 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the Space Render class.                                 *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "render_engine/space_renderer.h" 
 
 /* External Includes */
@@ -8,12 +15,22 @@
 /* STL Includes */
 #include <iostream>
 
-SpaceRenderer::SpaceRenderer(render_engine::shader::ShaderProgram& shader, Camera& camera)
+namespace render_engine {
+
+SpaceRenderer::SpaceRenderer(render_engine::shader::ShaderProgram& shader, render_engine::Camera& camera)
 	: shader_{ shader }, camera_{ camera }, view_{}, projection_{} { }
 
+/*
+ * SpaceRenderer preRender:
+ * - Adapt the camera to the window size.
+ * - Get the view and projection matrix.
+ * - Set the viewport.
+ * - Clear the screen.
+ * - Use the shader.
+ * - Enable OpenGL pipline operations.
+ */
 void SpaceRenderer::preRender() {
 	glfwGetFramebufferSize(glfwGetCurrentContext(), &render_width_, &render_height_);
-
 	camera_.setAspectRatio(render_width_, render_height_);
 
 	view_ = camera_.getViewMatrix();
@@ -27,6 +44,12 @@ void SpaceRenderer::preRender() {
 	glEnable(GL_DEPTH_TEST);
 }
 
+/*
+ * SpaceRenderer preRender:
+ * - Disable OpenGL pipline operations.
+ * - Swap frame for smooth transition.
+ * - Poll all queued events.
+ */
 void SpaceRenderer::postRender() {
 	glDisable(GL_DEPTH_TEST);
 
@@ -34,19 +57,37 @@ void SpaceRenderer::postRender() {
 	glfwPollEvents();
 }
 
+/*
+ * SpaceRenderer render OrbitalSystem:
+ * - Set the shaders light position.
+ * - Render the orbitee.
+ * - Render each orbit.
+ */
 void SpaceRenderer::render(OrbitalSystem* orbital_system, glm::mat4 transform) {
 	shader_.setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
 
-	render(orbital_system->orbitee_, transform);
-	for (Orbit* orbit : orbital_system->orbits_)
+	render(orbital_system->getOrbitee(), transform);
+	for (Orbit* orbit : orbital_system->getOrbits())
 		render(orbit, transform);
 }
 
+/*
+ * SpaceRenderer render Orbit:
+ * - Render the orbitor with the orbit transformation matrix.
+ */
 void SpaceRenderer::render(Orbit* orbit, glm::mat4 transform) {
 	glm::mat4 orbit_matrix{ orbit->getOrbitMatrix() };
-	render(orbit->orbitor_, transform * orbit_matrix);
+	render(orbit->getOrbitor(), transform * orbit_matrix);
 }
 
+/*
+ * SpaceRenderer render Solar:
+ * - Bind the solar model.
+ * - Calculate the solar transformation matrix.
+ * - Set uniforms specific to the Solar.
+ * - Draw.
+ * - Unbind the solar model.
+ */
 void SpaceRenderer::render(Solar* solar, glm::mat4 transform) {
 	solar->bind();
 
@@ -61,6 +102,14 @@ void SpaceRenderer::render(Solar* solar, glm::mat4 transform) {
 	solar->unbind();
 }
 
+/*
+ * SpaceRenderer render Planet:
+ * - Bind the planet model.
+ * - Calculate the planet transformation matrix.
+ * - Set uniforms specific to the Planet.
+ * - Draw.
+ * - Unbind the planet model.
+ */
 void SpaceRenderer::render(Planet* planet, glm::mat4 transform) {
 	planet->bind();
 
@@ -75,6 +124,12 @@ void SpaceRenderer::render(Planet* planet, glm::mat4 transform) {
 	planet->unbind();
 }
 
+/*
+ * SpaceRenderer render AstronomicalObject:
+ * - Get the type of the object.
+ * - Render the object depending on the type.
+ * - Do nothing if the type is not renderable.
+ */
 void SpaceRenderer::render(AstronomicalObject* object, glm::mat4 transform) {
 	const std::type_info& object_type{ typeid(*object) };
 	if (object_type == typeid(Solar))
@@ -84,3 +139,5 @@ void SpaceRenderer::render(AstronomicalObject* object, glm::mat4 transform) {
 	else if (object_type == typeid(OrbitalSystem))
 		render(dynamic_cast<OrbitalSystem*>(object), transform);
 }
+
+} // namespace render_engine

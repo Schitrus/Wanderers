@@ -34,8 +34,6 @@ private:
 	static constexpr float kDefaultAngularVelocity{ 60.0f };
 	static constexpr glm::vec3 kDefaultRotationalAxis{ 0.0f, 1.0f, 0.0f };
 	static constexpr float kDefaultStartingRotationalAngle{ 0.0f };
-
-	friend class SpaceRenderer;
 };
 
 #endif // WANDERERS_SIMULATION_OBJECT_PLANET_H_

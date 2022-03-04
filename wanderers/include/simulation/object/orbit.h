@@ -12,6 +12,8 @@ public:
 
 	~Orbit();
 
+	AstronomicalObject* getOrbitor();
+
 	glm::mat4 getOrbitMatrix();
 
 	void elapseTime(double seconds);
@@ -29,8 +31,6 @@ private:
 	static constexpr float kDefaultAngularVelocity{ 10.0f };
 	static constexpr glm::vec3 kDefaultOrbitalAxis{0.0f, 1.0f, 0.0f};
 	static constexpr float kDefaultStartingOrbitalAngle{ 0.0f };
-
-	friend class SpaceRenderer;
 };
 
 #endif // WANDERERS_SIMULATION_OBJECT_ORBIT_H_

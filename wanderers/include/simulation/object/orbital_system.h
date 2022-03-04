@@ -14,6 +14,9 @@ public:
 
 	~OrbitalSystem();
 
+	AstronomicalObject* getOrbitee();
+	std::vector<Orbit*> getOrbits();
+
 	void addOrbit(Orbit* orbit);
 
 	void elapseTime(double seconds);
@@ -28,10 +31,6 @@ private:
 	std::vector<Orbit*> orbits_;
 
 	bool is_paused;
-
-	friend class SpaceRenderer;
 };
-
-OrbitalSystem* generateSolarsystem();
 
 #endif // WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_

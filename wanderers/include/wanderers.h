@@ -21,7 +21,7 @@ namespace wanderers {
 static GLFWwindow* setupWindow();
 
 /* Enter the simulations render loop. */
-static void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer);
+static void renderLoop(OrbitalSystem* simulation, render_engine::SpaceRenderer* renderer);
 
 /* Start running the Wanderers program. */
 void run();
