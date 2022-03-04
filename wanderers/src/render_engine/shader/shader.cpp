@@ -1,3 +1,10 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the Shader class.                                       *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "render_engine/shader/shader.h"
 
 /* External Includes */

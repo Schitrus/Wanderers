@@ -1,3 +1,10 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the ShaderProgram class.                                *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "render_engine/shader/shader_program.h"
 
 /* External Includes */
