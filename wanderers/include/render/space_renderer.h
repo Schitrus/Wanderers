@@ -5,15 +5,15 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_RENDER_ENGINE_SPACE_RENDERER_H_
-#define WANDERERS_RENDER_ENGINE_SPACE_RENDERER_H_
+#ifndef WANDERERS_RENDER_SPACE_RENDERER_H_
+#define WANDERERS_RENDER_SPACE_RENDERER_H_
 
 /* External Includes */
 #include "glm/glm.hpp"
 
 /* Internal Includes*/
-#include "render_engine/shader/shader_program.h"
-#include "render_engine/camera.h"
+#include "render/shader/shader_program.h"
+#include "render/camera.h"
 
 #include "simulation/object/orbital_system.h"
 #include "simulation/object/orbit.h"
@@ -21,7 +21,7 @@
 #include "simulation/object/planet.h"
 #include "simulation/object/astronomical_object.h"
 
-namespace render_engine {
+namespace render {
 
 /*
  * Class to render the space simulation with the given shader program from the given camera.
@@ -29,7 +29,7 @@ namespace render_engine {
  */
 class SpaceRenderer {
 public:
-	SpaceRenderer(render_engine::shader::ShaderProgram& shader, render_engine::Camera& camera);
+	SpaceRenderer(render::shader::ShaderProgram& shader, render::Camera& camera);
 
 	/* Does some pre render operations. Has to be done befor each render iteration.*/
 	void preRender();
@@ -52,14 +52,14 @@ private:
 	int render_width_{};
 	int render_height_{};
 
-	render_engine::shader::ShaderProgram& shader_;
+	render::shader::ShaderProgram& shader_;
 
-	render_engine::Camera& camera_;
+	render::Camera& camera_;
 
 	glm::mat4 projection_;
 	glm::mat4 view_;
 };
 
-} // namespace render_engine
+} // namespace render
 
-#endif // WANDERERS_RENDER_ENGINE_SPACE_RENDERER_H_
+#endif // WANDERERS_RENDER_SPACE_RENDERER_H_

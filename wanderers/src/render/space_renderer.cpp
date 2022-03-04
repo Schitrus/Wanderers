@@ -5,19 +5,16 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "render_engine/space_renderer.h" 
+#include "render/space_renderer.h" 
 
 /* External Includes */
 #include "glad/gl.h"
 #include "glfw/glfw3.h"
 #include "glm/ext.hpp"
 
-/* STL Includes */
-#include <iostream>
+namespace render {
 
-namespace render_engine {
-
-SpaceRenderer::SpaceRenderer(render_engine::shader::ShaderProgram& shader, render_engine::Camera& camera)
+SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram& shader, render::Camera& camera)
 	: shader_{ shader }, camera_{ camera }, view_{}, projection_{} { }
 
 /*
@@ -140,4 +137,4 @@ void SpaceRenderer::render(AstronomicalObject* object, glm::mat4 transform) {
 		render(dynamic_cast<OrbitalSystem*>(object), transform);
 }
 
-} // namespace render_engine
+} // namespace render

@@ -13,7 +13,7 @@
 #include "glfw/glfw3.h"
 
 /* Internal Includes */
-#include "render_engine/camera.h"
+#include "render/camera.h"
 #include "simulation/object/orbital_system.h"
 
 /* STL Includes */
@@ -31,7 +31,7 @@ namespace control {
 class Controller {
 public:
 	/* Intitializes the controller singleton and start controller thread. */
-	static void initController(render_engine::Camera& camera, OrbitalSystem& simulation);
+	static void initController(render::Camera& camera, OrbitalSystem& simulation);
 	/* Deinitializes the controller singleton and stops the controller thread. */
 	static void deinitController();
 
@@ -43,7 +43,7 @@ private:
 	/* Window for which to interpret input from. */
 	GLFWwindow* window_;
 
-	render_engine::Camera& camera_;
+	render::Camera& camera_;
 	OrbitalSystem& simulation_;
 
 	/* Boolean for stopping the controller thread. */
@@ -78,7 +78,7 @@ private:
 	std::set<int> triggered_keys_;
 
 	/* Constructor for singleton. */
-	Controller(GLFWwindow* window, render_engine::Camera& camera, OrbitalSystem& simulation);
+	Controller(GLFWwindow* window, render::Camera& camera, OrbitalSystem& simulation);
 
 	/* Run the controller handling loop. */
 	void runController();

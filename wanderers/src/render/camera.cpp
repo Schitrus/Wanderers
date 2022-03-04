@@ -5,16 +5,13 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "render_engine/camera.h"
+#include "render/camera.h"
 
 /* External Includes */
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
-/* STL Includes */
-#include <iostream>
-
-namespace render_engine {
+namespace render {
 
 Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},
                    direction_{ toDirection(yaw_, pitch_) },
@@ -68,7 +65,6 @@ void Camera::move(glm::vec3 movement) {
 void Camera::turnYaw(float angle) {
     yaw_ += angle;
     yaw_ = fmod(yaw_, 180.0f);
-    std::cout << yaw_ << std::endl;
 }
 
 /*
@@ -106,4 +102,4 @@ glm::vec3 Camera::toDirection(float yaw, float pitch) {
                      cos(glm::radians(yaw)) * cos(glm::radians(pitch))};
 }
 
-} // namespace render_engine
+} // namespace render

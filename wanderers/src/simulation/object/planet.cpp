@@ -3,9 +3,6 @@
 /* External Includes */
 #include "glm/ext.hpp"
 
-/* STL Includes */
-#include <iostream>
-
 Planet::Planet() : surface_color_{ kDefaultSurfaceColor },
 				   radius_{ kDefaultRadius },
 				   angular_velocity_{ kDefaultAngularVelocity },

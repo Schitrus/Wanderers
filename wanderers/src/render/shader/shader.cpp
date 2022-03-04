@@ -5,7 +5,7 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "render_engine/shader/shader.h"
+#include "render/shader/shader.h"
 
 /* External Includes */
 #include "glad/gl.h"
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <sstream>
 
-namespace render_engine {
+namespace render {
 namespace shader {
 
 Shader::Shader(unsigned int shader_type, std::string shader_path) 
@@ -78,4 +78,4 @@ unsigned int Shader::getShaderID() {
 }
 
 } // namespace shader
-} // namespace render_engine
+} // namespace render

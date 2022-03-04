@@ -5,20 +5,20 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_RENDER_ENGINE_SHADER_SHADER_PROGRAM_H_
-#define WANDERERS_RENDER_ENGINE_SHADER_SHADER_PROGRAM_H_
+#ifndef WANDERERS_RENDER_SHADER_SHADER_PROGRAM_H_
+#define WANDERERS_RENDER_SHADER_SHADER_PROGRAM_H_
 
 /* External Includes */
 #include "glm/glm.hpp"
 
 /* Internal Includes */
-#include "render_engine/shader/shader.h"
+#include "render/shader/shader.h"
 
 /* STL Includes */
 #include <string>
 #include <vector>
 
-namespace render_engine {
+namespace render {
 namespace shader {
 
 // TODO: Generalize to different shader program types.
@@ -52,6 +52,6 @@ private:
 };
 
 } // namespace shader
-} // namespace render_engine
+} // namespace render
 
-#endif // WANDERERS_RENDER_ENGINE_SHADER_SHADER_PROGRAM_H_
+#endif // WANDERERS_RENDER_SHADER_SHADER_PROGRAM_H_

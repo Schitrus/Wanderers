@@ -5,15 +5,15 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_RENDER_ENGINE_CAMERA_H_
-#define WANDERERS_RENDER_ENGINE_CAMERA_H_
+#ifndef WANDERERS_RENDER_CAMERA_H_
+#define WANDERERS_RENDER_CAMERA_H_
 
 /* External Includes */
 #include "glm/glm.hpp"
 
 // TODO: Add more camera modes.
 
-namespace render_engine {
+namespace render {
 
 /*
  * Class for controlling the camera and translating it's state into matrices.
@@ -83,6 +83,6 @@ private:
 	glm::vec3 toDirection(float yaw, float pitch);
 };
 
-} // namespace render_engine
+} // namespace render
 
-#endif // WANDERERS_RENDER_ENGINE_CAMERA_H_
+#endif // WANDERERS_RENDER_CAMERA_H_

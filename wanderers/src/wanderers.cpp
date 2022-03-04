@@ -14,8 +14,8 @@
 #include "glm/ext.hpp"
 
 /* Internal Includes */
-#include "render_engine/camera.h"
-#include "render_engine/shader/shader_program.h"
+#include "render/camera.h"
+#include "render/shader/shader_program.h"
 #include "simulation/object/orbital_system.h"
 #include "simulation/generator/solar_system_generator.h"
 #include "control/controller.h"
@@ -47,7 +47,7 @@ GLFWwindow* setupWindow() {
  *    - Proceed simulation.
  *    - Render.
  */
-void renderLoop(OrbitalSystem* simulation, render_engine::SpaceRenderer* renderer) {
+void renderLoop(OrbitalSystem* simulation, render::SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
 	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
@@ -83,11 +83,11 @@ void run() {
 	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
 	
 	// Setup render engine.
-	render_engine::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
+	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
 	
-	render_engine::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
-	render_engine::SpaceRenderer* space_renderer = new render_engine::SpaceRenderer{ shader, camera };
+	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
 	control::Controller::initController(camera, *solar_system);

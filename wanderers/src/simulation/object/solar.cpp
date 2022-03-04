@@ -3,9 +3,6 @@
 /* External Includes */
 #include "glm/ext.hpp"
 
-/* STL Includes */
-#include <iostream>
-
 Solar::Solar() : temperature_{ kDefaultTemperature }, 
                  radius_{ kDefaultRadius },
                  angular_velocity_{ kDefaultAngularVelocity },

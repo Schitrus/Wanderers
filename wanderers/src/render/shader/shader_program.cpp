@@ -5,7 +5,7 @@
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "render_engine/shader/shader_program.h"
+#include "render/shader/shader_program.h"
 
 /* External Includes */
 #include "glad/gl.h"
@@ -13,7 +13,7 @@
 /* STL Includes */
 #include <iostream>
 
-namespace render_engine {
+namespace render {
 namespace shader {
 
 /*
@@ -76,4 +76,4 @@ GLuint ShaderProgram::getProgramID() {
 }
 
 } // namespace shader
-} // namespace render_engine
+} // namespace render

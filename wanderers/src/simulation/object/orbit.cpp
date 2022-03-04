@@ -4,9 +4,6 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
-/* STL Includes */
-#include <iostream>
-
 Orbit::Orbit(AstronomicalObject* object) : orbitor_{ object }, 
                                           radius_{ kDefaultRadius },
                                           angular_velocity_{kDefaultAngularVelocity},
