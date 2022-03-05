@@ -50,7 +50,7 @@ AstronomicalObject* Orbit::getOrbitor() {
  */
 glm::mat4 Orbit::getOrbitMatrix() {
     glm::mat4 orbit_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), orbital_axis_)
-                           * glm::translate(glm::mat4{ 1.0f }, radius_ * glm::vec3{ 1.0f, 0.0f, 0.0f });
+        * glm::translate(glm::mat4{ 1.0f }, radius_ * glm::cross(glm::vec3{ glm::vec4{ 1.0f, 0.0f, 0.0f, 0.0f} * glm::orientation(orbital_axis_, glm::vec3{0.0f, 1.0f, 0.0f}) }, orbital_axis_));
     return orbit_matrix;
 }
 

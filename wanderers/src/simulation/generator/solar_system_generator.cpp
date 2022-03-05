@@ -26,7 +26,7 @@ float calcRotationalAxisAngle(float distr) {
 }
 
 float calcOrbitalAxisAngle(float distr) {
-	return 179.0f * pow(distr, 160.0f) + 1.0f * pow(distr, 2.0f);
+	return 179.0f * pow(distr, 80.0f) + 1.0f * pow(distr, 2.0f);
 }
 
 glm::vec3 generateRotationalAxis() {
