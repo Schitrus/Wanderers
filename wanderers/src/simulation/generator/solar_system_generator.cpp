@@ -7,6 +7,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/generator/solar_system_generator.h"
 
+/* External Includes */
+#include <glm/ext.hpp>
+
 /* STL Includes */
 #include <random>
 #include <chrono>
@@ -17,6 +20,28 @@ namespace generator {
 
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer( std::chrono::system_clock::now().time_since_epoch().count());
+
+float calcRotationalAxisAngle(float distr) {
+	return 170.0f * pow(distr, 80.0f) + 10.0f * pow(distr, 2.0f);
+}
+
+float calcOrbitalAxisAngle(float distr) {
+	return 179.0f * pow(distr, 160.0f) + 1.0f * pow(distr, 2.0f);
+}
+
+glm::vec3 generateRotationalAxis() {
+	std::uniform_real_distribution<float> axis(0.0f, 1.0f);
+	return glm::vec3{ glm::rotate(glm::mat4{1.0f}, glm::radians(calcRotationalAxisAngle(axis(randomizer))), glm::vec3{1.0f, 0.0f, 0.0f})
+					* glm::rotate(glm::mat4{1.0f}, glm::radians(calcRotationalAxisAngle(axis(randomizer))), glm::vec3{0.0f, 0.0f, 1.0f})
+					* glm::vec4{0.0f, 1.0f, 0.0f, 0.0f} };
+}
+
+glm::vec3 generateOrbitalAxis() {
+	std::uniform_real_distribution<float> axis(0.0f, 1.0f);
+	return glm::vec3{ glm::rotate(glm::mat4{1.0f}, glm::radians(calcOrbitalAxisAngle(axis(randomizer))), glm::vec3{1.0f, 0.0f, 0.0f})
+					* glm::rotate(glm::mat4{1.0f}, glm::radians(calcOrbitalAxisAngle(axis(randomizer))), glm::vec3{0.0f, 0.0f, 1.0f})
+					* glm::vec4{0.0f, 1.0f, 0.0f, 0.0f} };
+}
 
 /*
  * generateSolarSystem:
@@ -48,12 +73,12 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
  * - Randomize the temperature between 1,000K and 10,000K.
  * - Set the given radius.
  * - Randomize the spin of the solar.
- * - Rotation set around the y axis.
+ * - generateAxis.
  */
 object::Solar* generateSolar(float radius) {
 	std::uniform_real_distribution<float> temperature(1000.0f, 10000.0f);
 	std::uniform_real_distribution<float> spin(-360.0f, 360.0f);
-	return new object::Solar{ temperature(randomizer), radius, spin(randomizer), glm::vec3{0.0f, 1.0f, 0.0f}, 0.0f };
+	return new object::Solar{ temperature(randomizer), radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
 }
 
 /*
@@ -85,11 +110,11 @@ object::Orbit* generatePlanetSystem(float radius, float orbit_radius) {
 		std::uniform_real_distribution<float> moon_size(0.8f/(num_of_moons - i), 1.2f / (num_of_moons - i));
 		float moon_radius{ std::min(0.3f * (radius - moon_distance) * moon_size(randomizer), 0.7f * planet_radius)};
 		object::Planet* moon{ generatePlanet(moon_radius) };
-		planet_system->addOrbit(new object::Orbit{ moon, moon_distance, 180.0f / sqrt(moon_distance), glm::vec3{0.0f, 1.0f, 0.0f}, start_pos(randomizer) });
+		planet_system->addOrbit(new object::Orbit{ moon, moon_distance, 180.0f / sqrt(moon_distance), generateOrbitalAxis(), start_pos(randomizer) });
 		moon_distance += 2 * moon_radius + (radius - moon_distance) * moon_size(randomizer);
 	}
 
-	return new object::Orbit{ planet_system, orbit_radius, 18.0f/sqrt(orbit_radius), glm::vec3{0.0f, 1.0f, 0.0f}, start_pos(randomizer) };;
+	return new object::Orbit{ planet_system, orbit_radius, 18.0f/sqrt(orbit_radius), generateOrbitalAxis(), start_pos(randomizer) };;
 }
 
 /*
@@ -97,12 +122,13 @@ object::Orbit* generatePlanetSystem(float radius, float orbit_radius) {
  * - Randomize surface color.
  * - Set the given radius.
  * - Randomize the spin of the planet.
- * - Rotation set around the y axis.
+ * - generateAxis.
  */
 object::Planet* generatePlanet(float radius) {
 	std::uniform_real_distribution<float> spin(-360.0f, 360.0f);
 	std::uniform_real_distribution<float> color(0.0f, 1.0f);
-	return new object::Planet{ glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f };
+	std::uniform_real_distribution<float> axis(0.0f, 1.0f);
+	return new object::Planet{ glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
 }
 
 } // namespace generator

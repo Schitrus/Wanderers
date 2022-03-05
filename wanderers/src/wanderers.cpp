@@ -80,7 +80,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	simulation::object::OrbitalSystem* solar_system{ simulation::generator::generateSolarSystem(25.0f) };
+	simulation::object::OrbitalSystem* solar_system{ simulation::generator::generateSolarSystem(100.0f) };
 	
 	// Setup render engine.
 	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };

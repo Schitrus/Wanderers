@@ -73,10 +73,10 @@ private:
 	static constexpr float kDefaultStartingYaw{ 0.0f };
 	static constexpr float kDefaultStartingPitch{ 0.0f };
 	static constexpr float kDefaultStartingRoll{ 0.0f };
-	static constexpr float kDefaultFieldOfView{ 60.0f };
+	static constexpr float kDefaultFieldOfView{ 90.0f };
 	static constexpr float kDefaultAspectRatio{ 1.0f };
 	static constexpr float kDefaultNear{ 0.01f };
-	static constexpr float kDefaultFar{ 100.0f };
+	static constexpr float kDefaultFar{ 1000.0f };
 
 	static constexpr glm::vec3 kUpVector{ 0.0f, 1.0f, 0.0f };
 

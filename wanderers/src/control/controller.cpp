@@ -11,7 +11,6 @@
 #include "simulation/generator/solar_system_generator.h"
 
 /* STL Includes */
-#include <iostream>
 #include <thread>
 
 namespace wanderers {
@@ -199,7 +198,6 @@ void Controller::enactCursorPosition(double seconds) {
 }
 
 void Controller::enactScrollOffset(double seconds) {
-	std::cout << scroll_offset_.y << std::endl;
 	simulation_.setSpeed(simulation_.getSpeed() * pow(1.01f, scroll_offset_.y));
 	scroll_offset_ = glm::vec2{ 0.0f };
 }
