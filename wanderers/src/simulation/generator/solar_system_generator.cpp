@@ -65,9 +65,25 @@ object::Solar* generateSolar(float radius) {
  * - Start position around the orbit is randomized.
  */
 object::Orbit* generatePlanetSystem(float radius, float orbit_radius) {
-	std::uniform_real_distribution<float> planet_size(radius*0.1f, radius*0.5f);
+	std::uniform_real_distribution<float> planet_size(0.1f, 0.35f);
 	std::uniform_real_distribution<float> start_pos(0.0f, 360.0f);
-	return new object::Orbit{ generatePlanet(planet_size(randomizer)), orbit_radius, 18.0f/sqrt(orbit_radius), glm::vec3{0.0f, 1.0f, 0.0f}, start_pos(randomizer) };;
+	
+	float planet_radius{ radius * planet_size(randomizer) };
+	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ generatePlanet(planet_radius) };
+
+	float moon_distance{ planet_radius * 2.0f };
+	std::uniform_int_distribution<int> moon_distr(0, static_cast<int>((radius - moon_distance) / 0.2f));
+	int num_of_moons{ std::min(moon_distr(randomizer), 6) };
+	
+	for (int i = 0; i < num_of_moons; i++) {
+		std::uniform_real_distribution<float> moon_size(0.8f/(num_of_moons - i), 1.2f / (num_of_moons - i));
+		float moon_radius{ std::min(0.3f * (radius - moon_distance) * moon_size(randomizer), 0.7f * planet_radius)};
+		object::Planet* moon{ generatePlanet(moon_radius) };
+		planet_system->addOrbit(new object::Orbit{ moon, moon_distance, 180.0f / sqrt(moon_distance), glm::vec3{0.0f, 1.0f, 0.0f}, start_pos(randomizer) });
+		moon_distance += 2 * moon_radius + (radius - moon_distance) * moon_size(randomizer);
+	}
+
+	return new object::Orbit{ planet_system, orbit_radius, 18.0f/sqrt(orbit_radius), glm::vec3{0.0f, 1.0f, 0.0f}, start_pos(randomizer) };;
 }
 
 /*
