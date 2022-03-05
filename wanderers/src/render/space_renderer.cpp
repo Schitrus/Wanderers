@@ -61,11 +61,13 @@ void SpaceRenderer::postRender() {
 /*
  * SpaceRenderer render OrbitalSystem:
  * - Set the shaders light position.
+ * - Set the shaders camera position.
  * - Render the orbitee.
  * - Render each orbit.
  */
 void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform) {
 	shader_.setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
+	shader_.setUniform(camera_.getPosition(), "camera_position");
 
 	render(orbital_system->getOrbitee(), transform);
 	for (simulation::object::Orbit* orbit : orbital_system->getOrbits())

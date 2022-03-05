@@ -49,8 +49,7 @@ AstronomicalObject* Orbit::getOrbitor() {
  *   - Rotate whole orbit position along the orbital axis.
  */
 glm::mat4 Orbit::getOrbitMatrix() {
-    glm::mat4 orbit_matrix = glm::orientation(orbital_axis_, glm::vec3{0.0f, 1.0f, 0.0f})
-                           * glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), orbital_axis_) // Fix maybe orientation?
+    glm::mat4 orbit_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), orbital_axis_)
                            * glm::translate(glm::mat4{ 1.0f }, radius_ * glm::vec3{ 1.0f, 0.0f, 0.0f });
     return orbit_matrix;
 }

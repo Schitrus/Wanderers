@@ -103,7 +103,7 @@ object::Orbit* generatePlanetSystem(float radius, float orbit_radius) {
 	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ generatePlanet(planet_radius) };
 
 	float moon_distance{ planet_radius * 2.0f };
-	std::uniform_int_distribution<int> moon_distr(0, static_cast<int>((radius - moon_distance) / 0.2f));
+	std::uniform_int_distribution<int> moon_distr(0, static_cast<int>((radius - moon_distance) / 0.4f));
 	int num_of_moons{ std::min(moon_distr(randomizer), 6) };
 	
 	for (int i = 0; i < num_of_moons; i++) {
