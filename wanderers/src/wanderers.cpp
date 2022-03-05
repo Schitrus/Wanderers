@@ -47,7 +47,7 @@ GLFWwindow* setupWindow() {
  *    - Proceed simulation.
  *    - Render.
  */
-void renderLoop(OrbitalSystem* simulation, render::SpaceRenderer* renderer) {
+void renderLoop(simulation::object::OrbitalSystem* simulation, render::SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
 	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
@@ -80,7 +80,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
+	simulation::object::OrbitalSystem* solar_system{ simulation::generator::generateSolarSystem(25.0f) };
 	
 	// Setup render engine.
 	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };

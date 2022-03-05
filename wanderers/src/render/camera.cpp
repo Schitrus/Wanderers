@@ -11,6 +11,9 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
+/* STL Includes */
+#include <algorithm>
+
 namespace render {
 
 Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},

@@ -21,7 +21,6 @@
 #include <atomic>
 #include <mutex>
 
-namespace wanderers {
 namespace control {
 
 /* 
@@ -31,7 +30,7 @@ namespace control {
 class Controller {
 public:
 	/* Intitializes the controller singleton and start controller thread. */
-	static void initController(render::Camera& camera, OrbitalSystem& simulation);
+	static void initController(render::Camera& camera, simulation::object::OrbitalSystem& simulation);
 	/* Deinitializes the controller singleton and stops the controller thread. */
 	static void deinitController();
 
@@ -44,7 +43,7 @@ private:
 	GLFWwindow* window_;
 
 	render::Camera& camera_;
-	OrbitalSystem& simulation_;
+	simulation::object::OrbitalSystem& simulation_;
 
 	/* Boolean for stopping the controller thread. */
 	std::atomic<bool> should_stop_;
@@ -78,7 +77,7 @@ private:
 	std::set<int> triggered_keys_;
 
 	/* Constructor for singleton. */
-	Controller(GLFWwindow* window, render::Camera& camera, OrbitalSystem& simulation);
+	Controller(GLFWwindow* window, render::Camera& camera, simulation::object::OrbitalSystem& simulation);
 
 	/* Run the controller handling loop. */
 	void runController();
@@ -114,6 +113,5 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 static void cursorPositionCallback(GLFWwindow* window, double x_position, double y_position);
 
 } // namespace control
-} // namespace wanderers
 
 #endif // WANDERERS_CONTROL_CONTROLLER_H_

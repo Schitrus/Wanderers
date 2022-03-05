@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Implementation of the Space Render class.                                 *
+ * Implementation of the SpaceRender class.                                  *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -11,6 +11,9 @@
 #include "glad/gl.h"
 #include "glfw/glfw3.h"
 #include "glm/ext.hpp"
+
+/* STL Includes */
+#include <typeinfo>
 
 namespace render {
 
@@ -60,11 +63,11 @@ void SpaceRenderer::postRender() {
  * - Render the orbitee.
  * - Render each orbit.
  */
-void SpaceRenderer::render(OrbitalSystem* orbital_system, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform) {
 	shader_.setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
 
 	render(orbital_system->getOrbitee(), transform);
-	for (Orbit* orbit : orbital_system->getOrbits())
+	for (simulation::object::Orbit* orbit : orbital_system->getOrbits())
 		render(orbit, transform);
 }
 
@@ -72,7 +75,7 @@ void SpaceRenderer::render(OrbitalSystem* orbital_system, glm::mat4 transform) {
  * SpaceRenderer render Orbit:
  * - Render the orbitor with the orbit transformation matrix.
  */
-void SpaceRenderer::render(Orbit* orbit, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::Orbit* orbit, glm::mat4 transform) {
 	glm::mat4 orbit_matrix{ orbit->getOrbitMatrix() };
 	render(orbit->getOrbitor(), transform * orbit_matrix);
 }
@@ -85,7 +88,7 @@ void SpaceRenderer::render(Orbit* orbit, glm::mat4 transform) {
  * - Draw.
  * - Unbind the solar model.
  */
-void SpaceRenderer::render(Solar* solar, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform) {
 	solar->bind();
 
 	glm::mat4 solar_matrix{ solar->getSolarMatrix() };
@@ -107,7 +110,7 @@ void SpaceRenderer::render(Solar* solar, glm::mat4 transform) {
  * - Draw.
  * - Unbind the planet model.
  */
-void SpaceRenderer::render(Planet* planet, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transform) {
 	planet->bind();
 
 	glm::mat4 planet_matrix{ planet->getPlanetMatrix() };
@@ -127,14 +130,14 @@ void SpaceRenderer::render(Planet* planet, glm::mat4 transform) {
  * - Render the object depending on the type.
  * - Do nothing if the type is not renderable.
  */
-void SpaceRenderer::render(AstronomicalObject* object, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::AstronomicalObject* object, glm::mat4 transform) {
 	const std::type_info& object_type{ typeid(*object) };
-	if (object_type == typeid(Solar))
-		render(dynamic_cast<Solar*>(object), transform);
-	else if (object_type == typeid(Planet))
-		render(dynamic_cast<Planet*>(object), transform);
-	else if (object_type == typeid(OrbitalSystem))
-		render(dynamic_cast<OrbitalSystem*>(object), transform);
+	if (object_type == typeid(simulation::object::Solar))
+		render(dynamic_cast<simulation::object::Solar*>(object), transform);
+	else if (object_type == typeid(simulation::object::Planet))
+		render(dynamic_cast<simulation::object::Planet*>(object), transform);
+	else if (object_type == typeid(simulation::object::OrbitalSystem))
+		render(dynamic_cast<simulation::object::OrbitalSystem*>(object), transform);
 }
 
 } // namespace render

@@ -14,15 +14,14 @@
 #include <iostream>
 #include <thread>
 
-namespace wanderers{
-namespace control{
+namespace control {
 
 /*
  * Controller Constructor:
  * - Set input callbacks.
  * - Start controller thread.
  */
-Controller::Controller(GLFWwindow* window, render::Camera& camera, OrbitalSystem& simulation) : window_{ window }, camera_{ camera }, simulation_{ simulation },
+Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::object::OrbitalSystem& simulation) : window_{ window }, camera_{ camera }, simulation_{ simulation },
                                                              pressed_keys_{ std::size_t{kNumKeys} },
                                                              released_keys_{ std::size_t{kNumKeys} },
 	                                                         cursor_position_{} {
@@ -53,7 +52,7 @@ Controller::~Controller() {
  * Controller initController: 
  * - Create Controller singleton if not created.
  */
-void Controller::initController(render::Camera& camera, OrbitalSystem& simulation) {
+void Controller::initController(render::Camera& camera, simulation::object::OrbitalSystem& simulation) {
 	if (controller_singleton_ == nullptr)
 		controller_singleton_ = new Controller{ glfwGetCurrentContext(), camera, simulation};
 }
@@ -147,7 +146,7 @@ void Controller::handleControls(double seconds) {
 void Controller::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
 	case GLFW_KEY_R:
-		simulation_ = generateSolarSystem(25.0f);
+		simulation_ = simulation::generator::generateSolarSystem(25.0f);
 	case GLFW_KEY_SPACE:
 		simulation_.isPaused() ? simulation_.unpause() : simulation_.pause();
 		break;
@@ -226,4 +225,3 @@ static void cursorPositionCallback(GLFWwindow* window, double x_position, double
 }
 
 } // namsepace control
-} // namespace wanderers

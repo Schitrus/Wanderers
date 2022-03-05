@@ -37,16 +37,16 @@ public:
 	void postRender();
 
 	/* Renders the objects of a orbital system. */
-	void render(OrbitalSystem* orbital_system, glm::mat4 transform = glm::mat4{ 1.0f });
+	void render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform = glm::mat4{ 1.0f });
 
 	/* Renders the objects of an orbit. */
-	void render(Orbit* orbit, glm::mat4 transform = glm::mat4{ 1.0f });
+	void render(simulation::object::Orbit* orbit, glm::mat4 transform = glm::mat4{ 1.0f });
 	/* Renders the solar object. */
-	void render(Solar* solar, glm::mat4 transform = glm::mat4{ 1.0f });
+	void render(simulation::object::Solar* solar, glm::mat4 transform = glm::mat4{ 1.0f });
 	/* Renders the planet object. */
-	void render(Planet* planet, glm::mat4 transform = glm::mat4{ 1.0f });
+	void render(simulation::object::Planet* planet, glm::mat4 transform = glm::mat4{ 1.0f });
 	/* Inteprets the type of astronomical object and renders it accordingly. */
-	void render(AstronomicalObject* object, glm::mat4 transform = glm::mat4{ 1.0f });
+	void render(simulation::object::AstronomicalObject* object, glm::mat4 transform = glm::mat4{ 1.0f });
 
 private:
 	int render_width_{};

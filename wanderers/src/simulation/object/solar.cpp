@@ -1,7 +1,17 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the class for representation of a solar.                *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/solar.h"
 
 /* External Includes */
 #include "glm/ext.hpp"
+
+namespace simulation {
+namespace object {
 
 Solar::Solar() : temperature_{ kDefaultTemperature }, 
                  radius_{ kDefaultRadius },
@@ -17,11 +27,11 @@ Solar::Solar(float temperature, float radius,
                rotational_axis_{ rotational_axis },
                rotational_angle_{ rotational_angle } {}
 
-void Solar::elapseTime(double seconds) {
-    rotational_angle_ += angular_velocity_ * seconds;
-    rotational_angle_ = fmod(rotational_angle_, 360.0f);
-}
-
+/*
+ * Solar getColor:
+ * - Approximates rgb values of the black body radiation that is dependant on the temperature.
+ *   Based on the the Stefan–Boltzmann law.
+ */
 glm::vec3 Solar::getColor() {
     glm::vec3 color;
     if (temperature_ <= 6600) {
@@ -41,9 +51,26 @@ glm::vec3 Solar::getColor() {
     }
     return color;
 }
-
+/*
+ * Solar getSolarMatrix:
+ * - Create matrix (matrix multiplication reverse order):
+ *   - Scale the solar to its current size.
+ *   - Rotate the solar around it's axis.
+ */
 glm::mat4 Solar::getSolarMatrix() {
     glm::mat4 solar_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_)
                            * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ radius_ });
     return solar_matrix;
 }
+
+/*
+ * Solar elapseTime:
+ * - Increase rotational angle as much as the angular velocity.
+ */
+void Solar::elapseTime(double seconds) {
+    rotational_angle_ += angular_velocity_ * seconds;
+    rotational_angle_ = fmod(rotational_angle_, 360.0f);
+}
+
+} // namespace simulation
+} // namespace object

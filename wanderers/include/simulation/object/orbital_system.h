@@ -1,3 +1,10 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Class for representation of an orbital system.                            *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #ifndef WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
 #define WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
 
@@ -8,6 +15,14 @@
 /* STL Includes */
 #include <vector>
 
+namespace simulation {
+namespace object {
+
+/*
+ * This class is a representation fo an orbital system with an orbitee in the center of the system
+ *  and orbits around it.
+ * The orbital system is seen as an astronomical object.
+ */
 class OrbitalSystem : public AstronomicalObject {
 public:
 	OrbitalSystem(AstronomicalObject* orbitee);
@@ -17,10 +32,13 @@ public:
 	AstronomicalObject* getOrbitee();
 	std::vector<Orbit*> getOrbits();
 
+	/* Add and orbit to the orbital system. */
 	void addOrbit(Orbit* orbit);
 
+	/* Advance the simulation. */
 	void elapseTime(double seconds);
 
+	/* Pause/resume the simulation. */
 	void pause();
 	void unpause();
 
@@ -32,5 +50,8 @@ private:
 
 	bool is_paused;
 };
+
+} // namespace simulation
+} // namespace object
 
 #endif // WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
