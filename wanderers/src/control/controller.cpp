@@ -31,6 +31,7 @@ Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::o
 	cursor_position_.setPosition(glm::vec2{0.0f, 0.0f});
 	glfwSetCursorPos(window_, 0.0f, 0.0f);
 
+	glfwSetScrollCallback(window_, scrollCallback);
 	glfwSetCursorPosCallback(window_, cursorPositionCallback);
 	glfwSetKeyCallback(window_, keyCallback);
 
@@ -47,6 +48,7 @@ Controller::~Controller() {
 	should_stop_ = true; 
 	glfwSetKeyCallback(window_, nullptr); 
 	glfwSetCursorPosCallback(window_, nullptr);
+	glfwSetScrollCallback(window_, nullptr);
 }
 
 /*
@@ -130,6 +132,8 @@ void Controller::runController() {
 void Controller::handleControls(double seconds) {
 	enactCursorPosition(seconds);
 
+	enactScrollOffset(seconds);
+
 	for (int triggered_key : triggered_keys_)
 		enactKeyTrigger(triggered_key, seconds);
 
@@ -194,6 +198,12 @@ void Controller::enactCursorPosition(double seconds) {
 	camera_.turnPitch(-delta.y/10.0f);
 }
 
+void Controller::enactScrollOffset(double seconds) {
+	std::cout << scroll_offset_.y << std::endl;
+	simulation_.setSpeed(simulation_.getSpeed() * pow(1.01f, scroll_offset_.y));
+	scroll_offset_ = glm::vec2{ 0.0f };
+}
+
 /*
  * Controller updateKey:
  * - If key is triggered insert to triggered keys.
@@ -217,12 +227,20 @@ void Controller::updateCursorPosition(double x_position, double y_position) {
 	cursor_position_.updatePosition(glm::vec2{ x_position, y_position });
 }
 
+void Controller::updateScrollOffset(double x_offset, double y_offset) {
+	scroll_offset_ = glm::vec2{ x_offset, y_offset };
+}
+
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	controller_singleton_->updateKey(key, action);
 }
 
 static void cursorPositionCallback(GLFWwindow* window, double x_position, double y_position) {
 	controller_singleton_->updateCursorPosition(x_position, y_position);
+}
+
+static void scrollCallback(GLFWwindow* window, double x_offset, double y_offset) {
+	controller_singleton_->updateScrollOffset(x_offset, y_offset);
 }
 
 } // namsepace wanderers

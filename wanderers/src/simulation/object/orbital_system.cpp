@@ -12,7 +12,8 @@ namespace simulation {
 namespace object {
 
 OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : orbitee_{orbitee},
-                                                            orbits_{}, is_paused{false} {}
+                                                            orbits_{}, is_paused_{false},
+	                                                        simulation_speed_{1.0f} {}
 
 AstronomicalObject* OrbitalSystem::getOrbitee() {
 	return orbitee_;
@@ -31,23 +32,31 @@ void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
  *   - Elapse time for all orbits.
  */
 void OrbitalSystem::elapseTime(double seconds) {
-	if (!is_paused) {
-		orbitee_->elapseTime(seconds);
+	if (!is_paused_) {
+		orbitee_->elapseTime(seconds * simulation_speed_);
 		for (Orbit* orbit : orbits_)
-			orbit->elapseTime(seconds);
+			orbit->elapseTime(seconds * simulation_speed_);
 	}
 }
 
 void OrbitalSystem::pause() {
-	is_paused = true;
+	is_paused_ = true;
 }
 
 void OrbitalSystem::unpause() {
-	is_paused = false;
+	is_paused_ = false;
 }
 
 bool OrbitalSystem::isPaused() {
-	return is_paused;
+	return is_paused_;
+}
+
+void OrbitalSystem::setSpeed(double simulation_speed) {
+	simulation_speed_ = simulation_speed;
+}
+
+double OrbitalSystem::getSpeed() {
+	return simulation_speed_;
 }
 
 /*

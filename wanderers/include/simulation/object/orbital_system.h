@@ -45,11 +45,17 @@ public:
 
 	bool isPaused();
 
+	/* Set the speed of the simulation*/
+	void setSpeed(double simulation_speed);
+	double getSpeed();
+
 private:
 	AstronomicalObject* orbitee_;
 	std::vector<Orbit*> orbits_;
 
-	bool is_paused;
+	bool is_paused_;
+
+	double simulation_speed_;
 };
 
 } // namespace simulation
