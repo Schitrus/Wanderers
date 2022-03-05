@@ -1,10 +1,34 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the Icosahedron class.                                  *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/model/icosahedron.h"
 
+/* External Includes */
 #include "glad/gl.h"
+#include "glfw/glfw3.h"
 
+namespace wanderers {
+namespace simulation {
+namespace object {
+namespace model {
+
+// TODO: Make algorithm for generating icosahedron instead of having it hardcoded.
+
+/*
+ * Icosahedron generateIcosahedron.
+ * - Generates the vertices with each vertex hard coded:
+ *   - Generate top triangles.
+ *   - Generate side triangles.
+ *   - Generate bottom triangles
+ * - Return the vertices.
+ */
 std::vector<glm::vec3>& Icosahedron::generateIcosahedron() {
 	static std::vector<glm::vec3> vertices{
-		// ROOF
+		// TOP
 		{0.0f, 1.0f, 0.0f},
 		{ 0.0f, 0.5f, sqrt(3.0f) / 2.0f },
 		{ sin(static_cast<float>(glm::radians(72.0f))) * sqrt(3.0f) / 2.0f, 0.5f, cos(static_cast<float>(glm::radians(72.0f))) * sqrt(3.0f) / 2.0f },
@@ -25,7 +49,7 @@ std::vector<glm::vec3>& Icosahedron::generateIcosahedron() {
 		{sin(static_cast<float>(4.0f * glm::radians(72.0f))) * sqrt(3.0f) / 2.0f, 0.5f, cos(static_cast<float>(4.0f * glm::radians(72.0f))) * sqrt(3.0f) / 2.0f},
 		{0.0f, 0.5f, sqrt(3.0f) / 2.0f},
 
-		// SIDES
+		// SIDE
 		{0.0f, 0.5f, sqrt(3.0f) / 2.0f},
 		{sin(static_cast<float>(-3.0f * glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f, -0.5f, cos(static_cast<float>(-3.0f * glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f},
 		{sin(static_cast<float>(-2.0f * glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f, -0.5f, cos(static_cast<float>(-2.0f * glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f},
@@ -66,7 +90,7 @@ std::vector<glm::vec3>& Icosahedron::generateIcosahedron() {
 		{0.0f, 0.5f, sqrt(3.0f) / 2.0f},
 		{sin(static_cast<float>(4.0f * glm::radians(72.0f))) * sqrt(3.0f) / 2.0f, 0.5f, cos(static_cast<float>(4.0f * glm::radians(72.0f))) * sqrt(3.0f) / 2.0f},
 
-		// FLOOR
+		// BOTTOM
 		{0.0f, -1.0f, 0.0f},
 		{0.0f, -0.5f, -sqrt(3.0f) / 2.0f},
 		{sin(static_cast<float>(-glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f, -0.5f, cos(static_cast<float>(-glm::radians(72.0f))) * -sqrt(3.0f) / 2.0f},
@@ -90,6 +114,14 @@ std::vector<glm::vec3>& Icosahedron::generateIcosahedron() {
 	return vertices;
 }
 
+/*
+ * Icosahedron generateNormals:
+ * - Create normals as the same size as the vertices.
+ * - Loop through all vertices in set of three (each triangle):
+ *   - Calculate the normal as the cross product of the two vectors defining the triangle.
+ *   - Set the following three normals as the same as the one calculated.
+ * - Return the normals.
+ */
 std::vector<glm::vec3>& Icosahedron::generateNormals(std::vector<glm::vec3>& vertices) {
 	static std::vector<glm::vec3> normals(vertices.size());
 	for (int i = 0; i < vertices.size(); i+=3) {
@@ -122,6 +154,13 @@ int Icosahedron::size() {
 	return sizeof(glm::vec3) * vertices_.size();
 }
 
+/*
+ * Icosahedron generateBuffers:
+ * - Generate VAO and bind it.
+ * - Generate VBO for vertices and bind it.
+ * - Generate VBO for normals and bind it.
+ * - unbind VAO.
+ */
 void Icosahedron::generateBuffers() {
 	glGenVertexArrays(1, &VAO_);
 	glBindVertexArray(VAO_);
@@ -144,8 +183,20 @@ void Icosahedron::generateBuffers() {
 }
 
 void Icosahedron::bind() { glBindVertexArray(VAO_); }
+
 void Icosahedron::unbind() { glBindVertexArray(0);  }
 
+/*
+ * Icosahedron Constructor:
+ * - Generate vertices.
+ * - Generate normals.
+ * - Generate Buffers.
+ */
 Icosahedron::Icosahedron() : vertices_{ generateIcosahedron() }, normals_{ generateNormals(vertices_) } {
 	generateBuffers();
 }
+
+} // namespace model
+} // namespace object
+} // namespace simulation
+} // namespace wanderers

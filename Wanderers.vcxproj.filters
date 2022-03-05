@@ -15,60 +15,19 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wanderers\src\control\controller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\render_engine\shader\shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\render_engine\shader\shader_program.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\render_engine\camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\render_engine\space_renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\orbit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\planet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\simulation\object\solar.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="wanderers\src\wanderers.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="wanderers\include\control\controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wanderers\include\render_engine\shader\shader.h">
+    <ClInclude Include="wanderers\include\render\shader\shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wanderers\include\render_engine\shader\shader_program.h">
+    <ClInclude Include="wanderers\include\render\shader\shader_program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wanderers\include\render_engine\camera.h">
+    <ClInclude Include="wanderers\include\render\camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wanderers\include\render_engine\space_renderer.h">
+    <ClInclude Include="wanderers\include\render\space_renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wanderers\include\simulation\generator\solar_system_generator.h">
@@ -92,5 +51,52 @@
     <ClInclude Include="wanderers\include\simulation\object\solar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wanderers\include\wanderers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="wanderers\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\wanderers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\control\controller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\render\shader\shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\render\shader\shader_program.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\render\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\render\space_renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\orbit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\planet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\solar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,8 +1,27 @@
-#include "render_engine/shader/shader_program.h"
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the ShaderProgram class.                                *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#include "render/shader/shader_program.h"
 
+/* External Includes */
+#include "glad/gl.h"
+
+/* STL Includes */
 #include <iostream>
 
-ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path) {
+namespace wanderers {
+namespace render {
+namespace shader {
+
+/*
+ * ShaderProgram Constructor:
+ * - Create the shaders.
+ */
+ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path) : program_id_{ 0 }, shaders_{}  {
 	Shader vertex_shader{ GL_VERTEX_SHADER, vertex_path };
 	Shader fragment_shader{ GL_FRAGMENT_SHADER, fragment_path };
 
@@ -10,6 +29,12 @@ ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path)
 	shaders_.push_back(fragment_shader);
 }
 
+/*
+ * SahderProgram link:
+ * - Read and compiles the shaders.
+ * - Link the shader program.
+ * - Return 0 if linking was succesful.
+ */
 int ShaderProgram::link() {
 	program_id_ = glCreateProgram();
 
@@ -28,7 +53,7 @@ int ShaderProgram::link() {
 		glGetProgramInfoLog(program_id_, 512, nullptr, info_log);
 		std::cout << "Error: Shader program linkage failed.\n" << info_log << std::endl;
 	}
-	return success;
+	return !success; // if the linking was successful return 0
 }
 
 void ShaderProgram::use() {
@@ -50,3 +75,7 @@ void ShaderProgram::setUniform(int integer, const char* name) {
 GLuint ShaderProgram::getProgramID() {
 	return program_id_;
 }
+
+} // namespace shader
+} // namespace render
+} // namespace wanderers

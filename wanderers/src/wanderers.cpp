@@ -1,24 +1,33 @@
-#include "glad/gl.h"
-#define GLFW_INCLUDE_NONE
-#include "GLFW/glfw3.h"
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of setup Wanderers program and running it.                 *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+#include "wanderers.h"
 
+/* External Includes */
+#include "glad/gl.h"
 #include "glm/glm.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext.hpp"
 
-#include <iostream>
-
-#include "render_engine/camera.h"
-#include "render_engine/space_renderer.h"
-#include "render_engine/shader/shader_program.h"
-
+/* Internal Includes */
+#include "render/camera.h"
+#include "render/shader/shader_program.h"
 #include "simulation/object/orbital_system.h"
 #include "simulation/generator/solar_system_generator.h"
-
 #include "control/controller.h"
 
-#define ENABLE_VERTICAL_SYNCHRONIZATION true
+namespace wanderers {
 
+
+/*  
+ *  setupWindow:
+ *  - Create window.
+ *  - Make window the current context.
+ */
 GLFWwindow* setupWindow() {
 	const char* window_title{ "Wanderers" };
 	constexpr int window_width{ 1920 };
@@ -27,12 +36,18 @@ GLFWwindow* setupWindow() {
 	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr) };
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(ENABLE_VERTICAL_SYNCHRONIZATION);
+	glfwSwapInterval(1);
 
 	return window;
 }
 
-void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
+/*  
+ *  renderLoop:
+ *  - Until exit is requested:
+ *    - Proceed simulation.
+ *    - Render.
+ */
+void renderLoop(simulation::object::OrbitalSystem* simulation, render::SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
 	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
@@ -47,34 +62,47 @@ void renderLoop(OrbitalSystem* simulation, SpaceRenderer* renderer) {
 	}
 }
 
-int main(int argc, char** args) {
+/*
+ *  run:
+ *  - Init graphics.
+ *  - Setup simulation, render engine and controller.
+ *  - Enter render loop until program exit is requested.
+ */
+void run() {
+	// Init graphics.
 	glfwInit();
-
+	
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-
+	
 	GLFWwindow* window{ setupWindow() };
-
+	
 	gladLoadGL(glfwGetProcAddress);
-
-	Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
-
-	ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
+	
+	// Setup simulation.
+	simulation::object::OrbitalSystem* solar_system{ simulation::generator::generateSolarSystem(25.0f) };
+	
+	// Setup render engine.
+	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
-
-	SpaceRenderer* space_renderer = new SpaceRenderer{ shader, camera };
-
-	OrbitalSystem* solar_system{ generateSolarSystem(25.0f) };
-
-	Controller::initController(camera, *solar_system);
-
+	
+	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
+	
+	// Setup controller
+	control::Controller::initController(camera, *solar_system);
+	
+	// Render loop until exit is requested.
 	renderLoop(solar_system, space_renderer);
-
-	Controller::deinitController();
-
+	
+	// Program exit.
+	control::Controller::deinitController();
+	
 	delete space_renderer;
 	delete solar_system;
-
+	
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
+
+} // namespace wanderers

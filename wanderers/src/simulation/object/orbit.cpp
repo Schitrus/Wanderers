@@ -1,10 +1,20 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                                                                           *
+ * Implementation of the class for representation of an astronomical         *
+ *   object in orbit.                                                        *
+ *                                                                           *
+ * Copyright (c) 2022 Karl Andersson                                         *
+ *                                                                           *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/orbit.h"
 
+/* External Includes */
 #include "glm/ext.hpp"
-
 #include "glm/gtx/rotate_vector.hpp"
 
-#include <iostream>
+namespace wanderers {
+namespace simulation {
+namespace object {
 
 Orbit::Orbit(AstronomicalObject* object) : orbitor_{ object }, 
                                           radius_{ kDefaultRadius },
@@ -19,10 +29,25 @@ Orbit::Orbit(AstronomicalObject* object, float radius, float angular_velocity, g
               orbital_axis_{ orbital_axis },
               orbital_angle_{ orbital_angle } {}
 
+/*
+ * Orbit Destructor:
+ * - Destroy the orbitee.
+ */
 Orbit::~Orbit() {
-    delete orbitor_;
+    delete orbitor_; // might be not good practice.
 }
 
+AstronomicalObject* Orbit::getOrbitor() {
+    return orbitor_;
+}
+
+/*
+ * Orbit getOrbitMatrix:
+ * - Create matrix (matrix multiplication reverse order):
+ *   - Move position to orbit distance.
+ *   - Rotate position along current orbit angle.
+ *   - Rotate whole orbit position along the orbital axis.
+ */
 glm::mat4 Orbit::getOrbitMatrix() {
     glm::mat4 orbit_matrix = glm::orientation(orbital_axis_, glm::vec3{0.0f, 1.0f, 0.0f})
                            * glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), orbital_axis_) // Fix maybe orientation?
@@ -30,9 +55,18 @@ glm::mat4 Orbit::getOrbitMatrix() {
     return orbit_matrix;
 }
 
+/*
+ * Orbit elapseTime:
+ * - Increase orbital angle as much as the angular velocity.
+ * - Elapse the time for the Orbitor.
+ */
 void Orbit::elapseTime(double seconds) {
     orbital_angle_ += angular_velocity_ * seconds;
     orbital_angle_ = fmod(orbital_angle_, 360.0f);
 
     orbitor_->elapseTime(seconds);
 }
+
+} // namespace simulation
+} // namespace object
+} // namespace wanderers
