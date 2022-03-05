@@ -7,6 +7,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/orbital_system.h"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -62,3 +63,4 @@ OrbitalSystem::~OrbitalSystem() {
 
 } // namespace simulation
 } // namespace object
+} // namespace wanderers

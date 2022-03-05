@@ -10,6 +10,7 @@
 /* External Includes */
 #include "glm/ext.hpp"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -74,3 +75,4 @@ void Solar::elapseTime(double seconds) {
 
 } // namespace simulation
 } // namespace object
+} // namespace wanderers

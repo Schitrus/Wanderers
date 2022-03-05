@@ -11,6 +11,7 @@
 /* STL Includes */
 #include <string>
 
+namespace wanderers {
 namespace render {
 namespace shader {
 
@@ -44,6 +45,7 @@ private:
 
 } // namespace shader
 } // namespace render
+} // namespace wanderers
 
 #endif // WANDERERS_RENDER_SHADER_SHADER_H_
 

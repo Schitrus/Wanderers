@@ -15,6 +15,7 @@
 /* STL Includes */
 #include <typeinfo>
 
+namespace wanderers {
 namespace render {
 
 SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram& shader, render::Camera& camera)
@@ -141,3 +142,4 @@ void SpaceRenderer::render(simulation::object::AstronomicalObject* object, glm::
 }
 
 } // namespace render
+} // namespace wanderers

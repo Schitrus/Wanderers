@@ -21,6 +21,7 @@
 #include "simulation/object/planet.h"
 #include "simulation/object/astronomical_object.h"
 
+namespace wanderers {
 namespace render {
 
 /*
@@ -61,5 +62,6 @@ private:
 };
 
 } // namespace render
+} // namespace wanderers
 
 #endif // WANDERERS_RENDER_SPACE_RENDERER_H_

@@ -11,6 +11,7 @@
 #include <random>
 #include <chrono>
 
+namespace wanderers {
 namespace simulation {
 namespace generator {
 
@@ -84,3 +85,4 @@ object::Planet* generatePlanet(float radius) {
 
 } // namespace generator
 } // namespace simulation
+} // namespace wanderers

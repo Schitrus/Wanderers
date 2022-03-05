@@ -13,6 +13,7 @@
 
 // TODO: Add more camera modes.
 
+namespace wanderers {
 namespace render {
 
 /*
@@ -84,5 +85,6 @@ private:
 };
 
 } // namespace render
+} // namespace wanderers
 
 #endif // WANDERERS_RENDER_CAMERA_H_

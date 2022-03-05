@@ -21,6 +21,7 @@
 #include <atomic>
 #include <mutex>
 
+namespace wanderers {
 namespace control {
 
 /* 
@@ -113,5 +114,6 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 static void cursorPositionCallback(GLFWwindow* window, double x_position, double y_position);
 
 } // namespace control
+} // namespace wanderers
 
 #endif // WANDERERS_CONTROL_CONTROLLER_H_

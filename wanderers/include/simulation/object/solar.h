@@ -14,6 +14,7 @@
 /* Internal Includes */
 #include "simulation/object/astronomical_object.h"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -58,5 +59,6 @@ private:
 
 } // namespace simulation
 } // namespace object
+} // namespace wanderers
 
 #endif // WANDERERS_SIMULATION_OBJECT_SOLAR_H_

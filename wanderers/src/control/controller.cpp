@@ -14,6 +14,7 @@
 #include <iostream>
 #include <thread>
 
+namespace wanderers {
 namespace control {
 
 /*
@@ -224,4 +225,5 @@ static void cursorPositionCallback(GLFWwindow* window, double x_position, double
 	controller_singleton_->updateCursorPosition(x_position, y_position);
 }
 
+} // namsepace wanderers
 } // namsepace control

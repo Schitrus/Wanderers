@@ -15,6 +15,7 @@
 #include <iostream>
 #include <sstream>
 
+namespace wanderers {
 namespace render {
 namespace shader {
 
@@ -79,3 +80,4 @@ unsigned int Shader::getShaderID() {
 
 } // namespace shader
 } // namespace render
+} // namespace wanderers

@@ -14,6 +14,7 @@
 /* STL Includes */
 #include <vector>
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 namespace model {
@@ -89,5 +90,6 @@ static Icosahedron& getIcosahedron() {
 } // namespace model
 } // namespace object
 } // namespace simulation
+} // namespace wanderers
 
 #endif // WANDERERS_SIMULATION_OBJECT_MODEL_ICOSAHEDRON_H_

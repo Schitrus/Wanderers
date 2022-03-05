@@ -13,6 +13,7 @@
 /* STL Includes */
 #include <iostream>
 
+namespace wanderers {
 namespace render {
 namespace shader {
 
@@ -77,3 +78,4 @@ GLuint ShaderProgram::getProgramID() {
 
 } // namespace shader
 } // namespace render
+} // namespace wanderers

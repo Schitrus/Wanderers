@@ -12,6 +12,7 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -68,3 +69,4 @@ void Orbit::elapseTime(double seconds) {
 
 } // namespace simulation
 } // namespace object
+} // namespace wanderers

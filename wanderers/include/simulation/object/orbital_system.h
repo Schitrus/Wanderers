@@ -15,6 +15,7 @@
 /* STL Includes */
 #include <vector>
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -53,5 +54,6 @@ private:
 
 } // namespace simulation
 } // namespace object
+} // namespace wanderers
 
 #endif // WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_

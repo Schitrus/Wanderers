@@ -11,6 +11,7 @@
 #include "glad/gl.h"
 #include "glfw/glfw3.h"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 namespace model {
@@ -198,3 +199,4 @@ Icosahedron::Icosahedron() : vertices_{ generateIcosahedron() }, normals_{ gener
 } // namespace model
 } // namespace object
 } // namespace simulation
+} // namespace wanderers

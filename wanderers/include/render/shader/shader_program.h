@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 
+namespace wanderers {
 namespace render {
 namespace shader {
 
@@ -53,5 +54,6 @@ private:
 
 } // namespace shader
 } // namespace render
+} // namespace wanderers
 
 #endif // WANDERERS_RENDER_SHADER_SHADER_PROGRAM_H_

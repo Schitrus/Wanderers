@@ -14,8 +14,9 @@
 #include "simulation/object/orbit.h"
 #include "simulation/object/orbital_system.h"
 
-namespace simulation{
-namespace generator{
+namespace wanderers {
+namespace simulation {
+namespace generator {
 
 /* Generates a solarsystem that stretches out as far out as the radius. */
 object::OrbitalSystem* generateSolarSystem(float radius);
@@ -31,5 +32,6 @@ object::Planet* generatePlanet(float radius);
 
 } // namespace generator
 } // namespace simulation
+} // namespace wanderers
 
 #endif // WANDERERS_SIMULATION_GENERATOR_SOLAR_SYSTEM_GENERATOR_H_

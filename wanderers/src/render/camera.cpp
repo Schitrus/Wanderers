@@ -14,6 +14,7 @@
 /* STL Includes */
 #include <algorithm>
 
+namespace wanderers {
 namespace render {
 
 Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},
@@ -106,3 +107,4 @@ glm::vec3 Camera::toDirection(float yaw, float pitch) {
 }
 
 } // namespace render
+} // namespace wanderers

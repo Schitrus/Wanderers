@@ -7,6 +7,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/astronomical_object.h"
 
+namespace wanderers {
 namespace simulation {
 namespace object {
 
@@ -25,3 +26,4 @@ void AstronomicalObject::unbind() { surface_->unbind(); }
 
 } // namespace object
 } // namespace simulation
+} // namespace wanderers
