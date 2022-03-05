@@ -68,7 +68,7 @@ void Camera::move(glm::vec3 movement) {
  */
 void Camera::turnYaw(float angle) {
     yaw_ += angle;
-    yaw_ = fmod(yaw_, 180.0f);
+    yaw_ = fmod(yaw_, 360.0f);
 }
 
 /*
