@@ -18,7 +18,7 @@ namespace object {
 AstronomicalObject::AstronomicalObject() : surface_{&model::getIcosahedron()} {}
 
 std::vector<glm::vec3>* AstronomicalObject::getSurface() {
-	return &surface_->getVertices();
+	return surface_->getVertices();
 }
 
 void AstronomicalObject::bind() { surface_->bind(); }

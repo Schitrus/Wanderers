@@ -33,9 +33,9 @@ public:
 	void operator=(Icosahedron const&) = delete;
 
 	/* Returns vertices as vectors. */
-	std::vector<glm::vec3>& getVertices();
+	std::vector<glm::vec3>* getVertices();
 	/* Returns normals as vectors. */
-	std::vector<glm::vec3>& getNormals();
+	std::vector<glm::vec3>* getNormals();
 
 	/* Returns vertices as individual float values. */
 	float* verticesData();
@@ -60,15 +60,18 @@ private:
 	unsigned int normal_VBO_;
 
 	/* Generates the Icosahedron. */
-	static std::vector<glm::vec3>& generateIcosahedron();
+	static std::vector<glm::vec3>* generateIcosahedron();
+
+	/* Increases the number of triangles 4^n times. */
+	static std::vector<glm::vec3>* subDivide(std::vector<glm::vec3>* vertices, int n);
 
 	/* Generates the normals. Not specific to icosahedron. */
-	static std::vector<glm::vec3>& generateNormals(std::vector<glm::vec3>& vertices);
+	static std::vector<glm::vec3>* generateNormals(std::vector<glm::vec3>* vertices);
 
 	void generateBuffers();
 
-	std::vector<glm::vec3>& vertices_;
-	std::vector<glm::vec3>& normals_;
+	std::vector<glm::vec3>* vertices_;
+	std::vector<glm::vec3>* normals_;
 
 	/* Singleton constructor. */
 	Icosahedron();
