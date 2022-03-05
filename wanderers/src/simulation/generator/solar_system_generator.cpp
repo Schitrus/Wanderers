@@ -58,7 +58,13 @@ object::Solar* generateSolar(float radius) {
 
 /*
  * generatePlanetSystem:
- * - Generate planet with a radius between 10% and 50% that of the planet system radius.
+ * - Generate planet with a radius between 10% and 35% that of the planet system radius.
+ * - Create planet system with the planet as orbitee.
+ * - Randomize number of moons:
+ *   - Set moon radius as a fraction of remaining size of the planet system.
+ *   - Generate moon.
+ *   - Make orbit and add it to the planet system.
+ *   - Increase distance from moon.
  * - Set the given orbit radius.
  * - Set the orbit speed as dependent to the sqrt of the orbit radius.
  * - Rotation set around the y axis.
