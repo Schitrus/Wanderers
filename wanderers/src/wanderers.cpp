@@ -90,7 +90,7 @@ void run() {
 	
 	// Setup simulation.
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{};
-	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(100.0f));
+	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 	std::uniform_real_distribution<float> size(1.0f, 2.0f);
 	for(int i = 0; i < 20; i++)

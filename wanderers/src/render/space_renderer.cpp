@@ -88,7 +88,7 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 	shader_.setUniform(camera_position, "camera_position");
 	shader_.setUniform(model, "model");
 	shader_.setUniform(projection_ * view_ * model, "MVP");
-	shader_.setUniform(stars->getColor() * static_cast<float>(0.25f*sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
+	shader_.setUniform(stars->getColor() * 0.8f * static_cast<float>(0.25f*sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
 	shader_.setUniform(true, "is_sun");
 
 	glDisable(GL_DEPTH_TEST);

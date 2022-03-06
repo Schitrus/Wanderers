@@ -46,7 +46,7 @@ protected:
  * - Construct Icosahedron singleton if not constructed.
  */
 static Icosahedron* getIcosahedron() {
-	static Icosahedron* icosahedron = new Icosahedron{ 4 };
+	static Icosahedron* icosahedron = new Icosahedron{ 6 };
 	return icosahedron;
 }
 
