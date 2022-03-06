@@ -32,6 +32,8 @@ public:
 
 	Icosahedron(int sub_division_level);
 
+	Icosahedron(std::vector<glm::vec3>* vertices);
+
 protected:
 
 	/* Generates the Icosahedron. */

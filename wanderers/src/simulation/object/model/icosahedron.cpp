@@ -20,7 +20,9 @@ namespace model {
 
 Icosahedron::Icosahedron() : Icosahedron{ 0 } {}
 
-Icosahedron::Icosahedron(int sub_division_level) : Mesh(subDivide(generateIcosahedron(), sub_division_level), GL_TRIANGLES) { }
+Icosahedron::Icosahedron(int sub_division_level) : Icosahedron(subDivide(generateIcosahedron(), sub_division_level)) { }
+
+Icosahedron::Icosahedron(std::vector<glm::vec3>* vertices) : Mesh(vertices, GL_TRIANGLES) {}
 
 // TODO: Make algorithm for generating icosahedron instead of having it hardcoded.
 

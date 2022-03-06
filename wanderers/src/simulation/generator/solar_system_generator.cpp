@@ -12,6 +12,7 @@
 
 /* Internal Includes */
 #include "simulation/object/model/icosahedron.h"
+#include "simulation/object/model/surface.h"
 
 /* STL Includes */
 #include <random>
@@ -131,7 +132,7 @@ object::Planet* generatePlanet(float radius) {
 	std::uniform_real_distribution<float> spin(-360.0f, 360.0f);
 	std::uniform_real_distribution<float> color(0.0f, 1.0f);
 	std::uniform_real_distribution<float> axis(0.0f, 1.0f);
-	return new object::Planet{ new object::model::Icosahedron{4}, glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
+	return new object::Planet{ new object::model::Surface{3}, glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
 }
 
 } // namespace generator
