@@ -14,7 +14,7 @@
 
 /* Internal Includes */
 #include "render/camera.h"
-#include "simulation/object/orbital_system.h"
+#include "simulation/space_simulation.h"
 
 /* STL Includes */
 #include <set>
@@ -31,7 +31,7 @@ namespace control {
 class Controller {
 public:
 	/* Intitializes the controller singleton and start controller thread. */
-	static void initController(render::Camera& camera, simulation::object::OrbitalSystem& simulation);
+	static void initController(render::Camera& camera, simulation::SpaceSimulation& simulation);
 	/* Deinitializes the controller singleton and stops the controller thread. */
 	static void deinitController();
 
@@ -44,7 +44,7 @@ private:
 	GLFWwindow* window_;
 
 	render::Camera& camera_;
-	simulation::object::OrbitalSystem& simulation_;
+	simulation::SpaceSimulation& simulation_;
 
 	/* Boolean for stopping the controller thread. */
 	std::atomic<bool> should_stop_;
@@ -80,8 +80,10 @@ private:
 	std::set<int> released_keys_;
 	std::set<int> triggered_keys_;
 
+	std::mutex controller_mutex_;
+
 	/* Constructor for singleton. */
-	Controller(GLFWwindow* window, render::Camera& camera, simulation::object::OrbitalSystem& simulation);
+	Controller(GLFWwindow* window, render::Camera& camera, simulation::SpaceSimulation& simulation);
 
 	/* Run the controller handling loop. */
 	void runController();

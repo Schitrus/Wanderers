@@ -57,6 +57,7 @@ glm::mat4 Camera::getProjectionMatrix() {
  * - Increment the position with the movement in y direction orthogonal to the direction and cameras up direction.
  */
 void Camera::move(glm::vec3 movement) { 
+    std::lock_guard<std::mutex> guard(camera_mutex_);
     position_ += -glm::normalize(direction_) * movement.z
               +   glm::normalize(glm::cross(direction_, kUpVector)) * movement.x
               +   glm::normalize(glm::cross(glm::cross(direction_, kUpVector), direction_)) * movement.y;
@@ -67,6 +68,7 @@ void Camera::move(glm::vec3 movement) {
  * - Increments the yaw in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void Camera::turnYaw(float angle) {
+    std::lock_guard<std::mutex> guard(camera_mutex_);
     yaw_ += angle;
     yaw_ = fmod(yaw_, 360.0f);
 }
@@ -76,6 +78,7 @@ void Camera::turnYaw(float angle) {
  * - Increments the pitch in degrees but don't let it go below -89.0 or above 89.0 .
  */
 void Camera::turnPitch(float angle) {
+    std::lock_guard<std::mutex> guard(camera_mutex_);
     pitch_ += angle;
     pitch_ = std::max(std::min(pitch_, 89.0f), -89.0f);
 }
@@ -84,14 +87,22 @@ void Camera::turnPitch(float angle) {
  *  - Increments the roll in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void Camera::turnRoll(float angle) {
+    std::lock_guard<std::mutex> guard(camera_mutex_);
     roll_ += angle;
     roll_ = fmod(roll_, 360.0f);
 }
 
-void Camera::setPosition(glm::vec3 position) { position_ = position; }
+void Camera::setPosition(glm::vec3 position) { 
+    std::lock_guard<std::mutex> guard(camera_mutex_);
+    position_ = position; 
+}
 
-void Camera::setAspectRatio(float aspect_ratio) { aspect_ratio_ = aspect_ratio; }
+void Camera::setAspectRatio(float aspect_ratio) {
+    std::lock_guard<std::mutex> guard(camera_mutex_);
+    aspect_ratio_ = aspect_ratio;
+}
 void Camera::setAspectRatio(int width, int height) {
+    std::lock_guard<std::mutex> guard(camera_mutex_);
     aspect_ratio_ = static_cast<float>(width) / height;
 }
 
@@ -104,6 +115,14 @@ glm::vec3 Camera::toDirection(float yaw, float pitch) {
     return glm::vec3{sin(glm::radians(yaw)) * cos(glm::radians(pitch)),
                      sin(glm::radians(pitch)),
                      cos(glm::radians(yaw)) * cos(glm::radians(pitch))};
+}
+
+void Camera::lock() {
+    camera_mutex_.lock();
+}
+
+void Camera::unlock() {
+    camera_mutex_.unlock();
 }
 
 } // namespace render

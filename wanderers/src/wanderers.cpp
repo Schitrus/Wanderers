@@ -16,12 +16,19 @@
 /* Internal Includes */
 #include "render/camera.h"
 #include "render/shader/shader_program.h"
-#include "simulation/object/orbital_system.h"
+#include "simulation/space_simulation.h"
+#include "simulation/object/stars.h"
 #include "simulation/generator/solar_system_generator.h"
 #include "control/controller.h"
 
+/* STL Includes */
+#include <random>
+#include <chrono>
+
 namespace wanderers {
 
+/* Random generator with seed set as the time of execution. */
+static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
 /*  
  *  setupWindow:
@@ -47,7 +54,7 @@ GLFWwindow* setupWindow() {
  *    - Proceed simulation.
  *    - Render.
  */
-void renderLoop(simulation::object::OrbitalSystem* simulation, render::SpaceRenderer* renderer) {
+void renderLoop(simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer) {
 	double last_time{ glfwGetTime() };
 
 	while (!glfwWindowShouldClose(glfwGetCurrentContext())) {
@@ -82,7 +89,12 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	simulation::object::OrbitalSystem* solar_system{ simulation::generator::generateSolarSystem(100.0f) };
+	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{};
+	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(100.0f));
+	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
+	std::uniform_real_distribution<float> size(1.0f, 2.0f);
+	for(int i = 0; i < 20; i++)
+		space_simulation->addStars(new simulation::object::Stars{100, temperature(randomizer), size(randomizer)});
 	
 	// Setup render engine.
 	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
@@ -92,16 +104,16 @@ void run() {
 	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
-	control::Controller::initController(camera, *solar_system);
+	control::Controller::initController(camera, *space_simulation);
 	
 	// Render loop until exit is requested.
-	renderLoop(solar_system, space_renderer);
+	renderLoop(space_simulation, space_renderer);
 	
 	// Program exit.
 	control::Controller::deinitController();
 	
 	delete space_renderer;
-	delete solar_system;
+	delete space_simulation;
 	
 	glfwDestroyWindow(window);
 	glfwTerminate();

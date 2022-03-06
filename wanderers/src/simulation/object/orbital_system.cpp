@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Implementation of the Class for representation of an orbital system.      *
+ * Implementation of the class for representation of an orbital system.      *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -12,8 +12,7 @@ namespace simulation {
 namespace object {
 
 OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : orbitee_{orbitee},
-                                                            orbits_{}, is_paused_{false},
-	                                                        simulation_speed_{1.0f} {}
+                                                            orbits_{} {}
 
 AstronomicalObject* OrbitalSystem::getOrbitee() {
 	return orbitee_;
@@ -32,31 +31,9 @@ void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
  *   - Elapse time for all orbits.
  */
 void OrbitalSystem::elapseTime(double seconds) {
-	if (!is_paused_) {
-		orbitee_->elapseTime(seconds * simulation_speed_);
-		for (Orbit* orbit : orbits_)
-			orbit->elapseTime(seconds * simulation_speed_);
-	}
-}
-
-void OrbitalSystem::pause() {
-	is_paused_ = true;
-}
-
-void OrbitalSystem::unpause() {
-	is_paused_ = false;
-}
-
-bool OrbitalSystem::isPaused() {
-	return is_paused_;
-}
-
-void OrbitalSystem::setSpeed(double simulation_speed) {
-	simulation_speed_ = simulation_speed;
-}
-
-double OrbitalSystem::getSpeed() {
-	return simulation_speed_;
+	orbitee_->elapseTime(seconds);
+	for (Orbit* orbit : orbits_)
+		orbit->elapseTime(seconds);
 }
 
 /*
@@ -70,6 +47,6 @@ OrbitalSystem::~OrbitalSystem() {
 		delete orbit;
 }
 
-} // namespace simulation
 } // namespace object
+} // namespace simulation
 } // namespace wanderers

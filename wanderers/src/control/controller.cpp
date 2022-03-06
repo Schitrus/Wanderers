@@ -7,9 +7,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "control/controller.h"
 
-/* Internal Includes */
-#include "simulation/generator/solar_system_generator.h"
-
 /* STL Includes */
 #include <thread>
 
@@ -21,7 +18,7 @@ namespace control {
  * - Set input callbacks.
  * - Start controller thread.
  */
-Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::object::OrbitalSystem& simulation) : window_{ window }, camera_{ camera }, simulation_{ simulation },
+Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::SpaceSimulation& simulation) : window_{ window }, camera_{ camera }, simulation_{ simulation },
                                                              pressed_keys_{ std::size_t{kNumKeys} },
                                                              released_keys_{ std::size_t{kNumKeys} },
 	                                                         cursor_position_{} {
@@ -44,6 +41,7 @@ Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::o
  * - Stop thread and reset input callbacks.
  */
 Controller::~Controller() { 
+	std::lock_guard<std::mutex> guard(controller_mutex_);
 	should_stop_ = true; 
 	glfwSetKeyCallback(window_, nullptr); 
 	glfwSetCursorPosCallback(window_, nullptr);
@@ -54,7 +52,7 @@ Controller::~Controller() {
  * Controller initController: 
  * - Create Controller singleton if not created.
  */
-void Controller::initController(render::Camera& camera, simulation::object::OrbitalSystem& simulation) {
+void Controller::initController(render::Camera& camera, simulation::SpaceSimulation& simulation) {
 	if (controller_singleton_ == nullptr)
 		controller_singleton_ = new Controller{ glfwGetCurrentContext(), camera, simulation};
 }
@@ -129,6 +127,7 @@ void Controller::runController() {
  * - Enact changes in key changes.
  */
 void Controller::handleControls(double seconds) {
+	std::lock_guard<std::mutex> guard(controller_mutex_);
 	enactCursorPosition(seconds);
 
 	enactScrollOffset(seconds);
@@ -149,8 +148,6 @@ void Controller::handleControls(double seconds) {
 
 void Controller::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
-	case GLFW_KEY_R:
-		simulation_ = simulation::generator::generateSolarSystem(25.0f);
 	case GLFW_KEY_SPACE:
 		simulation_.isPaused() ? simulation_.unpause() : simulation_.pause();
 		break;
@@ -211,6 +208,7 @@ void Controller::enactScrollOffset(double seconds) {
  *   - Insert to released keys.
  */
 void Controller::updateKey(int key, int action) { 
+	std::lock_guard<std::mutex> guard(controller_mutex_);
 	if (action == GLFW_PRESS) {
 		if (pressed_keys_.insert(key).second)
 			triggered_keys_.insert(key);
@@ -222,10 +220,12 @@ void Controller::updateKey(int key, int action) {
 }
 
 void Controller::updateCursorPosition(double x_position, double y_position) {
+	std::lock_guard<std::mutex> guard(controller_mutex_);
 	cursor_position_.updatePosition(glm::vec2{ x_position, y_position });
 }
 
 void Controller::updateScrollOffset(double x_offset, double y_offset) {
+	std::lock_guard<std::mutex> guard(controller_mutex_);
 	scroll_offset_ = glm::vec2{ x_offset, y_offset };
 }
 

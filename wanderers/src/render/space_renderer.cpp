@@ -31,8 +31,12 @@ SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram& shader, render::Came
  * - Enable OpenGL pipline operations.
  */
 void SpaceRenderer::preRender() {
+	
+	
 	glfwGetFramebufferSize(glfwGetCurrentContext(), &render_width_, &render_height_);
 	camera_.setAspectRatio(render_width_, render_height_);
+
+	camera_.lock();
 
 	view_ = camera_.getViewMatrix();
 	projection_ = camera_.getProjectionMatrix();
@@ -52,10 +56,48 @@ void SpaceRenderer::preRender() {
  * - Poll all queued events.
  */
 void SpaceRenderer::postRender() {
+	camera_.unlock();
 	glDisable(GL_DEPTH_TEST);
 
 	glfwSwapBuffers(glfwGetCurrentContext());
 	glfwPollEvents();
+}
+
+/*
+ * SpaceRenderer render SpaceSimulation:
+ * - Render the solar system.
+ * - Render the stars.
+ */
+void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
+	for (simulation::object::Stars* stars : space_simulation->getGroupOfStars())
+		render(stars);
+	for (simulation::object::OrbitalSystem* solar_system : space_simulation->getSolarSystems())
+		render(solar_system);
+}
+
+/*
+ * SpaceRenderer render Stars:
+ * - Render the solar system.
+ */
+void SpaceRenderer::render(simulation::object::Stars* stars) {
+	stars->bind();
+
+	glm::vec3 camera_position{ camera_.getPosition() };
+	glm::mat4 model{ glm::translate(glm::mat4{1.0f}, camera_position) };
+	shader_.setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
+	shader_.setUniform(camera_position, "camera_position");
+	shader_.setUniform(model, "model");
+	shader_.setUniform(projection_ * view_ * model, "MVP");
+	shader_.setUniform(stars->getColor() * static_cast<float>(0.25f*sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
+	shader_.setUniform(true, "is_sun");
+
+	glDisable(GL_DEPTH_TEST);
+	glPointSize(stars->getSize());
+	glDrawArrays(GL_POINTS, 0, stars->getSurface()->size());
+	glPointSize(1.0f);
+	glEnable(GL_DEPTH_TEST);
+
+	stars->unbind();
 }
 
 /*

@@ -26,11 +26,15 @@
     <ClInclude Include="wanderers\include\render\space_renderer.h" />
     <ClInclude Include="wanderers\include\simulation\generator\solar_system_generator.h" />
     <ClInclude Include="wanderers\include\simulation\object\astronomical_object.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\points.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\mesh.h" />
     <ClInclude Include="wanderers\include\simulation\object\orbit.h" />
     <ClInclude Include="wanderers\include\simulation\object\orbital_system.h" />
     <ClInclude Include="wanderers\include\simulation\object\planet.h" />
     <ClInclude Include="wanderers\include\simulation\object\solar.h" />
+    <ClInclude Include="wanderers\include\simulation\object\stars.h" />
+    <ClInclude Include="wanderers\include\simulation\space_simulation.h" />
     <ClInclude Include="wanderers\include\wanderers.h" />
   </ItemGroup>
   <ItemGroup>
@@ -42,11 +46,15 @@
     <ClCompile Include="wanderers\src\render\space_renderer.cpp" />
     <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\points.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\mesh.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\orbit.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\planet.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\solar.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\stars.cpp" />
+    <ClCompile Include="wanderers\src\simulation\space_simulation.cpp" />
     <ClCompile Include="wanderers\src\wanderers.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

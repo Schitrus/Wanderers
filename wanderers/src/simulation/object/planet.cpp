@@ -10,11 +10,15 @@
 /* External Includes */
 #include "glm/ext.hpp"
 
+/* Internal Includes */
+#include "simulation/object/model/icosahedron.h"
+
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-Planet::Planet() : surface_color_{ kDefaultSurfaceColor },
+Planet::Planet() : AstronomicalObject{model::getIcosahedron()},
+	               surface_color_{ kDefaultSurfaceColor },
 				   radius_{ kDefaultRadius },
 				   angular_velocity_{ kDefaultAngularVelocity },
 				   rotational_axis_{ glm::normalize(kDefaultRotationalAxis) },
@@ -22,7 +26,8 @@ Planet::Planet() : surface_color_{ kDefaultSurfaceColor },
 
 Planet::Planet(glm::vec3 surface_color, float radius,
 	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-	           : surface_color_{ surface_color },
+	           : AstronomicalObject{ model::getIcosahedron() },
+	             surface_color_{ surface_color },
 				 radius_{ radius },
 				 angular_velocity_{ angular_velocity },
 				 rotational_axis_{ glm::normalize(rotational_axis) },
@@ -51,6 +56,6 @@ void Planet::elapseTime(double seconds) {
 	rotational_angle_ = fmod(rotational_angle_, 360.0f);
 }
 
-} // namespace simulation
 } // namespace object
+} // namespace simulation
 } // namespace wanderers

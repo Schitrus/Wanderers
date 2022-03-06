@@ -1,16 +1,18 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Class for representation of an orbital system.                            *
+ * Class for representation of the stars in the sky.                         *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
-#define WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
+#ifndef WANDERERS_SIMULATION_OBJECT_STARS_H_
+#define WANDERERS_SIMULATION_OBJECT_STARS_H_
+
+ /* External Includes */
+#include "glm/glm.hpp"
 
 /* Internal Includes */
 #include "simulation/object/astronomical_object.h"
-#include "simulation/object/orbit.h"
 
 /* STL Includes */
 #include <vector>
@@ -20,32 +22,33 @@ namespace simulation {
 namespace object {
 
 /*
- * This class is a representation fo an orbital system with an orbitee in the center of the system
- *  and orbits around it.
- * The orbital system is seen as an astronomical object.
+ * This class represents the stars in the sky.
+ * The solar is seen as an astronomical object.
  */
-class OrbitalSystem : public AstronomicalObject {
+class Stars : public AstronomicalObject {
 public:
-	OrbitalSystem(AstronomicalObject* orbitee);
+	Stars(int number_of_stars, float temperature, float size);
 
-	~OrbitalSystem();
+	std::vector<glm::vec3>* generateStars(int number_of_stars);
 
-	AstronomicalObject* getOrbitee();
-	std::vector<Orbit*> getOrbits();
-
-	/* Add and orbit to the orbital system. */
-	void addOrbit(Orbit* orbit);
+	/* Get the color of the stars. Depends on the temperature. */
+	glm::vec3 getColor();
+	
+	float getSize();
 
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
 
 private:
-	AstronomicalObject* orbitee_;
-	std::vector<Orbit*> orbits_;
+	glm::vec3 star_positions_;
+
+	float temperature_;
+
+	float size_;
 };
 
 } // namespace simulation
 } // namespace object
 } // namespace wanderers
 
-#endif // WANDERERS_SIMULATION_OBJECT_ORBITAL_SYSTEM_H_
+#endif // WANDERERS_SIMULATION_OBJECT_STARS_H_

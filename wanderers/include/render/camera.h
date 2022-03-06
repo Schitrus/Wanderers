@@ -11,6 +11,9 @@
 /* External Includes */
 #include "glm/glm.hpp"
 
+/* STL Includes */
+#include <mutex>
+
 // TODO: Add more camera modes.
 
 namespace wanderers {
@@ -50,6 +53,12 @@ public:
 	void setAspectRatio(float aspect_ratio);
 	void setAspectRatio(int width, int height);
 
+	/* Disable camera from changing. */
+	void lock();
+
+	/* Enables camera from changing. */
+	void unlock();
+
 private:
 	/* The position of the camera in world space. */
 	glm::vec3 position_;
@@ -68,6 +77,8 @@ private:
 
 	glm::mat4 view_;
 	glm::mat4 projection_;
+
+	std::mutex camera_mutex_;
 
 	static constexpr glm::vec3 kDefaultStartingPosition{ 0.0f, 0.0f, 0.0f};
 	static constexpr float kDefaultStartingYaw{ 0.0f };

@@ -12,7 +12,7 @@
 #include "glm/glm.hpp"
 
 /* Internal Includes */
-#include "simulation/object/model/icosahedron.h"
+#include "simulation/object/model/mesh.h"
 
 /* STL Includes */
 #include <vector>
@@ -30,6 +30,8 @@ class AstronomicalObject {
 public:
 	AstronomicalObject();
 
+	AstronomicalObject(model::Mesh* surface);
+
 	/* Gets the set model for the astronomical object. */
 	virtual std::vector<glm::vec3>* getSurface();
 
@@ -41,8 +43,8 @@ public:
 	void unbind();
 
 private:
-	/* Model of the astronomical object. NOTE: Model is set to Icosahedron for the time being. */
-	model::Icosahedron* surface_;
+	/* Model of the astronomical object. */
+	model::Mesh* surface_;
 };
 
 } // namespace object

@@ -10,11 +10,15 @@
 /* External Includes */
 #include "glm/ext.hpp"
 
+/* Internal Includes */
+#include "simulation/object/model/icosahedron.h"
+
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-Solar::Solar() : temperature_{ kDefaultTemperature }, 
+Solar::Solar() : AstronomicalObject{ model::getIcosahedron() },
+                 temperature_{ kDefaultTemperature }, 
                  radius_{ kDefaultRadius },
                  angular_velocity_{ kDefaultAngularVelocity },
                  rotational_axis_{ kDefaultRotationalAxis },
@@ -22,7 +26,8 @@ Solar::Solar() : temperature_{ kDefaultTemperature },
 
 Solar::Solar(float temperature, float radius,
              float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-             : temperature_{ temperature },
+             : AstronomicalObject{ model::getIcosahedron() },
+               temperature_{ temperature },
                radius_{ radius },
                angular_velocity_{ angular_velocity },
                rotational_axis_{ rotational_axis },
@@ -73,6 +78,6 @@ void Solar::elapseTime(double seconds) {
     rotational_angle_ = fmod(rotational_angle_, 360.0f);
 }
 
-} // namespace simulation
 } // namespace object
+} // namespace simulation
 } // namespace wanderers

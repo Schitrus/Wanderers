@@ -66,6 +66,6 @@ void Orbit::elapseTime(double seconds) {
     orbitor_->elapseTime(seconds);
 }
 
-} // namespace simulation
 } // namespace object
+} // namespace simulation
 } // namespace wanderers

@@ -1,31 +1,25 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Declarations of setup Wanderers program and running it.                   *
+ * Implementation of the Points class.                                       *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_WANDERERS_H_
-#define WANDERERS_WANDERERS_H_
+#include "simulation/object/model/points.h"
 
 /* External Includes */
+#include "glad/gl.h"
 #include "glfw/glfw3.h"
 
-/* Internal Includes */
-#include "render/space_renderer.h"
-#include "simulation/space_simulation.h"
-
 namespace wanderers {
+namespace simulation {
+namespace object {
+namespace model {
 
-/* Setup window for rendering. */
-static GLFWwindow* setupWindow();
+Points::Points(std::vector<glm::vec3>* points) : Mesh(points, GL_POINTS) { }
 
-/* Enter the simulations render loop. */
-static void renderLoop(simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer);
 
-/* Start running the Wanderers program. */
-void run();
-
+} // namespace model
+} // namespace object
+} // namespace simulation
 } // namespace wanderers
-
-#endif // WANDERERS_WANDERERS_H_

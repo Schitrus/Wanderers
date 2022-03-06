@@ -15,6 +15,7 @@
 #include "render/shader/shader_program.h"
 #include "render/camera.h"
 
+#include "simulation/space_simulation.h"
 #include "simulation/object/orbital_system.h"
 #include "simulation/object/orbit.h"
 #include "simulation/object/solar.h"
@@ -37,7 +38,13 @@ public:
 	/* Does some post render operations. Has to be done after each render iteration. */
 	void postRender();
 
-	/* Renders the objects of a orbital system. */
+	/* Renders the objects within the space simulation. */
+	void render(simulation::SpaceSimulation* space_simulation);
+
+	/* Renders all the stars of the sky. */
+	void render(simulation::object::Stars* stars);
+
+	/* Renders the objects of an orbital system. */
 	void render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform = glm::mat4{ 1.0f });
 
 	/* Renders the objects of an orbit. */

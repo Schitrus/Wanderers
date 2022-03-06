@@ -7,15 +7,22 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/astronomical_object.h"
 
+/* Internal Includes */
+#include "simulation/object/model/icosahedron.h"
+
 namespace wanderers {
 namespace simulation {
 namespace object {
+
+	
 
 /*
  * AstronomicalObject Constructor:
  * - Set surface to as the Icosahedron.
  */
-AstronomicalObject::AstronomicalObject() : surface_{&model::getIcosahedron()} {}
+AstronomicalObject::AstronomicalObject() : AstronomicalObject{ model::getIcosahedron() } {}
+
+AstronomicalObject::AstronomicalObject(model::Mesh* surface) : surface_{surface} {}
 
 std::vector<glm::vec3>* AstronomicalObject::getSurface() {
 	return surface_->getVertices();
