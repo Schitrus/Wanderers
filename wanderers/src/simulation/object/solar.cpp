@@ -33,6 +33,15 @@ Solar::Solar(float temperature, float radius,
                rotational_axis_{ rotational_axis },
                rotational_angle_{ rotational_angle } {}
 
+Solar::Solar(model::Mesh* surface, float temperature, float radius,
+             float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
+             : AstronomicalObject{ surface },
+               temperature_{ temperature },
+               radius_{ radius },
+               angular_velocity_{ angular_velocity },
+               rotational_axis_{ rotational_axis },
+               rotational_angle_{ rotational_angle } {}
+
 /*
  * Solar getColor:
  * - Approximates rgb values of the black body radiation that is dependant on the temperature.

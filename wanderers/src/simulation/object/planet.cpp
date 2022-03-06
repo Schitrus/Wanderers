@@ -33,6 +33,15 @@ Planet::Planet(glm::vec3 surface_color, float radius,
 				 rotational_axis_{ glm::normalize(rotational_axis) },
 				 rotational_angle_{ rotational_angle } {}
 
+Planet::Planet(model::Mesh* surface, glm::vec3 surface_color, float radius,
+	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
+	           : AstronomicalObject{ surface },
+	             surface_color_{ surface_color },
+	             radius_{ radius },
+	             angular_velocity_{ angular_velocity },
+	             rotational_axis_{ glm::normalize(rotational_axis) },
+	             rotational_angle_{ rotational_angle } {}
+
 glm::vec3 Planet::getColor() { return surface_color_; }
 
 /*

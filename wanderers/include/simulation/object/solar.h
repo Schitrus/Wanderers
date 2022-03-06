@@ -29,6 +29,9 @@ public:
 	Solar(float temperature, float radius,
 		  float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
 
+	Solar(model::Mesh* surface, float temperature, float radius,
+		  float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
+
 	/* Get the surface color of the solar. Depends on the temperature. */
 	glm::vec3 getColor();
 

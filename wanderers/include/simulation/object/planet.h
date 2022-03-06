@@ -29,6 +29,9 @@ public:
 	Planet(glm::vec3 surface_color, float radius, 
 		   float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
 
+	Planet(model::Mesh* surface, glm::vec3 surface_color, float radius,
+		   float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
+
 	/* Get the surface color of the planet. */
 	glm::vec3 getColor();
 
