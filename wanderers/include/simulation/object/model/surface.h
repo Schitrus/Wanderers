@@ -30,11 +30,11 @@ class Surface : public Icosahedron {
 public:
 	Surface();
 
-	Surface(int sub_division_level);
+	Surface(int sub_division_level, float roughness);
 
 protected:
 	/* Generates the Surface. */
-	std::vector<glm::vec3>* generateSurface(std::vector<glm::vec3>* vertices);
+	std::vector<glm::vec3>* generateSurface(std::vector<glm::vec3>* vertices, float roughness);
 };
 
 } // namespace model

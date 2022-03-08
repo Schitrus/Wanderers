@@ -49,6 +49,9 @@ private:
 	/* Generates the normals. */
 	std::vector<glm::vec3>* generateNormals(std::vector<glm::vec3>* vertices, unsigned mesh_type);
 
+	/* Smooths the normals. */
+	std::vector<glm::vec3>* smoothNormals(std::vector<glm::vec3>* vertices, std::vector<glm::vec3>* normals);
+
 	/* Vertex array object, storing the various buffers. */
 	unsigned int VAO_;
 	/* Vertex buffer object, storing vertices. */

@@ -22,21 +22,21 @@ namespace simulation {
 namespace object {
 namespace model {
 
-Surface::Surface() : Surface{ 0 } {}
+Surface::Surface() : Surface{ 0, 0.0f } {}
 
-Surface::Surface(int sub_division_level) : Icosahedron(generateSurface(subDivide(generateIcosahedron(), sub_division_level))) { }
+Surface::Surface(int sub_division_level, float roughness) : Icosahedron{ generateSurface(subDivide(generateIcosahedron(), sub_division_level), roughness) } { }
 
 /*
  * Surface generateSurface:
  */
-std::vector<glm::vec3>* Surface::generateSurface(std::vector<glm::vec3>* vertices) {
+std::vector<glm::vec3>* Surface::generateSurface(std::vector<glm::vec3>* vertices, float roughness) {
 	glm::vec3 seed_vec{ static_cast<float>(glfwGetTime()) * 10000.0f };
 	for (int i = 0; i < vertices->size(); i++) {
 		glm::vec3 vec{ vertices->at(i) };
 		
-		float perlin = glm::perlin(vec + seed_vec) + 0.5f * glm::perlin(2.0f * vec + seed_vec) + 0.25f * glm::perlin(4.0f * vec + seed_vec);
-
-		vertices->at(i) = vec * (0.15f * perlin + 1.0f);
+		float displacement = 0.5f * glm::perlin(0.2f * vec + seed_vec) + 0.3f * glm::perlin(vec + seed_vec) + 0.15f * glm::perlin(2.0f * vec + seed_vec) + 0.05f * glm::perlin(4.0f * vec + seed_vec);
+		displacement = (displacement + 1.0f) / 2.0f;
+		vertices->at(i) = vec * (-displacement * roughness + 1.0f);
 	}
 		
 	return vertices;

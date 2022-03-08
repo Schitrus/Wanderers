@@ -47,6 +47,23 @@ std::vector<glm::vec3>* Mesh::generateNormals(std::vector<glm::vec3>* vertices, 
 	return normals;
 }
 
+/* Smooths the normals. */
+std::vector<glm::vec3>* Mesh::smoothNormals(std::vector<glm::vec3>* vertices, std::vector<glm::vec3>* normals) {
+	std::vector<glm::vec3>* smooth_normals = new std::vector<glm::vec3>(normals->size());
+	for (int i = 0; i < normals->size(); i++) {
+		auto it{ vertices->begin() };
+		while ((it = std::find_if(it, vertices->end(), [&v1 = vertices->at(i)](glm::vec3 v2) { 
+			return abs(v1.x - v2.x) < 0.00001
+			    && abs(v1.y - v2.y) < 0.00001
+				&& abs(v1.z - v2.z) < 0.00001;
+			})) != vertices->end()) {
+			smooth_normals->at(i) += normals->at(it - vertices->begin());
+			it++;
+		}
+	}
+	return smooth_normals;
+}
+
 std::vector<glm::vec3>* Mesh::getVertices() { return vertices_; }
 
 std::vector<glm::vec3>* Mesh::getNormals() { return normals_; }
@@ -101,7 +118,7 @@ void Mesh::unbind() { glBindVertexArray(0);  }
  * - Generate normals.
  * - Generate Buffers.
  */
-Mesh::Mesh(std::vector<glm::vec3>* vertices, unsigned int mesh_type) : vertices_{ vertices }, normals_{ generateNormals(vertices_, mesh_type) } {
+Mesh::Mesh(std::vector<glm::vec3>* vertices, unsigned int mesh_type) : vertices_{ vertices }, normals_{ smoothNormals(vertices_, generateNormals(vertices_, mesh_type)) } {
 	generateBuffers();
 }
 

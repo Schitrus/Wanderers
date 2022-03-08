@@ -82,7 +82,7 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 object::Solar* generateSolar(float radius) {
 	std::uniform_real_distribution<float> temperature(1000.0f, 10000.0f);
 	std::uniform_real_distribution<float> spin(-360.0f, 360.0f);
-	return new object::Solar{ new object::model::Icosahedron{4}, temperature(randomizer), radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
+	return new object::Solar{ new object::model::Surface{4, 0.03f}, temperature(randomizer), radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
 }
 
 /*
@@ -132,7 +132,7 @@ object::Planet* generatePlanet(float radius) {
 	std::uniform_real_distribution<float> spin(-360.0f, 360.0f);
 	std::uniform_real_distribution<float> color(0.0f, 1.0f);
 	std::uniform_real_distribution<float> axis(0.0f, 1.0f);
-	return new object::Planet{ new object::model::Surface{3}, glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
+	return new object::Planet{ new object::model::Surface{3, 1.0f/log2(radius + 2.0f)}, glm::vec3{color(randomizer), color(randomizer), color(randomizer)}, radius, spin(randomizer), generateRotationalAxis(), spin(randomizer) };
 }
 
 } // namespace generator
