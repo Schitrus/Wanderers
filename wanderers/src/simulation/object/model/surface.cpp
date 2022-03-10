@@ -28,6 +28,9 @@ Surface::Surface(int sub_division_level, float roughness) : Icosahedron{ generat
 
 /*
  * Surface generateSurface:
+ * - Get seed
+ * - For each vertice:
+ *   - Calculate surface displacement from seed and position and apply it.
  */
 std::vector<glm::vec3>* Surface::generateSurface(std::vector<glm::vec3>* vertices, float roughness) {
 	glm::vec3 seed_vec{ static_cast<float>(glfwGetTime()) * 10000.0f };

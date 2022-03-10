@@ -47,7 +47,12 @@ std::vector<glm::vec3>* Mesh::generateNormals(std::vector<glm::vec3>* vertices, 
 	return normals;
 }
 
-/* Smooths the normals. */
+/* 
+ * Mesh smoothNormals:
+ * - For each vertice:
+ *   - Add all normals with same vertice position.
+ *   - Normalize the new normal.
+ */
 std::vector<glm::vec3>* Mesh::smoothNormals(std::vector<glm::vec3>* vertices, std::vector<glm::vec3>* normals) {
 	std::vector<glm::vec3>* smooth_normals = new std::vector<glm::vec3>(normals->size());
 	for (int i = 0; i < normals->size(); i++) {
@@ -60,6 +65,7 @@ std::vector<glm::vec3>* Mesh::smoothNormals(std::vector<glm::vec3>* vertices, st
 			smooth_normals->at(i) += normals->at(it - vertices->begin());
 			it++;
 		}
+		smooth_normals->at(i) = glm::normalize(smooth_normals->at(i));
 	}
 	return smooth_normals;
 }
