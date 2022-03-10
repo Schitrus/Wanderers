@@ -29,6 +29,7 @@
     <ClInclude Include="wanderers\include\simulation\object\model\points.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\mesh.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\surface.h" />
     <ClInclude Include="wanderers\include\simulation\object\orbit.h" />
     <ClInclude Include="wanderers\include\simulation\object\orbital_system.h" />
     <ClInclude Include="wanderers\include\simulation\object\planet.h" />
@@ -49,6 +50,7 @@
     <ClCompile Include="wanderers\src\simulation\object\model\points.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\mesh.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\surface.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\orbit.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\orbital_system.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\planet.cpp" />
