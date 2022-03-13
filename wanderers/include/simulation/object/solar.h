@@ -44,8 +44,6 @@ public:
 private:
 	/* Temperature of the sun in Kelvin. */
 	float temperature_;
-	
-	float radius_;
 
 	/* The time in seconds it takes for the solar to make one revolution around its axis. */
 	float angular_velocity_;

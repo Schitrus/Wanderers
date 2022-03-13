@@ -20,13 +20,15 @@ namespace render {
 Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},
                    direction_{ toDirection(yaw_, pitch_) },
                    field_of_view_{ kDefaultFieldOfView }, aspect_ratio_{ kDefaultAspectRatio }, near_{ kDefaultNear }, far_{kDefaultFar},
-                   view_{glm::lookAt(position_, position_ + direction_, kUpVector)}, projection_{glm::perspective(field_of_view_, aspect_ratio_, near_, far_)} {}
+                   view_{glm::lookAt(position_, position_ + direction_, kUpVector)}, projection_{glm::perspective(field_of_view_, aspect_ratio_, near_, far_)},
+                   mode_{kDefaultMode}, focus_id_{0} {}
 
 Camera::Camera(glm::vec3 position, float yaw, float pitch, float roll) 
              : position_{ position }, yaw_{ yaw }, pitch_{ pitch }, roll_{ roll },
                direction_{ toDirection(yaw_, pitch_) },
                field_of_view_{ kDefaultFieldOfView }, aspect_ratio_{ kDefaultAspectRatio }, near_{ kDefaultNear }, far_{ kDefaultFar },
-               view_{ glm::lookAt(position_, position_ + direction_, kUpVector) }, projection_{ glm::perspective(field_of_view_, aspect_ratio_, near_, far_) } {}
+               view_{ glm::lookAt(position_, position_ + direction_, kUpVector) }, projection_{ glm::perspective(field_of_view_, aspect_ratio_, near_, far_) },
+               mode_{ kDefaultMode }, focus_id_{0} {}
 
 glm::vec3 Camera::getPosition() { return position_; }
 
@@ -123,6 +125,27 @@ void Camera::lock() {
 
 void Camera::unlock() {
     camera_mutex_.unlock();
+}
+
+Camera::Mode Camera::getMode() {
+    return mode_;
+}
+
+void Camera::setMode(Camera::Mode mode) {
+    mode_ = mode;
+}
+
+Camera::Mode Camera::cycleMode() {
+    mode_ = static_cast<Camera::Mode>((static_cast<int>(mode_) + 1) % static_cast<int>(Camera::Mode::Count));
+    return mode_;
+}
+
+unsigned int Camera::getFocusId() {
+    return focus_id_;
+}
+
+void Camera::setFocusId(unsigned int focus_id) {
+    focus_id_ = focus_id;
 }
 
 } // namespace render

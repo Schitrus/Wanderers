@@ -12,6 +12,8 @@
 #include "simulation/object/orbital_system.h"
 #include "simulation/object/stars.h"
 
+#include "render/camera.h"
+
 /* STL Includes */
 #include <vector>
 
@@ -23,7 +25,7 @@ namespace simulation {
  */
 class SpaceSimulation {
 public:
-	SpaceSimulation();
+	SpaceSimulation(render::Camera& camera);
 
 	~SpaceSimulation();
 
@@ -53,6 +55,8 @@ public:
 private:
 	std::vector<object::OrbitalSystem*> solar_systems_;
 	std::vector<object::Stars*> group_of_stars_;
+
+	render::Camera& camera_;
 
 	bool is_paused_;
 

@@ -11,8 +11,8 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : orbitee_{orbitee},
-                                                            orbits_{} {}
+	OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : AstronomicalObject{0}, orbitee_ { orbitee },
+                                                                orbits_{} {}
 
 AstronomicalObject* OrbitalSystem::getOrbitee() {
 	return orbitee_;

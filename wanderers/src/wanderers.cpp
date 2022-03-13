@@ -89,7 +89,8 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{};
+	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 	std::uniform_real_distribution<float> size(1.0f, 2.0f);
@@ -100,7 +101,6 @@ void run() {
 	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
 	shader.link();
 	
-	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
 	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller

@@ -20,9 +20,9 @@ namespace object {
  * AstronomicalObject Constructor:
  * - Set surface to as the Icosahedron.
  */
-AstronomicalObject::AstronomicalObject() : AstronomicalObject{ model::getIcosahedron() } {}
+AstronomicalObject::AstronomicalObject(float radius) : AstronomicalObject{ model::getIcosahedron(), radius } {}
 
-AstronomicalObject::AstronomicalObject(model::Mesh* surface) : surface_{surface} {}
+AstronomicalObject::AstronomicalObject(model::Mesh* surface, float radius) : surface_{ surface }, radius_{ radius } {}
 
 std::vector<glm::vec3>* AstronomicalObject::getSurface() {
 	return surface_->getVertices();
@@ -30,6 +30,10 @@ std::vector<glm::vec3>* AstronomicalObject::getSurface() {
 
 void AstronomicalObject::bind() { surface_->bind(); }
 void AstronomicalObject::unbind() { surface_->unbind(); }
+
+float AstronomicalObject::getRadius() {
+	return radius_;
+}
 
 } // namespace object
 } // namespace simulation

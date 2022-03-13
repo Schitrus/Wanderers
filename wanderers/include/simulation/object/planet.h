@@ -44,8 +44,6 @@ public:
 private:
 	glm::vec3 surface_color_;
 
-	float radius_;
-
 	/* The time in seconds it takes for the planet to make one revolution around its axis. */
 	float angular_velocity_;
 	glm::vec3 rotational_axis_;

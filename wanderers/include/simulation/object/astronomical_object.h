@@ -28,9 +28,9 @@ namespace object {
  */
 class AstronomicalObject {
 public:
-	AstronomicalObject();
+	AstronomicalObject(float radius);
 
-	AstronomicalObject(model::Mesh* surface);
+	AstronomicalObject(model::Mesh* surface, float radius);
 
 	/* Gets the set model for the astronomical object. */
 	virtual std::vector<glm::vec3>* getSurface();
@@ -42,9 +42,17 @@ public:
 	void bind();
 	void unbind();
 
+	float getRadius();
+
+protected:
+
+	float radius_;
+
 private:
 	/* Model of the astronomical object. */
 	model::Mesh* surface_;
+
+	
 };
 
 } // namespace object

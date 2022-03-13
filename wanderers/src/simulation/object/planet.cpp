@@ -17,27 +17,24 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-Planet::Planet() : AstronomicalObject{model::getIcosahedron()},
+Planet::Planet() : AstronomicalObject{model::getIcosahedron(), kDefaultRadius },
 	               surface_color_{ kDefaultSurfaceColor },
-				   radius_{ kDefaultRadius },
 				   angular_velocity_{ kDefaultAngularVelocity },
 				   rotational_axis_{ glm::normalize(kDefaultRotationalAxis) },
 				   rotational_angle_{ kDefaultStartingRotationalAngle } {}
 
 Planet::Planet(glm::vec3 surface_color, float radius,
 	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-	           : AstronomicalObject{ model::getIcosahedron() },
+	           : AstronomicalObject{ model::getIcosahedron(), radius },
 	             surface_color_{ surface_color },
-				 radius_{ radius },
 				 angular_velocity_{ angular_velocity },
 				 rotational_axis_{ glm::normalize(rotational_axis) },
 				 rotational_angle_{ rotational_angle } {}
 
 Planet::Planet(model::Mesh* surface, glm::vec3 surface_color, float radius,
 	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-	           : AstronomicalObject{ surface },
+	           : AstronomicalObject{ surface, radius },
 	             surface_color_{ surface_color },
-	             radius_{ radius },
 	             angular_velocity_{ angular_velocity },
 	             rotational_axis_{ glm::normalize(rotational_axis) },
 	             rotational_angle_{ rotational_angle } {}

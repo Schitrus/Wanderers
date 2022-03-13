@@ -17,27 +17,24 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-Solar::Solar() : AstronomicalObject{ model::getIcosahedron() },
+Solar::Solar() : AstronomicalObject{ model::getIcosahedron(), kDefaultRadius },
                  temperature_{ kDefaultTemperature }, 
-                 radius_{ kDefaultRadius },
                  angular_velocity_{ kDefaultAngularVelocity },
                  rotational_axis_{ kDefaultRotationalAxis },
                  rotational_angle_{ kDefaultStartingRotationalAngle } {}
 
 Solar::Solar(float temperature, float radius,
              float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-             : AstronomicalObject{ model::getIcosahedron() },
+             : AstronomicalObject{ model::getIcosahedron(), radius },
                temperature_{ temperature },
-               radius_{ radius },
                angular_velocity_{ angular_velocity },
                rotational_axis_{ rotational_axis },
                rotational_angle_{ rotational_angle } {}
 
 Solar::Solar(model::Mesh* surface, float temperature, float radius,
              float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-             : AstronomicalObject{ surface },
+             : AstronomicalObject{ surface, radius },
                temperature_{ temperature },
-               radius_{ radius },
                angular_velocity_{ angular_velocity },
                rotational_axis_{ rotational_axis },
                rotational_angle_{ rotational_angle } {}

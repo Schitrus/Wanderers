@@ -59,6 +59,20 @@ public:
 	/* Enables camera from changing. */
 	void unlock();
 
+	enum class Mode {
+		Free, Orbital, Rotational, Count
+	};
+
+	Mode getMode();
+
+	void setMode(Mode mode);
+
+	Mode cycleMode();
+
+	unsigned int getFocusId();
+
+	void setFocusId(unsigned int focus_id);
+
 private:
 	/* The position of the camera in world space. */
 	glm::vec3 position_;
@@ -78,6 +92,9 @@ private:
 	glm::mat4 view_;
 	glm::mat4 projection_;
 
+	Mode mode_;
+	unsigned int focus_id_;
+
 	std::mutex camera_mutex_;
 
 	static constexpr glm::vec3 kDefaultStartingPosition{ 0.0f, 0.0f, 0.0f};
@@ -88,6 +105,8 @@ private:
 	static constexpr float kDefaultAspectRatio{ 1.0f };
 	static constexpr float kDefaultNear{ 0.01f };
 	static constexpr float kDefaultFar{ 1000.0f };
+
+	static constexpr Mode kDefaultMode{ Mode::Free };
 
 	static constexpr glm::vec3 kUpVector{ 0.0f, 1.0f, 0.0f };
 

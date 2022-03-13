@@ -151,6 +151,12 @@ void Controller::enactKeyTrigger(int key, double seconds) {
 	case GLFW_KEY_SPACE:
 		simulation_.isPaused() ? simulation_.unpause() : simulation_.pause();
 		break;
+	case GLFW_KEY_V:
+		camera_.cycleMode();
+		break;
+	case GLFW_KEY_TAB:
+		camera_.setFocusId(camera_.getFocusId() + 1);
+		break;
 	}
 }
 

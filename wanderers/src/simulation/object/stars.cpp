@@ -24,7 +24,7 @@ namespace object {
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
-Stars::Stars(int number_of_stars, float temperature, float size) : AstronomicalObject{ new model::Points{generateStars(number_of_stars)} },
+Stars::Stars(int number_of_stars, float temperature, float size) : AstronomicalObject{ new model::Points{generateStars(number_of_stars)}, 0 },
                                                                    temperature_{ temperature }, size_{ size } {}
 
 // TODO: Move generation of stars
