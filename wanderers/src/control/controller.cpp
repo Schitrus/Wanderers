@@ -155,7 +155,7 @@ void Controller::enactKeyTrigger(int key, double seconds) {
 		camera_.cycleMode();
 		break;
 	case GLFW_KEY_TAB:
-		camera_.setFocusId(camera_.getFocusId() + 1);
+		camera_.setFocusId((camera_.getFocusId() + 1) % simulation_.getSize(simulation_.getSolarSystems().at(0)));
 		break;
 	}
 }

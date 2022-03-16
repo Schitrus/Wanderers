@@ -37,7 +37,7 @@ std::vector<object::OrbitalSystem*> SpaceSimulation::getSolarSystems() { return 
 
 std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() { return group_of_stars_; }
 
-unsigned int getSize(object::AstronomicalObject* parent) {
+unsigned int SpaceSimulation::getSize(object::AstronomicalObject* parent) {
 	unsigned int size{ 1 };
 
 	const std::type_info& parent_type{ typeid(*parent) };
@@ -49,7 +49,7 @@ unsigned int getSize(object::AstronomicalObject* parent) {
 	return size;
 }
 
-object::AstronomicalObject* getChildObject(object::AstronomicalObject* parent, unsigned int child_id) {
+object::AstronomicalObject* SpaceSimulation::getChildObject(object::AstronomicalObject* parent, unsigned int child_id) {
 	object::AstronomicalObject* object{parent};
 	const std::type_info& parent_type{ typeid(*parent) };
 	if (parent_type == typeid(object::OrbitalSystem)) {
@@ -72,7 +72,7 @@ object::AstronomicalObject* getChildObject(object::AstronomicalObject* parent, u
 	return object;
 }
 
-glm::mat4 getOrbitMatrix(object::AstronomicalObject* parent, unsigned int child_id) {
+glm::mat4 SpaceSimulation::getOrbitMatrix(object::AstronomicalObject* parent, unsigned int child_id) {
 	glm::mat4 matrix{1.0f};
 	const std::type_info& parent_type{ typeid(*parent) };
 	if (parent_type == typeid(object::OrbitalSystem)) {

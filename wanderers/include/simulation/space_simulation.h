@@ -52,6 +52,12 @@ public:
 	void setSpeed(double simulation_speed);
 	double getSpeed();
 
+	unsigned int getSize(object::AstronomicalObject* parent);
+
+	object::AstronomicalObject* getChildObject(object::AstronomicalObject* parent, unsigned int child_id);
+
+	glm::mat4 getOrbitMatrix(object::AstronomicalObject* parent, unsigned int child_id);
+
 private:
 	std::vector<object::OrbitalSystem*> solar_systems_;
 	std::vector<object::Stars*> group_of_stars_;
