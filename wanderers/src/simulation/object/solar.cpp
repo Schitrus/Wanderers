@@ -70,9 +70,19 @@ glm::vec3 Solar::getColor() {
  *   - Rotate the solar around it's axis.
  */
 glm::mat4 Solar::getSolarMatrix() {
-    glm::mat4 solar_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_)
+    glm::mat4 solar_matrix = getRotationalMatrix()
                            * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ radius_ });
     return solar_matrix;
+}
+
+/*
+ * Solar getRotationalMatrix:
+ * - Create matrix:
+ *   - Rotate the solar around it's axis.
+ */
+glm::mat4 Solar::getRotationalMatrix() {
+    glm::mat4 rotational_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_);
+    return rotational_matrix;
 }
 
 /*
@@ -82,6 +92,10 @@ glm::mat4 Solar::getSolarMatrix() {
 void Solar::elapseTime(double seconds) {
     rotational_angle_ += angular_velocity_ * seconds;
     rotational_angle_ = fmod(rotational_angle_, 360.0f);
+}
+
+glm::mat4 Solar::getMatrix() {
+    return getRotationalMatrix();
 }
 
 } // namespace object

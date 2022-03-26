@@ -178,6 +178,12 @@ void Controller::enactKeyPress(int key, double seconds) {
 	case GLFW_KEY_D:
 		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 1.0f, 0.0f, 0.0f });
 		break;
+	case GLFW_KEY_E:
+		camera_.turnRoll(static_cast<float>(90.0 * seconds));
+		break;
+	case GLFW_KEY_Q:
+		camera_.turnRoll(static_cast<float>(-90.0 * seconds));
+		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 1.0f, 0.0f });
 		break;

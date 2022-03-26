@@ -19,13 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="wanderers\include\control\camera_control.h" />
     <ClInclude Include="wanderers\include\control\controller.h" />
-    <ClInclude Include="wanderers\include\render\camera.h" />
+    <ClInclude Include="wanderers\include\render\camera_view.h" />
     <ClInclude Include="wanderers\include\render\shader\shader.h" />
     <ClInclude Include="wanderers\include\render\shader\shader_program.h" />
     <ClInclude Include="wanderers\include\render\space_renderer.h" />
     <ClInclude Include="wanderers\include\simulation\generator\solar_system_generator.h" />
     <ClInclude Include="wanderers\include\simulation\object\astronomical_object.h" />
+    <ClInclude Include="wanderers\include\simulation\object\camera_object.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\points.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\mesh.h" />
@@ -39,14 +41,16 @@
     <ClInclude Include="wanderers\include\wanderers.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="wanderers\src\control\camera_control.cpp" />
     <ClCompile Include="wanderers\main.cpp" />
     <ClCompile Include="wanderers\src\control\controller.cpp" />
-    <ClCompile Include="wanderers\src\render\camera.cpp" />
+    <ClCompile Include="wanderers\src\render\camera_view.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader_program.cpp" />
     <ClCompile Include="wanderers\src\render\space_renderer.cpp" />
     <ClCompile Include="wanderers\src\simulation\generator\solar_system_generator.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\camera_object.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\points.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\mesh.cpp" />
@@ -58,6 +62,9 @@
     <ClCompile Include="wanderers\src\simulation\object\stars.cpp" />
     <ClCompile Include="wanderers\src\simulation\space_simulation.cpp" />
     <ClCompile Include="wanderers\src\wanderers.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="doc\diagram.uml" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

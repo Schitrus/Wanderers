@@ -1,3 +1,4 @@
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
  * Implementation of setup Wanderers program and running it.                 *
@@ -89,7 +90,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
+	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, glm::vec3{0.0f, 0.0f,-1.0f} };
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);

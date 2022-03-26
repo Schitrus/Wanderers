@@ -48,9 +48,19 @@ glm::vec3 Planet::getColor() { return surface_color_; }
  *   - Rotate the planet around it's axis.
  */
 glm::mat4 Planet::getPlanetMatrix() {
-	glm::mat4 planet_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_)
+	glm::mat4 planet_matrix = getRotationalMatrix()
 		                    * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ radius_ });
 	return planet_matrix;
+}
+
+/*
+ * Planet getRotationalMatrix:
+ * - Create matrix:
+ *   - Rotate the solar around it's axis.
+ */
+glm::mat4 Planet::getRotationalMatrix() {
+	glm::mat4 rotational_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_);
+	return rotational_matrix;
 }
 
 /*
@@ -60,6 +70,10 @@ glm::mat4 Planet::getPlanetMatrix() {
 void Planet::elapseTime(double seconds) {
 	rotational_angle_ += angular_velocity_ * seconds;
 	rotational_angle_ = fmod(rotational_angle_, 360.0f);
+}
+
+glm::mat4 Planet::getMatrix() {
+	return getRotationalMatrix();
 }
 
 } // namespace object

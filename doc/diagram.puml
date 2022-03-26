@@ -1,0 +1,107 @@
+@startuml
+
+entity main << (M,#AAAAFF) >>
+
+package wanderer{
+
+  entity run << (F,#FF7700) >>
+
+  package simulation{
+    class SpaceSimulation
+    
+    package object{
+      abstract AstronomicalObject
+      class CameraObject
+      class Orbit
+      class OrbitalSystem
+      class Planet
+      class Solar
+      class Stars
+      
+      package model{
+        abstract Mesh
+        class Surface
+        class Points
+        class Icosahedron
+      }
+    }
+
+    package generator{
+      class SolarSystemGenerator
+      class StarSkyGenerator
+    }
+  }
+
+  package render{
+    class SpaceRenderer
+    
+    class Camera
+    class CameraView
+    
+    package shader{
+      class ShaderProgram
+      class Shader
+    }
+  }
+
+  package control{
+    class Controller
+    class CameraController
+  }
+}
+
+main --> run
+
+run --> Camera
+run --> SpaceSimulation
+run --> SpaceRenderer
+run --> Controller
+
+CameraController --> Camera
+Controller --> CameraController
+Controller --> SpaceSimulation
+
+Camera --|> CameraObject
+SpaceRenderer --> ShaderProgram
+SpaceRenderer --> Camera
+Camera --|> CameraView
+ShaderProgram --|> Shader
+
+SpaceRenderer ..> OrbitalSystem
+SpaceRenderer ..> Orbit
+SpaceRenderer ..> Stars
+SpaceRenderer ..> Solar
+SpaceRenderer ..> Planet
+SpaceRenderer ..> AstronomicalObject
+
+Surface --|> Icosahedron
+Points --|> Mesh
+Icosahedron --|> Mesh
+
+SolarSystemGenerator ..> Solar
+SolarSystemGenerator ..> Planet
+SolarSystemGenerator ..> Orbit
+SolarSystemGenerator ..> OrbitalSystem
+StarSkyGenerator ..> Stars
+
+SolarSystemGenerator ..> Surface
+StarSkyGenerator ..> Points
+
+AstronomicalObject --> Mesh
+Stars --|> AstronomicalObject
+Solar --|> AstronomicalObject
+Planet --|> AstronomicalObject
+OrbitalSystem --|> AstronomicalObject
+Orbit --> AstronomicalObject
+OrbitalSystem --> Orbit
+OrbitalSystem --> AstronomicalObject
+
+SpaceSimulation ..> SolarSystemGenerator
+SpaceSimulation ..> StarSkyGenerator
+SpaceSimulation --> CameraObject
+SpaceSimulation --> OrbitalSystem
+SpaceSimulation ..> AstronomicalObject
+SpaceSimulation --> Stars
+SpaceSimulation ..> Orbit
+
+@enduml

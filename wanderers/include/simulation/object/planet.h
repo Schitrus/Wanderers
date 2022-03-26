@@ -38,8 +38,13 @@ public:
 	/* Returns the matrix describing the planets current rotation and size. */
 	glm::mat4 getPlanetMatrix();
 
+	/* Returns the matrix describing the planets current rotation. */
+	glm::mat4 getRotationalMatrix();;
+
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
+
+	glm::mat4 getMatrix();
 
 private:
 	glm::vec3 surface_color_;

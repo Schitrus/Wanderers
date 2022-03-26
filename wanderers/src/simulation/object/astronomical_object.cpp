@@ -35,6 +35,10 @@ float AstronomicalObject::getRadius() {
 	return radius_;
 }
 
+glm::mat4 AstronomicalObject::getMatrix() {
+	return glm::mat4{1.0f};
+}
+
 } // namespace object
 } // namespace simulation
 } // namespace wanderers

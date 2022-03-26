@@ -38,8 +38,13 @@ public:
 	/* Returns the matrix describing the solar current rotation and size. */
 	glm::mat4 getSolarMatrix();
 
+	/* Returns the matrix describing the solar current rotation. */
+	glm::mat4 getRotationalMatrix();
+
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
+
+	glm::mat4 getMatrix();
 
 private:
 	/* Temperature of the sun in Kelvin. */

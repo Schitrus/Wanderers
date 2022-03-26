@@ -44,6 +44,8 @@ public:
 
 	float getRadius();
 
+	virtual glm::mat4 getMatrix();
+
 protected:
 
 	float radius_;
