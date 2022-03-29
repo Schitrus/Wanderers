@@ -31,7 +31,7 @@ namespace render {
  */
 class SpaceRenderer {
 public:
-	SpaceRenderer(render::shader::ShaderProgram& shader, render::Camera& camera);
+	SpaceRenderer(render::shader::ShaderProgram* shader, render::Camera* camera);
 
 	/* Does some pre render operations. Has to be done befor each render iteration.*/
 	void preRender();
@@ -60,9 +60,9 @@ private:
 	int render_width_{};
 	int render_height_{};
 
-	render::shader::ShaderProgram& shader_;
+	render::shader::ShaderProgram* shader_;
 
-	render::Camera& camera_;
+	render::Camera* camera_;
 
 	glm::mat4 projection_;
 	glm::mat4 view_;

@@ -1,41 +1,30 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * This class controls the Camera.                                           *
+ * This class controls the Simulation.                                           *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_CONTROL_CAMERA_CONTROL_H_
-#define WANDERERS_CONTROL_CAMERA_CONTROL_H_
+#ifndef WANDERERS_CONTROL_SIMULATION_CONTROL_H_
+#define WANDERERS_CONTROL_SIMULATION_CONTROL_H_
 
 /* Internal Includes */
 #include "control/control_interface.h"
-#include "render/camera.h"
+#include "simulation/space_simulation.h"
 
 namespace wanderers {
 namespace control {
 
 /*
- * Class for controlling the Camera.
+ * Class for controlling the simulation.
  */
-class CameraControl : public ControlInterface {
+class SimulationControl : public ControlInterface {
 public:
 	enum class Mode {
 		Free, Orbital, Rotational, Count
 	};
 
-	CameraControl(GLFWwindow* window, render::Camera* camera);
-	CameraControl(GLFWwindow* window, render::Camera* camera, Mode camera_mode);
-
-	Mode getMode();
-
-	void setMode(Mode mode);
-
-	Mode cycleMode();
-
-	unsigned int getFocusId();
-
-	void setFocusId(unsigned int focus_id);
+	SimulationControl(GLFWwindow* window, simulation::SpaceSimulation* simulation);
 
 	/* Interpret key changes and change state of the program. */
 	void enactKeyTrigger(int key, double seconds);
@@ -47,16 +36,11 @@ public:
 	void enactScrollOffset(glm::vec2 offset, double seconds);
 
 protected:
-	render::Camera* camera_;
+	simulation::SpaceSimulation* simulation_;
 
-	Mode mode_;
-	unsigned int focus_id_;
-
-private:
-	static constexpr Mode kDefaultMode{ Mode::Free };
 };
 
 } // namespace control
 } // namespace wanderers
 
-#endif // WANDERERS_CONTROL_CAMERA_CONTROL_H_
+#endif // WANDERERS_CONTROL_SIMULATION_CONTROL_H_

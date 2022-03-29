@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * This class represents the Camera as an object within the simulation.      *
+ * This class represents the Camera as an object.                            *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -24,28 +24,28 @@ public:
 
 	CameraObject(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
-	glm::vec3 getPosition();
-	glm::vec3 getDirection();
-	glm::vec3 getUp();
-	glm::vec3 getRight();
+	virtual glm::vec3 getPosition();
+	virtual glm::vec3 getDirection();
+	virtual glm::vec3 getUp();
+	virtual glm::vec3 getRight();
 
-	void setPosition(glm::vec3 position);
-	void setDirection(glm::vec3 direction);
-	void setUp(glm::vec3 up);
-	void setRight(glm::vec3 right);
+	virtual void setPosition(glm::vec3 position);
+	virtual void setDirection(glm::vec3 direction);
+	virtual void setUp(glm::vec3 up);
+	virtual void setRight(glm::vec3 right);
 
 	/* Translates the camera relative to it's position. */
-	void translate(glm::vec3 movement);
+	virtual void translate(glm::vec3 movement);
 
 	/* Moves the camera relative to it's position and direction. */
-	void move(glm::vec3 movement);
+	virtual void move(glm::vec3 movement);
 
 	/* Changes the direction of the camera by rotating around the y axis. */
-	void turnYaw(float yaw); 
+	virtual void turnYaw(float yaw); 
 	/* Changes the direction of the camera by rotating around the x axis. */
-	void turnPitch(float pitch);
+	virtual void turnPitch(float pitch);
 	/* Changes the direction of the camera by rotating around the z axis. */
-	void turnRoll(float roll);
+	virtual void turnRoll(float roll);
 
 protected:
 	/* The position of the camera in world space. */

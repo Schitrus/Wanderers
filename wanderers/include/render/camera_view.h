@@ -23,24 +23,18 @@ public:
 
 	CameraView(float field_of_view, float aspect_ratio, float near, float far);
 
-	/* Returns matrix describing the cameras position and direction in world space. */
-	glm::mat4 getViewMatrix();
+	virtual float getFieldOfView();
+	virtual float getAspectRatio();
+	virtual float getNear();
+	virtual float getFar();
 
-	/* Returns matrix describing the projection of the camera. NOTE: perspective projection. */
-	glm::mat4 getProjectionMatrix();
+	virtual void setFieldOfView(float field_of_view);
+	virtual void setAspectRatio(float aspect_ratio);
+	virtual void setAspectRatio(int width, int height);
+	virtual void setNear(float near);
+	virtual void setFar(float far);
 
-	float getFieldOfView();
-	float getAspectRatio();
-	float getNear();
-	float getFar();
-
-	void setFieldOfView(float field_of_view);
-	void setAspectRatio(float aspect_ratio);
-	void setAspectRatio(int width, int height);
-	void setNear(float near);
-	void setFar(float far);
-
-private:
+protected:
 
 	float field_of_view_;
 	float aspect_ratio_;
@@ -50,9 +44,7 @@ private:
 	/* Describes the plane furthest away from the camera where objects are clipped. */
 	float far_;
 
-	glm::mat4 view_;
-	glm::mat4 projection_;
-
+private:
 	static constexpr float kDefaultFieldOfView{ 60.0f };
 	static constexpr float kDefaultAspectRatio{ 1.0f };
 	static constexpr float kDefaultNear{ 0.01f };

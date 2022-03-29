@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClInclude Include="wanderers\include\control\camera_control.h" />
     <ClInclude Include="wanderers\include\control\controller.h" />
+    <ClInclude Include="wanderers\include\control\control_interface.h" />
+    <ClInclude Include="wanderers\include\control\simulation_control.h" />
+    <ClInclude Include="wanderers\include\render\camera.h" />
     <ClInclude Include="wanderers\include\render\camera_view.h" />
     <ClInclude Include="wanderers\include\render\shader\shader.h" />
     <ClInclude Include="wanderers\include\render\shader\shader_program.h" />
@@ -44,6 +47,9 @@
     <ClCompile Include="wanderers\src\control\camera_control.cpp" />
     <ClCompile Include="wanderers\main.cpp" />
     <ClCompile Include="wanderers\src\control\controller.cpp" />
+    <ClCompile Include="wanderers\src\control\control_interface.cpp" />
+    <ClCompile Include="wanderers\src\control\simulation_control.cpp" />
+    <ClCompile Include="wanderers\src\render\camera.cpp" />
     <ClCompile Include="wanderers\src\render\camera_view.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader_program.cpp" />

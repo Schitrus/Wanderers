@@ -28,9 +28,6 @@
 
 namespace wanderers {
 
-/* Random generator with seed set as the time of execution. */
-static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
-
 /*  
  *  setupWindow:
  *  - Create window.
@@ -90,22 +87,17 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, glm::vec3{0.0f, 0.0f,-1.0f} };
+	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 16.0f, 0.0f}, glm::vec3{0.0f, 0.0f,-1.0f}, glm::vec3{0.0f, 1.0f, 0.0f}, 60.0f, 1.0f, 0.01f, 1000.0f } };
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
-	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
-	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
-	std::uniform_real_distribution<float> size(1.0f, 2.0f);
-	for(int i = 0; i < 20; i++)
-		space_simulation->addStars(new simulation::object::Stars{100, temperature(randomizer), size(randomizer)});
 	
 	// Setup render engine.
-	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
-	shader.link();
+	render::shader::ShaderProgram* shader{ new render::shader::ShaderProgram{"shaders/vertex.glsl", "shaders/fragment.glsl"} };
+	shader->link();
 	
 	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
-	control::Controller::initController(camera, *space_simulation);
+	control::Controller::initController(camera, space_simulation);
 	
 	// Render loop until exit is requested.
 	renderLoop(space_simulation, space_renderer);

@@ -13,20 +13,32 @@
 /* Internal Includes */
 #include "simulation/object/solar.h"
 #include "simulation/object/planet.h"
+#include "simulation/generator/solar_system_generator.h"
 
 /* STL Includes */
 #include <typeinfo>
+#include <random>
+#include <chrono>
 
 #include <iostream>
 
 namespace wanderers {
 namespace simulation {
 
-SpaceSimulation::SpaceSimulation(render::Camera& camera) : solar_systems_{},
+/* Random generator with seed set as the time of execution. */
+static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
+
+SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_systems_{},
                                      group_of_stars_{},
-	                                 camera_{camera},
+	                                 camera_object_{camera_object},
 	                                 is_paused_{false},
-	                                 simulation_speed_{1.0f} {}
+	                                 simulation_speed_{1.0f} {
+	addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
+	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
+	std::uniform_real_distribution<float> size(1.0f, 2.0f);
+	for (int i = 0; i < 20; i++)
+		addStars(new simulation::object::Stars{ 100, temperature(randomizer), size(randomizer) });
+}
 
 
 void SpaceSimulation::addSolarSystem(object::OrbitalSystem* solar_system) { solar_systems_.push_back(solar_system); }
@@ -110,17 +122,17 @@ void SpaceSimulation::elapseTime(double seconds) {
 		for(object::OrbitalSystem* solar_system : solar_systems_)
 		solar_system->elapseTime(seconds * simulation_speed_);
 	}
-	if (camera_.getMode() == render::Camera::Mode::Orbital) {
-		glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_.getFocusId()) };
-		float radius{ getChildObject(solar_systems_.at(0), camera_.getFocusId())->getRadius() };
-		camera_.setPosition(orbit_matrix * glm::vec4{ radius, 0.0f, 0.0f, 1.0f });
-	} else if (camera_.getMode() == render::Camera::Mode::Rotational) {
-		glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_.getFocusId()) };
-		glm::mat4 rotation_matrix{ getRotationalMatrix(solar_systems_.at(0), camera_.getFocusId()) };
-		float radius{ getChildObject(solar_systems_.at(0), camera_.getFocusId())->getRadius() };
-		camera_.setPosition(orbit_matrix * rotation_matrix * glm::vec4{ 0.8 * radius, 0.0f, 0.0f, 1.0f });
-		camera_.setRelativeDirection(rotation_matrix * glm::vec4{ 1.0f, 0.0f, 0.0f, 0.0f });
-	}
+	//if (camera_.getMode() == render::Camera::Mode::Orbital) {
+	//	glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_.getFocusId()) };
+	//	float radius{ getChildObject(solar_systems_.at(0), camera_.getFocusId())->getRadius() };
+	//	camera_.setPosition(orbit_matrix * glm::vec4{ radius, 0.0f, 0.0f, 1.0f });
+	//} else if (camera_.getMode() == render::Camera::Mode::Rotational) {
+	//	glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_.getFocusId()) };
+	//	glm::mat4 rotation_matrix{ getRotationalMatrix(solar_systems_.at(0), camera_.getFocusId()) };
+	//	float radius{ getChildObject(solar_systems_.at(0), camera_.getFocusId())->getRadius() };
+	//	camera_.setPosition(orbit_matrix * rotation_matrix * glm::vec4{ 0.8 * radius, 0.0f, 0.0f, 1.0f });
+	//	camera_.setRelativeDirection(rotation_matrix * glm::vec4{ 1.0f, 0.0f, 0.0f, 0.0f });
+	//}
 }
 
 void SpaceSimulation::pause() {

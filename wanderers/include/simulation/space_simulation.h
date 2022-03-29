@@ -25,7 +25,7 @@ namespace simulation {
  */
 class SpaceSimulation {
 public:
-	SpaceSimulation(render::Camera& camera);
+	SpaceSimulation(object::CameraObject* camera_object);
 
 	~SpaceSimulation();
 
@@ -64,7 +64,7 @@ private:
 	std::vector<object::OrbitalSystem*> solar_systems_;
 	std::vector<object::Stars*> group_of_stars_;
 
-	render::Camera& camera_;
+	object::CameraObject* camera_object_;
 
 	bool is_paused_;
 
