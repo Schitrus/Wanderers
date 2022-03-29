@@ -15,6 +15,7 @@
 
 /* STL Includes */
 #include <algorithm>
+#include <mutex>
 
 #include <iostream>
 
@@ -43,6 +44,16 @@ glm::mat4 Camera::getViewMatrix() {
 glm::mat4 Camera::getProjectionMatrix() {
     projection_ = glm::perspective(glm::radians(field_of_view_), aspect_ratio_, near_, far_);
     return projection_;
+}
+
+void Camera::lock() {
+    camera_object_mutex_.lock();
+    camera_view_mutex_.lock();
+}
+
+void Camera::unlock() {
+    camera_view_mutex_.unlock();
+    camera_object_mutex_.unlock();
 }
 
 } // namespace render

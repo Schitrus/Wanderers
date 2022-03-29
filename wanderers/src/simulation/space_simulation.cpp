@@ -41,13 +41,21 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 }
 
 
-void SpaceSimulation::addSolarSystem(object::OrbitalSystem* solar_system) { solar_systems_.push_back(solar_system); }
+void SpaceSimulation::addSolarSystem(object::OrbitalSystem* solar_system) {
+	solar_systems_.push_back(solar_system); 
+}
 
-void SpaceSimulation::addStars(object::Stars* stars) { group_of_stars_.push_back(stars); }
+void SpaceSimulation::addStars(object::Stars* stars) { 
+	group_of_stars_.push_back(stars); 
+}
 
-std::vector<object::OrbitalSystem*> SpaceSimulation::getSolarSystems() { return solar_systems_; }
+std::vector<object::OrbitalSystem*> SpaceSimulation::getSolarSystems() {
+	return solar_systems_; 
+}
 
-std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() { return group_of_stars_; }
+std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() {
+	return group_of_stars_; 
+}
 
 unsigned int SpaceSimulation::getSize(object::AstronomicalObject* parent) {
 	unsigned int size{ 1 };

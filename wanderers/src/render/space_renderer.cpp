@@ -32,11 +32,10 @@ SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram* shader, render::Came
  */
 void SpaceRenderer::preRender() {
 	
-	
 	glfwGetFramebufferSize(glfwGetCurrentContext(), &render_width_, &render_height_);
 	camera_->setAspectRatio(render_width_, render_height_);
-
-	//camera_.lock();
+	
+	camera_->lock();
 
 	view_ = camera_->getViewMatrix();
 	projection_ = camera_->getProjectionMatrix();
@@ -56,7 +55,8 @@ void SpaceRenderer::preRender() {
  * - Poll all queued events.
  */
 void SpaceRenderer::postRender() {
-	//camera_.unlock();
+	camera_->unlock();
+
 	glDisable(GL_DEPTH_TEST);
 
 	glfwSwapBuffers(glfwGetCurrentContext());
@@ -69,10 +69,14 @@ void SpaceRenderer::postRender() {
  * - Render the stars.
  */
 void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
+	preRender();
+
 	for (simulation::object::Stars* stars : space_simulation->getGroupOfStars())
 		render(stars);
 	for (simulation::object::OrbitalSystem* solar_system : space_simulation->getSolarSystems())
 		render(solar_system);
+
+	postRender();
 }
 
 /*

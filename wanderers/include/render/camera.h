@@ -32,11 +32,16 @@ public:
 
 	/* Returns matrix describing the projection of the camera. NOTE: perspective projection. */
 	glm::mat4 getProjectionMatrix();
+
+	/* Disable camera from changing. */
+	void lock();
+
+	/* Enables camera from changing. */
+	void unlock();
 protected:
 
 	glm::mat4 view_;
 	glm::mat4 projection_;
-
 };
 
 } // namespace render

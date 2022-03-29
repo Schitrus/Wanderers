@@ -64,10 +64,10 @@ void CameraControl::enactKeyRelease(int key, double seconds) {
 void CameraControl::enactKeyPress(int key, double seconds) {
 	switch (key) {
 	case GLFW_KEY_W:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f,-1.0f });
+		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f, 1.0f });
 		break;
 	case GLFW_KEY_S:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f, 1.0f });
+		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f,-1.0f });
 		break;
 	case GLFW_KEY_A:
 		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ -1.0f, 0.0f, 0.0f });

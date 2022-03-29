@@ -11,6 +11,8 @@
 /* External Includes */
 #include "glm/glm.hpp"
 
+#include <mutex>
+
 namespace wanderers {
 namespace render {
 
@@ -23,16 +25,16 @@ public:
 
 	CameraView(float field_of_view, float aspect_ratio, float near, float far);
 
-	virtual float getFieldOfView();
-	virtual float getAspectRatio();
-	virtual float getNear();
-	virtual float getFar();
+	float getFieldOfView();
+	float getAspectRatio();
+	float getNear();
+	float getFar();
 
-	virtual void setFieldOfView(float field_of_view);
-	virtual void setAspectRatio(float aspect_ratio);
-	virtual void setAspectRatio(int width, int height);
-	virtual void setNear(float near);
-	virtual void setFar(float far);
+	void setFieldOfView(float field_of_view);
+	void setAspectRatio(float aspect_ratio);
+	void setAspectRatio(int width, int height);
+	void setNear(float near);
+	void setFar(float far);
 
 protected:
 
@@ -43,6 +45,8 @@ protected:
 	float near_;
 	/* Describes the plane furthest away from the camera where objects are clipped. */
 	float far_;
+
+	std::mutex camera_view_mutex_;
 
 private:
 	static constexpr float kDefaultFieldOfView{ 60.0f };

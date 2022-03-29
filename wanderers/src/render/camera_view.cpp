@@ -39,21 +39,26 @@ float CameraView::getFar() {
 }
 
 void CameraView::setFieldOfView(float field_of_view) {
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
     field_of_view_ = field_of_view;
 }
 
 void CameraView::setAspectRatio(float aspect_ratio) {
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
     aspect_ratio_ = aspect_ratio;
 }
 void CameraView::setAspectRatio(int width, int height) {
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
     aspect_ratio_ = static_cast<float>(width) / height;
 }
 
 void CameraView::setNear(float near) {
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
     near_ = near;
 }
 
 void CameraView::setFar(float far) {
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
     far_ = far;
 }
 

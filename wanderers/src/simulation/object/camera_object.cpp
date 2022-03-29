@@ -22,24 +22,34 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-CameraObject::CameraObject() : position_{ kDefaultPosition }, direction_{ kDefaultDirection }, 
-                               up_{ kDefaultUpVector }, right_{glm::cross(direction_, up_)} {}
+CameraObject::CameraObject() : CameraObject{ kDefaultPosition, kDefaultDirection, kDefaultUpVector }  {}
 
 CameraObject::CameraObject(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
                           : position_{ position }, direction_{ glm::normalize(direction) },
                             right_{glm::normalize(glm::cross(direction_, up))}, up_{ glm::cross(right_, direction_) } {}
 
-glm::vec3 CameraObject::getPosition() { return position_; }
-glm::vec3 CameraObject::getDirection() { return direction_; }
-glm::vec3 CameraObject::getUp() { return up_; }
-glm::vec3 CameraObject::getRight() { return right_; }
+glm::vec3 CameraObject::getPosition() { 
+    return position_; 
+}
+glm::vec3 CameraObject::getDirection() { 
+    return direction_;
+}
+glm::vec3 CameraObject::getUp() { 
+    return up_; 
+}
+glm::vec3 CameraObject::getRight() { 
+    return right_; 
+}
+
 
 
 void CameraObject::setPosition(glm::vec3 position) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     position_ = position;
 }
 
 void CameraObject::setDirection(glm::vec3 direction) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     glm::mat4 rotation{ glm::orientation(direction_, glm::normalize(direction)) };
     direction_ = glm::normalize(direction);
     up_ = rotation * glm::vec4{ up_, 0.0f };
@@ -47,12 +57,14 @@ void CameraObject::setDirection(glm::vec3 direction) {
 }
 
 void CameraObject::setUp(glm::vec3 up) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     glm::mat4 rotation{ glm::orientation(up_, glm::normalize(up)) };
     right_ = rotation * glm::vec4{ right_, 0.0f };
     up_ = glm::cross(right_, direction_);
 }
 
 void CameraObject::setRight(glm::vec3 right) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     glm::mat4 rotation{ glm::orientation(right_, glm::normalize(right)) };
     up_ = rotation * glm::vec4{ up_, 0.0f };
     right_ = glm::cross(direction_, up_);
@@ -66,12 +78,14 @@ void CameraObject::setRight(glm::vec3 right) {
  * - Increment the position with the movement in y direction orthogonal to the direction and cameras up direction.
  */
 void CameraObject::move(glm::vec3 movement) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     position_ +=  direction_ * movement.z
               +   up_        * movement.y
               +   right_     * movement.x;
 }
 
 void CameraObject::translate(glm::vec3 translation) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     position_ += translation;
 }
 
@@ -80,6 +94,7 @@ void CameraObject::translate(glm::vec3 translation) {
  * - Increments the yaw in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void CameraObject::turnYaw(float yaw) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     direction_ = glm::rotate(direction_, glm::radians(yaw), up_);
     right_     = glm::rotate(right_, glm::radians(yaw), up_);
 }
@@ -89,6 +104,7 @@ void CameraObject::turnYaw(float yaw) {
  * - Increments the pitch in degrees but don't let it go below -89.0 or above 89.0 .
  */
 void CameraObject::turnPitch(float pitch) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     direction_ = glm::rotate(direction_, glm::radians(pitch), glm::cross(direction_, up_));
     up_        = glm::rotate(up_, glm::radians(pitch), glm::cross(direction_, up_));
 }
@@ -97,6 +113,7 @@ void CameraObject::turnPitch(float pitch) {
  *  - Increments the roll in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void CameraObject::turnRoll(float roll) {
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     up_    = glm::rotate(up_, glm::radians(roll), direction_);
     right_ = glm::rotate(right_, glm::radians(roll), direction_);
 }

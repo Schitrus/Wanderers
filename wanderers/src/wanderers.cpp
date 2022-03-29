@@ -61,9 +61,7 @@ void renderLoop(simulation::SpaceSimulation* simulation, render::SpaceRenderer* 
 
 		simulation->elapseTime(dt);
 
-		renderer->preRender();
 		renderer->render(simulation);
-		renderer->postRender();
 	}
 }
 
@@ -87,7 +85,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 16.0f, 0.0f}, glm::vec3{0.0f, 0.0f,-1.0f}, glm::vec3{0.0f, 1.0f, 0.0f}, 60.0f, 1.0f, 0.01f, 1000.0f } };
+	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 0.0f, 16.0f}, glm::vec3{0.0f, 0.0f,-1.0f}, glm::vec3{0.0f, 1.0f, 0.0f}, 60.0f, 1.0f, 0.01f, 1000.0f } };
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	
 	// Setup render engine.
