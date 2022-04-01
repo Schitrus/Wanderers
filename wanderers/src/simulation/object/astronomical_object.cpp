@@ -14,7 +14,7 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-	
+unsigned int AstronomicalObject::id_counter_{0};
 
 /*
  * AstronomicalObject Constructor:
@@ -22,7 +22,7 @@ namespace object {
  */
 AstronomicalObject::AstronomicalObject(float radius) : AstronomicalObject{ model::getIcosahedron(), radius } {}
 
-AstronomicalObject::AstronomicalObject(model::Mesh* surface, float radius) : surface_{ surface }, radius_{ radius } {}
+AstronomicalObject::AstronomicalObject(model::Mesh* surface, float radius) : id{id_counter_++}, surface_ { surface }, radius_{ radius } {}
 
 std::vector<glm::vec3>* AstronomicalObject::getSurface() {
 	return surface_->getVertices();

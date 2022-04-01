@@ -60,6 +60,22 @@ public:
 
 	glm::mat4 getRotationalMatrix(object::AstronomicalObject* parent, unsigned int child_id);
 
+	enum class CameraMode {
+		Free, Center, Orbital, Rotational, Count
+	};
+
+	CameraMode getCameraMode();
+
+	void setCameraMode(CameraMode mode);
+
+	CameraMode cycleCameraMode();
+
+	unsigned int getCameraFocusId();
+
+	void setCameraFocusId(unsigned int focus_id);
+
+	unsigned int cycleCameraFocusId();
+
 private:
 	std::vector<object::OrbitalSystem*> solar_systems_;
 	std::vector<object::Stars*> group_of_stars_;
@@ -69,6 +85,11 @@ private:
 	bool is_paused_;
 
 	double simulation_speed_;
+
+	CameraMode camera_mode_;
+	unsigned int camera_focus_id_;
+
+	static constexpr CameraMode kDefaultCameraMode{ CameraMode::Free };
 };
 
 } // namespace simulation

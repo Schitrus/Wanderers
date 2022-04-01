@@ -46,6 +46,8 @@ public:
 
 	virtual glm::mat4 getMatrix();
 
+	const unsigned int id;
+
 protected:
 
 	float radius_;
@@ -54,7 +56,7 @@ private:
 	/* Model of the astronomical object. */
 	model::Mesh* surface_;
 
-	
+	static unsigned int id_counter_;
 };
 
 } // namespace object

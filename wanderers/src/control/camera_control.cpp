@@ -21,38 +21,16 @@
 namespace wanderers {
 namespace control {
 
-CameraControl::CameraControl(GLFWwindow* window, render::Camera* camera) : ControlInterface{ window }, camera_{ camera }, mode_{ kDefaultMode }, focus_id_{ 0 } {}
-CameraControl::CameraControl(GLFWwindow* window, render::Camera* camera, Mode mode) : ControlInterface{ window }, camera_ { camera }, mode_{ mode }, focus_id_{ 0 } {}
+CameraControl::CameraControl(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation) : ControlInterface{ window }, camera_{ camera }, simulation_{ simulation } {}
 
-
-CameraControl::Mode CameraControl::getMode() {
-    return mode_;
-}
-
-void CameraControl::setMode(CameraControl::Mode mode) {
-    mode_ = mode;
-}
-
-CameraControl::Mode CameraControl::cycleMode() {
-    mode_ = static_cast<CameraControl::Mode>((static_cast<int>(mode_) + 1) % static_cast<int>(CameraControl::Mode::Count));
-    return mode_;
-}
-
-unsigned int CameraControl::getFocusId() {
-    return focus_id_;
-}
-
-void CameraControl::setFocusId(unsigned int focus_id) {
-    focus_id_ = focus_id;
-}
 
 void CameraControl::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
 	case GLFW_KEY_V:
-		cycleMode();
+		simulation_->cycleCameraMode();
 		break;
 	case GLFW_KEY_TAB:
-		//setFocusId((focus_id_ + 1) % simulation_.getSize(simulation_.getSolarSystems().at(0)));
+		simulation_->cycleCameraFocusId();
 		break;
 	}
 }

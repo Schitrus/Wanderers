@@ -35,7 +35,7 @@ Controller::Controller(GLFWwindow* window, render::Camera* camera, simulation::S
 	glfwSetCursorPosCallback(window_, cursorPositionCallback);
 	glfwSetKeyCallback(window_, keyCallback);
 
-	controls_.push_back(new CameraControl{ window, camera });
+	controls_.push_back(new CameraControl{ window, camera, simulation });
 	controls_.push_back(new SimulationControl{ window, simulation });
 
 	should_stop_ = false;

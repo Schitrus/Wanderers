@@ -11,6 +11,7 @@
 /* Internal Includes */
 #include "control/control_interface.h"
 #include "render/camera.h"
+#include "simulation/space_simulation.h"
 
 namespace wanderers {
 namespace control {
@@ -20,22 +21,8 @@ namespace control {
  */
 class CameraControl : public ControlInterface {
 public:
-	enum class Mode {
-		Free, Orbital, Rotational, Count
-	};
 
-	CameraControl(GLFWwindow* window, render::Camera* camera);
-	CameraControl(GLFWwindow* window, render::Camera* camera, Mode camera_mode);
-
-	Mode getMode();
-
-	void setMode(Mode mode);
-
-	Mode cycleMode();
-
-	unsigned int getFocusId();
-
-	void setFocusId(unsigned int focus_id);
+	CameraControl(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation);
 
 	/* Interpret key changes and change state of the program. */
 	void enactKeyTrigger(int key, double seconds);
@@ -48,12 +35,7 @@ public:
 
 protected:
 	render::Camera* camera_;
-
-	Mode mode_;
-	unsigned int focus_id_;
-
-private:
-	static constexpr Mode kDefaultMode{ Mode::Free };
+	simulation::SpaceSimulation* simulation_;
 };
 
 } // namespace control
