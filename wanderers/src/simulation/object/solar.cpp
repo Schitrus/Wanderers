@@ -17,27 +17,7 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-Solar::Solar() : AstronomicalObject{ model::getIcosahedron(), kDefaultRadius },
-                 temperature_{ kDefaultTemperature }, 
-                 angular_velocity_{ kDefaultAngularVelocity },
-                 rotational_axis_{ kDefaultRotationalAxis },
-                 rotational_angle_{ kDefaultStartingRotationalAngle } {}
-
-Solar::Solar(float temperature, float radius,
-             float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-             : AstronomicalObject{ model::getIcosahedron(), radius },
-               temperature_{ temperature },
-               angular_velocity_{ angular_velocity },
-               rotational_axis_{ rotational_axis },
-               rotational_angle_{ rotational_angle } {}
-
-Solar::Solar(model::Mesh* surface, float temperature, float radius,
-             float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-             : AstronomicalObject{ surface, radius },
-               temperature_{ temperature },
-               angular_velocity_{ angular_velocity },
-               rotational_axis_{ rotational_axis },
-               rotational_angle_{ rotational_angle } {}
+Solar::Solar(AstronomicalObject astronomical_object, float temperature) : AstronomicalObject{ astronomical_object }, temperature_{ temperature } {}
 
 /*
  * Solar getColor:
@@ -62,40 +42,6 @@ glm::vec3 Solar::getColor() {
         color.b = 1.0;
     }
     return color;
-}
-/*
- * Solar getSolarMatrix:
- * - Create matrix (matrix multiplication reverse order):
- *   - Scale the solar to its current size.
- *   - Rotate the solar around it's axis.
- */
-glm::mat4 Solar::getSolarMatrix() {
-    glm::mat4 solar_matrix = getRotationalMatrix()
-                           * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ radius_ });
-    return solar_matrix;
-}
-
-/*
- * Solar getRotationalMatrix:
- * - Create matrix:
- *   - Rotate the solar around it's axis.
- */
-glm::mat4 Solar::getRotationalMatrix() {
-    glm::mat4 rotational_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_);
-    return rotational_matrix;
-}
-
-/*
- * Solar elapseTime:
- * - Increase rotational angle as much as the angular velocity.
- */
-void Solar::elapseTime(double seconds) {
-    rotational_angle_ += angular_velocity_ * seconds;
-    rotational_angle_ = fmod(rotational_angle_, 360.0f);
-}
-
-glm::mat4 Solar::getMatrix() {
-    return getRotationalMatrix();
 }
 
 } // namespace object

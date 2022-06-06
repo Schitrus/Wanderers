@@ -12,33 +12,24 @@
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
 
+#include <iostream>
+
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-Orbit::Orbit(AstronomicalObject* object) : orbitor_{ object }, 
-                                          radius_{ kDefaultRadius },
-                                          angular_velocity_{kDefaultAngularVelocity},
-                                          orbital_axis_{ kDefaultOrbitalAxis },
-                                          orbital_angle_{kDefaultStartingOrbitalAngle} {}
-
-Orbit::Orbit(AstronomicalObject* object, float radius, float angular_velocity, glm::vec3 orbital_axis, float orbital_angle) 
-            : orbitor_{ object },
-              radius_{ radius },
-              angular_velocity_{ angular_velocity },
+Orbit::Orbit(float radius, glm::vec3 orbital_axis, float orbital_angle, float angular_velocity)
+            : AbstractObject{ glm::vec3{0.0f}, orbital_axis, kFace, radius },
               orbital_axis_{ orbital_axis },
-              orbital_angle_{ orbital_angle } {}
+              orbital_angle_{ orbital_angle },
+              angular_velocity_{ angular_velocity } {}
 
-/*
- * Orbit Destructor:
- * - Destroy the orbitee.
- */
-Orbit::~Orbit() {
-    delete orbitor_; // might be not good practice.
+glm::vec3 Orbit::getOrbitalAxis() {
+    return orbital_axis_;
 }
 
-AstronomicalObject* Orbit::getOrbitor() {
-    return orbitor_;
+float Orbit::getAngle() {
+    return orbital_angle_;
 }
 
 /*
@@ -49,9 +40,13 @@ AstronomicalObject* Orbit::getOrbitor() {
  *   - Rotate whole orbit position along the orbital axis.
  */
 glm::mat4 Orbit::getOrbitMatrix() {
-    glm::mat4 orbit_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), orbital_axis_)
-        * glm::translate(glm::mat4{ 1.0f }, radius_ * glm::cross(glm::vec3{ glm::vec4{ 1.0f, 0.0f, 0.0f, 0.0f} * glm::orientation(orbital_axis_, glm::vec3{0.0f, 1.0f, 0.0f}) }, orbital_axis_));
-    return orbit_matrix;
+    glm::mat4 orientation_matrix{ kUp == -orbital_axis_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), kFace) : glm::orientation(kUp, orbital_axis_) };
+
+    return orientation_matrix * glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), kUp) * glm::translate(glm::mat4{ 1.0f }, kSide * radius_) * glm::rotate(glm::mat4{ 1.0f }, -glm::radians(orbital_angle_), kUp);
+}
+
+glm::mat4 Orbit::getMatrix() {
+    return getOrbitMatrix();
 }
 
 /*
@@ -62,9 +57,7 @@ glm::mat4 Orbit::getOrbitMatrix() {
 void Orbit::elapseTime(double seconds) {
     orbital_angle_ += angular_velocity_ * seconds;
     orbital_angle_ = fmod(orbital_angle_, 360.0f);
-
-    orbitor_->elapseTime(seconds);
-}
+} 
 
 } // namespace object
 } // namespace simulation

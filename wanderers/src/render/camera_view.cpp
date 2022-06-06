@@ -62,5 +62,11 @@ void CameraView::setFar(float far) {
     far_ = far;
 }
 
+void CameraView::withMutext(std::function<void(void)> func) {
+    assert(func);
+    std::lock_guard<std::mutex> guard{ camera_view_mutex_ };
+    func();
+}
+
 } // namespace render
 } // namespace wanderers

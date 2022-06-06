@@ -11,6 +11,7 @@
 /* External Includes */
 #include "glm/glm.hpp"
 
+#include <functional>
 #include <mutex>
 
 namespace wanderers {
@@ -35,6 +36,8 @@ public:
 	void setAspectRatio(int width, int height);
 	void setNear(float near);
 	void setFar(float far);
+
+	void withMutext(std::function<void(void)> func);
 
 protected:
 

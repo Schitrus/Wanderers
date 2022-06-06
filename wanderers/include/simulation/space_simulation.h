@@ -52,23 +52,13 @@ public:
 	void setSpeed(double simulation_speed);
 	double getSpeed();
 
-	unsigned int getSize(object::AstronomicalObject* parent);
+	unsigned int getSize(object::AbstractObject* parent);
 
-	object::AstronomicalObject* getChildObject(object::AstronomicalObject* parent, unsigned int child_id);
+	object::AbstractObject* getChildObject(object::AbstractObject* parent, unsigned int child_id);
 
-	glm::mat4 getOrbitMatrix(object::AstronomicalObject* parent, unsigned int child_id);
+	glm::mat4 getOrbitMatrix(object::AbstractObject* parent, unsigned int child_id);
 
 	glm::mat4 getRotationalMatrix(object::AstronomicalObject* parent, unsigned int child_id);
-
-	enum class CameraMode {
-		Free, Center, Orbital, Rotational, Count
-	};
-
-	CameraMode getCameraMode();
-
-	void setCameraMode(CameraMode mode);
-
-	CameraMode cycleCameraMode();
 
 	unsigned int getCameraFocusId();
 
@@ -82,14 +72,13 @@ private:
 
 	object::CameraObject* camera_object_;
 
+	std::vector<object::AbstractObject*> astrological_catalog_;
+
 	bool is_paused_;
 
 	double simulation_speed_;
 
-	CameraMode camera_mode_;
 	unsigned int camera_focus_id_;
-
-	static constexpr CameraMode kDefaultCameraMode{ CameraMode::Free };
 };
 
 } // namespace simulation

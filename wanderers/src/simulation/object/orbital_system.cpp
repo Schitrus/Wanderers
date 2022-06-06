@@ -7,22 +7,21 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/orbital_system.h"
 
+#include <iostream>
+#include <algorithm>
+
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-	OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : AstronomicalObject{0}, orbitee_ { orbitee },
-                                                                orbits_{} {}
+OrbitalSystem::OrbitalSystem(AbstractObject abstract_object) 
+	: AbstractObject{ abstract_object } {}
 
-AstronomicalObject* OrbitalSystem::getOrbitee() {
-	return orbitee_;
-}
-
-std::vector<Orbit*> OrbitalSystem::getOrbits() {
+std::vector<std::pair<AbstractObject*, Orbit*>> OrbitalSystem::getOrbits() {
 	return orbits_;
 }
 
-void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
+void OrbitalSystem::addOrbit(AbstractObject* object, Orbit* orbit) { orbits_.push_back(std::make_pair(object, orbit)); }
 
 /*
  * OrbitalSystem elapseTime:
@@ -31,20 +30,11 @@ void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
  *   - Elapse time for all orbits.
  */
 void OrbitalSystem::elapseTime(double seconds) {
-	orbitee_->elapseTime(seconds);
-	for (Orbit* orbit : orbits_)
-		orbit->elapseTime(seconds);
-}
-
-/*
- * OrbitalSystem Destructor:
- * - Destroy Orbitee.
- * - Destroy all orbits.
- */
-OrbitalSystem::~OrbitalSystem() {
-	delete orbitee_;
-	for (Orbit* orbit : orbits_)
-		delete orbit;
+	std::for_each(orbits_.begin(), orbits_.end(), 
+		[seconds](std::pair<AbstractObject*, Orbit*> current_orbit) { 
+			current_orbit.first->elapseTime(seconds); 
+			current_orbit.second->elapseTime(seconds);  
+		});
 }
 
 } // namespace object

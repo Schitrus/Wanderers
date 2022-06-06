@@ -9,6 +9,7 @@ uniform bool is_sun;
 
 in vec3 normal_frag;
 in vec3 position_frag;
+in vec3 model_position;
 
 void main(){
     vec3 light_direction = normalize(light_position - position_frag);
@@ -20,5 +21,13 @@ void main(){
     float diffuse = max(dot(normal, light_direction), 0.0f);
     float specular = diffuse * 0.5f * pow(max(dot(camera_direction, reflect_direction), 0.0f), 16);
 
-    frag_color = is_sun ? vec4(color, 1.0f) : vec4(color * (ambient + diffuse + specular), 1.0f);
+    vec3 object_color = is_sun ? color : color * (ambient + diffuse + specular);
+
+    //vec3 up_color = vec3(1.0f, 0.0f, 0.0f);
+    //vec3 down_color = vec3(0.0f, 0.0f, 1.0f);
+    //vec3 front_color = vec3(0.0f, 1.0f, 0.0f);
+    //
+    //frag_color = vec4(mix(mix(mix(object_color, up_color, model_position.y), down_color, -model_position.y), front_color, model_position.x), 1.0f);
+
+    frag_color = vec4(object_color, 1.0f);
 } 

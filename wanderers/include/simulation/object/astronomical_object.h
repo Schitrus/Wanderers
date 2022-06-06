@@ -12,7 +12,8 @@
 #include "glm/glm.hpp"
 
 /* Internal Includes */
-#include "simulation/object/model/mesh.h"
+#include "simulation/object/abstract_object.h"
+#include "simulation/object/object.h"
 
 /* STL Includes */
 #include <vector>
@@ -21,42 +22,34 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-// TODO: Generalize the model.
-
 /*
  * This class is the base for representation of astronomical objects in space simulation. 
  */
-class AstronomicalObject {
+class AstronomicalObject : public AbstractObject {
 public:
-	AstronomicalObject(float radius);
+	AstronomicalObject(AbstractObject abstract_object, Object* physical_object, glm::vec3 rotational_axis, float rotational_angle, float angular_velocity);
 
-	AstronomicalObject(model::Mesh* surface, float radius);
+	Object* const getPhysicalObject();
 
-	/* Gets the set model for the astronomical object. */
-	virtual std::vector<glm::vec3>* getSurface();
+	glm::vec3 getRotationalAxis();
+	float getRotationalAngle();
+	float getAngularVelocity();
 
-	/* Advance the simulation. */
-	virtual void elapseTime(double seconds) = 0;
-
-	/* Bind/unbind the astronomical object model for rendering. */
-	void bind();
-	void unbind();
-
-	float getRadius();
+	virtual glm::mat4 getRotationalMatrix();
 
 	virtual glm::mat4 getMatrix();
 
-	const unsigned int id;
-
-protected:
-
-	float radius_;
+	virtual void elapseTime(double seconds);
 
 private:
-	/* Model of the astronomical object. */
-	model::Mesh* surface_;
+	/* Object that represents the physical representation of the astronomical object. */
+	Object* physical_object_;
 
-	static unsigned int id_counter_;
+	glm::vec3 rotational_axis_;
+
+	float rotational_angle_;
+
+	float angular_velocity_;
 };
 
 } // namespace object

@@ -35,7 +35,6 @@ public:
 	Icosahedron(std::vector<glm::vec3>* vertices);
 
 protected:
-
 	/* Generates the Icosahedron. */
 	std::vector<glm::vec3>* generateIcosahedron();
 
@@ -48,7 +47,10 @@ protected:
  * - Construct Icosahedron singleton if not constructed.
  */
 static Icosahedron* getIcosahedron() {
-	static Icosahedron* icosahedron = new Icosahedron{ 4 };
+	static Icosahedron* icosahedron; 
+	if (!icosahedron) {
+		icosahedron = new Icosahedron{ 3 };
+	}
 	return icosahedron;
 }
 

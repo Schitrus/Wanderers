@@ -38,7 +38,7 @@ GLFWwindow* setupWindow() {
 	constexpr int window_width{ 1920 };
 	constexpr int window_height{ 1080 };
 
-	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr) };
+	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, glfwGetPrimaryMonitor(), nullptr) };
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -85,7 +85,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 0.0f, 16.0f}, glm::vec3{0.0f, 0.0f,-1.0f}, glm::vec3{0.0f, 1.0f, 0.0f}, 60.0f, 1.0f, 0.01f, 1000.0f } };
+	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f, 0.0f, 1.0f}, 60.0f, 1.0f, 0.01f, 1000.0f } };
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	
 	// Setup render engine.

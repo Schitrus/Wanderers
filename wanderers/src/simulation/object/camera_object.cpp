@@ -25,8 +25,10 @@ namespace object {
 CameraObject::CameraObject() : CameraObject{ kDefaultPosition, kDefaultDirection, kDefaultUpVector }  {}
 
 CameraObject::CameraObject(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
-                          : position_{ position }, direction_{ glm::normalize(direction) },
-                            right_{glm::normalize(glm::cross(direction_, up))}, up_{ glm::cross(right_, direction_) } {}
+                          : speed_{1.0f}, position_{ position }, relative_position_{0.0f}, direction_{ glm::normalize(direction) },
+                            right_{glm::normalize(glm::cross(direction_, up))}, up_{ glm::cross(right_, direction_) },
+                            relative_direction_{0.0f, 0.0f,-1.0f}, relative_up_{0.0f, 1.0f, 0.0f}, relative_right_{1.0f, 0.0f, 0.0f},
+                            camera_mode_{ kDefaultCameraMode }, camera_focus_{ nullptr } {}
 
 glm::vec3 CameraObject::getPosition() { 
     return position_; 
@@ -42,14 +44,13 @@ glm::vec3 CameraObject::getRight() {
 }
 
 
-
 void CameraObject::setPosition(glm::vec3 position) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     position_ = position;
 }
 
 void CameraObject::setDirection(glm::vec3 direction) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
+    if (direction == direction_)
+        return;
     glm::mat4 rotation{ glm::orientation(direction_, glm::normalize(direction)) };
     direction_ = glm::normalize(direction);
     up_ = rotation * glm::vec4{ up_, 0.0f };
@@ -57,14 +58,12 @@ void CameraObject::setDirection(glm::vec3 direction) {
 }
 
 void CameraObject::setUp(glm::vec3 up) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     glm::mat4 rotation{ glm::orientation(up_, glm::normalize(up)) };
     right_ = rotation * glm::vec4{ right_, 0.0f };
     up_ = glm::cross(right_, direction_);
 }
 
 void CameraObject::setRight(glm::vec3 right) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
     glm::mat4 rotation{ glm::orientation(right_, glm::normalize(right)) };
     up_ = rotation * glm::vec4{ up_, 0.0f };
     right_ = glm::cross(direction_, up_);
@@ -78,15 +77,34 @@ void CameraObject::setRight(glm::vec3 right) {
  * - Increment the position with the movement in y direction orthogonal to the direction and cameras up direction.
  */
 void CameraObject::move(glm::vec3 movement) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
-    position_ +=  direction_ * movement.z
-              +   up_        * movement.y
-              +   right_     * movement.x;
+    if (camera_mode_ == CameraMode::Center) {
+        relative_position_ += (glm::rotate(relative_position_, movement.x, relative_up_) - relative_position_)
+                           +  (glm::rotate(relative_position_, movement.y, relative_right_) - relative_position_)
+                           -   glm::normalize(relative_position_) * movement.z * speed_;
+    } else if (camera_mode_ == CameraMode::Orbital) {
+        relative_position_ += direction_ * movement.z * speed_
+                           +  up_        * movement.y * speed_
+                           +  right_     * movement.x * speed_;
+    } else if (camera_mode_ == CameraMode::Rotational) {
+        relative_position_ += relative_direction_ * movement.z * speed_
+                           +  relative_up_        * movement.y * speed_
+                           +  relative_right_     * movement.x * speed_;
+    } else {
+        position_ +=  direction_ * movement.z * speed_
+                  +   up_        * movement.y * speed_
+                  +   right_     * movement.x * speed_;
+    }
 }
 
 void CameraObject::translate(glm::vec3 translation) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
-    position_ += translation;
+    switch (camera_mode_) {
+    case CameraMode::Orbital:
+        relative_position_ += translation;
+        break;
+    default:
+        position_ += translation;
+        break;
+    }
 }
 
 /*
@@ -94,9 +112,13 @@ void CameraObject::translate(glm::vec3 translation) {
  * - Increments the yaw in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void CameraObject::turnYaw(float yaw) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
-    direction_ = glm::rotate(direction_, glm::radians(yaw), up_);
-    right_     = glm::rotate(right_, glm::radians(yaw), up_);
+    if (camera_mode_ == CameraMode::Rotational) {
+        relative_direction_ = glm::rotate(relative_direction_, glm::radians(yaw), relative_up_);
+        relative_right_ = glm::rotate(relative_right_, glm::radians(yaw), relative_up_);
+    } else {
+        direction_ = glm::rotate(direction_, glm::radians(yaw), up_);
+        right_     = glm::rotate(right_, glm::radians(yaw), up_);
+    }
 }
 
 /*
@@ -104,19 +126,150 @@ void CameraObject::turnYaw(float yaw) {
  * - Increments the pitch in degrees but don't let it go below -89.0 or above 89.0 .
  */
 void CameraObject::turnPitch(float pitch) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
-    direction_ = glm::rotate(direction_, glm::radians(pitch), glm::cross(direction_, up_));
-    up_        = glm::rotate(up_, glm::radians(pitch), glm::cross(direction_, up_));
+    if (camera_mode_ == CameraMode::Rotational) {
+        relative_direction_ = glm::rotate(relative_direction_, glm::radians(pitch), glm::cross(relative_direction_, relative_up_));
+        relative_up_        = glm::rotate(relative_up_, glm::radians(pitch), glm::cross(relative_direction_, relative_up_));
+    } else {
+        direction_ = glm::rotate(direction_, glm::radians(pitch), glm::cross(direction_, up_));
+        up_ = glm::rotate(up_, glm::radians(pitch), glm::cross(direction_, up_));
+    }
+
 }
 
 /* CameraObject turnRoll:
  *  - Increments the roll in degrees but keep it in the interval of -360.0 - 360.0 .
  */
 void CameraObject::turnRoll(float roll) {
-    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
-    up_    = glm::rotate(up_, glm::radians(roll), direction_);
-    right_ = glm::rotate(right_, glm::radians(roll), direction_);
+    if (camera_mode_ == CameraMode::Rotational) {
+        relative_up_    = glm::rotate(relative_up_, glm::radians(roll), relative_direction_);
+        relative_right_ = glm::rotate(relative_right_, glm::radians(roll), relative_direction_);
+    } else {
+        up_ = glm::rotate(up_, glm::radians(roll), direction_);
+        right_ = glm::rotate(right_, glm::radians(roll), direction_);
+    }
 }
+
+CameraObject::CameraMode CameraObject::getCameraMode() {
+    return camera_mode_;
+}
+
+
+void CameraObject::setCameraMode(CameraObject::CameraMode mode) {
+    modeUpdate(mode, camera_focus_);
+    camera_mode_ = mode;
+}
+
+CameraObject::CameraMode CameraObject::cycleCameraMode() {
+    setCameraMode(static_cast<CameraObject::CameraMode>((static_cast<int>(camera_mode_) + 1) % static_cast<int>(CameraObject::CameraMode::Count)));
+    return camera_mode_;
+}
+
+glm::mat4 getFocusMatrix(AbstractObject* focus) {
+    AbstractObject* parent{ focus->getParent() };
+    glm::mat4 matrix{ 1.0f };
+    while (parent != nullptr) {
+        matrix = parent->getMatrix() * matrix;
+        parent = parent->getParent();
+    }
+    return matrix;
+}
+
+void CameraObject::elapseTime(double seconds) {
+    if (camera_mode_ == CameraMode::Center) {
+        AbstractObject* parent{ camera_focus_->getParent() };
+        glm::mat4 world_matrix{ 1.0f };
+        while (parent != nullptr) {
+            world_matrix = parent->getMatrix() * world_matrix;
+            parent = parent->getParent();
+        }
+        position_ = world_matrix * glm::vec4{ relative_position_, 1.0f };
+
+        if (glm::all(glm::equal(relative_direction_, glm::normalize(relative_position_)))) {
+            relative_direction_ = -glm::normalize(relative_position_);
+            relative_right_ = -relative_right_;
+
+        }
+        else if (glm::any(glm::notEqual(relative_direction_, -glm::normalize(relative_position_)))) {
+            glm::vec3 normal = glm::cross(relative_direction_, -glm::normalize(relative_position_));
+            float angle = glm::angle(relative_direction_, -glm::normalize(relative_position_));
+            if (normal != glm::vec3{ 0.0f } && angle != 0.0f) {
+                relative_direction_ = glm::rotate(relative_direction_, angle, normal);
+                relative_up_ = glm::rotate(relative_up_, angle, normal);
+                relative_right_ = glm::cross(relative_direction_, relative_up_);
+            }
+        }
+
+        direction_ = world_matrix * glm::vec4{ relative_direction_, 0.0f };
+        up_ = world_matrix * glm::vec4{ relative_up_, 0.0f };
+        right_ = glm::normalize(glm::cross(direction_, up_));
+    } else if (camera_mode_ == CameraMode::Orbital){
+        AbstractObject* parent{ camera_focus_->getParent() };
+        glm::mat4 world_matrix{ 1.0f };
+        while (parent != nullptr) {
+            world_matrix = parent->getMatrix() * world_matrix;
+            parent = parent->getParent();
+        }
+        position_ = world_matrix * glm::vec4{ relative_position_, 1.0f };
+    } else if (camera_mode_ == CameraMode::Rotational) {
+        AbstractObject* parent{ camera_focus_->getParent() };
+        glm::mat4 world_matrix{ 1.0f };
+        while (parent != nullptr) {
+            world_matrix = parent->getMatrix() * world_matrix;
+            parent = parent->getParent();
+        }
+        position_ = world_matrix * camera_focus_->getMatrix() * glm::vec4{relative_position_, 1.0f};
+
+        direction_ = world_matrix * camera_focus_->getMatrix() * glm::vec4{ relative_direction_, 0.0f };
+        up_ = world_matrix * camera_focus_->getMatrix() * glm::vec4{ relative_up_, 0.0f };
+        right_ = glm::normalize(glm::cross(direction_, up_));
+    }
+    
+}
+
+void CameraObject::setCameraFocus(AbstractObject* camera_focus) {
+    modeUpdate(camera_mode_, camera_focus);
+    camera_focus_ = camera_focus;
+}
+
+AbstractObject* CameraObject::getCameraFocus() {
+    return camera_focus_;
+}
+
+void CameraObject::withMutext(std::function<void(void)> func) {
+    assert(func);
+    std::lock_guard<std::mutex> guard{ camera_object_mutex_ };
+    func();
+}
+
+void CameraObject::modeUpdate(CameraMode mode, AbstractObject* focus) {
+    if (glm::all(glm::equal(relative_position_, glm::vec3{ 0.0f }))) {
+        if (glm::all(glm::equal(position_, glm::vec3{ 0.0f }))) {
+            relative_position_ = glm::vec3{ 0.0f, 2.0f, 0.0f } *camera_focus_->getRadius();
+        } else {
+            relative_position_ = position_;
+        }
+    }
+    switch (mode) {
+    case CameraMode::Free:
+        speed_ = 1.0f;
+        break;
+    case CameraMode::Center:
+        speed_ = 1.0f * focus->getRadius();
+        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        break;
+    case CameraMode::Orbital:
+        speed_ = 0.1f * focus->getRadius();
+        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        break;
+    case CameraMode::Rotational:
+        speed_ = 0.05f * focus->getRadius();
+        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        break;
+    default:
+        break;
+    }
+}
+
 
 } // namespace object
 } // namespace simulation

@@ -1,40 +1,44 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Class for representation of a planet.                                     *
+ * Class for representation of objects.                                      *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_SIMULATION_OBJECT_PLANET_H_
-#define WANDERERS_SIMULATION_OBJECT_PLANET_H_
+#ifndef WANDERERS_SIMULATION_OBJECT_OBJECT_H_
+#define WANDERERS_SIMULATION_OBJECT_OBJECT_H_
 
 /* External Includes */
 #include "glm/glm.hpp"
 
 /* Internal Includes */
-#include "simulation/object/astronomical_object.h"
+#include "simulation/object/abstract_object.h"
+#include "simulation/object/model/mesh.h"
+#include "simulation/object/model/icosahedron.h"
 
 namespace wanderers {
 namespace simulation {
 namespace object {
 
 /*
- * This class represents a planet with surface color.
- * The planet is seen as an astronomical object.
+ * This class is representation for objects. 
  */
-class Planet : public AstronomicalObject {
+class Object : public AbstractObject {
 public:
-	Planet(AstronomicalObject astronomical_object, glm::vec3 surface_color);
+	Object(AbstractObject abstract_object, model::Mesh* model = model::getIcosahedron());
 
-	/* Get the surface color of the planet. */
-	glm::vec3 getColor();
+	void setModel(model::Mesh* model);
+	model::Mesh* const getModel() const;
+
+	void bind();
+	void unbind();
 
 private:
-	glm::vec3 surface_color_;
+	model::Mesh* model_;
 };
 
-} // namespace simulation
 } // namespace object
+} // namespace simulation
 } // namespace wanderers
 
-#endif // WANDERERS_SIMULATION_OBJECT_PLANET_H_
+#endif // WANDERERS_SIMULATION_OBJECT_OBJECT_H_

@@ -28,17 +28,33 @@ namespace simulation {
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
+void constructCatalog(std::vector<object::AbstractObject*>& catalog, object::OrbitalSystem* system) {
+	for (std::pair<object::AbstractObject*, object::Orbit*> orbit : system->getOrbits()) {
+		const std::type_info& type{ typeid(*orbit.first) };
+		if (type == typeid(object::Solar) || type == typeid(object::Planet)) {
+			catalog.push_back(orbit.first);
+		} else if (type == typeid(object::OrbitalSystem)) {
+			constructCatalog(catalog, dynamic_cast<object::OrbitalSystem*>(orbit.first));
+		}
+	}
+}
+
 SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_systems_{},
                                      group_of_stars_{},
 	                                 camera_object_{camera_object},
+	                                 astrological_catalog_{},
 	                                 is_paused_{false},
 	                                 simulation_speed_{1.0f},
-									 camera_mode_{ kDefaultCameraMode }, camera_focus_id_{ 0 } {
+	camera_focus_id_{ 0 } {
 	addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 	std::uniform_real_distribution<float> size(1.0f, 2.0f);
 	for (int i = 0; i < 20; i++)
 		addStars(new simulation::object::Stars{ 100, temperature(randomizer), size(randomizer) });
+
+	constructCatalog(astrological_catalog_, solar_systems_.at(0));
+
+	camera_object_->withMutext([this]() { camera_object_->setCameraFocus(astrological_catalog_.at(0)); });
 }
 
 
@@ -58,30 +74,30 @@ std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() {
 	return group_of_stars_; 
 }
 
-unsigned int SpaceSimulation::getSize(object::AstronomicalObject* parent) {
+unsigned int SpaceSimulation::getSize(object::AbstractObject* parent) {
 	unsigned int size{ 1 };
 
 	const std::type_info& parent_type{ typeid(*parent) };
 	if (parent_type == typeid(object::OrbitalSystem)) {
-		for (object::Orbit* child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-			size += getSize(child->getOrbitor());
+		for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
+			size += getSize(child.first);
 		}
 	}
 	return size;
 }
 
-object::AstronomicalObject* SpaceSimulation::getChildObject(object::AstronomicalObject* parent, unsigned int child_id) {
-	object::AstronomicalObject* object{parent};
+object::AbstractObject* SpaceSimulation::getChildObject(object::AbstractObject* parent, unsigned int child_id) {
+	object::AbstractObject* object{parent};
 	const std::type_info& parent_type{ typeid(*parent) };
 	if (parent_type == typeid(object::OrbitalSystem)) {
 		if (child_id == 0) {
-			object = dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbitee();
+			object = dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits().at(0).first;
 		} else {
-			for (object::Orbit* child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-				unsigned int child_size{ getSize(child->getOrbitor()) };
+			for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
+				unsigned int child_size{ getSize(child.first) };
 
 				if (child_size >= child_id) {
-					object = getChildObject(child->getOrbitor(), child_id - 1);
+					object = getChildObject(child.first, child_id - 1);
 					break;
 				} else {
 					child_id -= child_size;
@@ -93,18 +109,18 @@ object::AstronomicalObject* SpaceSimulation::getChildObject(object::Astronomical
 	return object;
 }
 
-glm::mat4 SpaceSimulation::getOrbitMatrix(object::AstronomicalObject* parent, unsigned int child_id) {
+glm::mat4 SpaceSimulation::getOrbitMatrix(object::AbstractObject* parent, unsigned int child_id) {
 	glm::mat4 matrix{1.0f};
 	const std::type_info& parent_type{ typeid(*parent) };
 	if (parent_type == typeid(object::OrbitalSystem)) {
 		if (child_id == 0) {
 			matrix = glm::mat4{ 1.0f };
 		} else {
-			for (object::Orbit* child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-				unsigned int child_size{ getSize(child->getOrbitor()) };
+			for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
+				unsigned int child_size{ getSize(child.first) };
 
 				if (child_size >= child_id) {
-					matrix *= child->getOrbitMatrix() * getOrbitMatrix(child->getOrbitor(), child_id - 1);
+					matrix *= child.first->getMatrix() * getOrbitMatrix(child.first, child_id - 1);
 					break;
 				} else {
 					child_id -= child_size;
@@ -127,20 +143,10 @@ glm::mat4 SpaceSimulation::getRotationalMatrix(object::AstronomicalObject* paren
  *   - Elapse time for all orbits.
  */
 void SpaceSimulation::elapseTime(double seconds) {
-	if (!is_paused_) {
-		for(object::OrbitalSystem* solar_system : solar_systems_)
-		solar_system->elapseTime(seconds * simulation_speed_);
+	for (object::OrbitalSystem* solar_system : solar_systems_) {
+		solar_system->elapseTime(static_cast<int>(!is_paused_) * seconds * simulation_speed_);
 	}
-	if (camera_mode_ == CameraMode::Orbital) {
-		glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_focus_id_) };
-		float radius{ getChildObject(solar_systems_.at(0), camera_focus_id_)->getRadius() };
-		camera_object_->setPosition(orbit_matrix * glm::vec4{ radius, 0.0f, 0.0f, 1.0f });
-	} else if (camera_mode_ == CameraMode::Rotational) {
-		glm::mat4 orbit_matrix{ getOrbitMatrix(solar_systems_.at(0), camera_focus_id_) };
-		glm::mat4 rotation_matrix{ getRotationalMatrix(solar_systems_.at(0), camera_focus_id_) };
-		float radius{ getChildObject(solar_systems_.at(0), camera_focus_id_)->getRadius() };
-		camera_object_->setPosition(orbit_matrix * rotation_matrix * glm::vec4{ 0.8 * radius, 0.0f, 0.0f, 1.0f });
-	}
+	camera_object_->withMutext([this, seconds] { camera_object_->elapseTime(static_cast<int>(!is_paused_) * seconds * simulation_speed_); });
 }
 
 void SpaceSimulation::pause() {
@@ -163,29 +169,18 @@ double SpaceSimulation::getSpeed() {
 	return simulation_speed_;
 }
 
-SpaceSimulation::CameraMode SpaceSimulation::getCameraMode() {
-	return camera_mode_;
-}
-
-void SpaceSimulation::setCameraMode(SpaceSimulation::CameraMode mode) {
-	camera_mode_ = mode;
-}
-
-SpaceSimulation::CameraMode SpaceSimulation::cycleCameraMode() {
-	camera_mode_ = static_cast<SpaceSimulation::CameraMode>((static_cast<int>(camera_mode_) + 1) % static_cast<int>(SpaceSimulation::CameraMode::Count));
-	return camera_mode_;
-}
-
 unsigned int SpaceSimulation::getCameraFocusId() {
 	return camera_focus_id_;
 }
 
 void SpaceSimulation::setCameraFocusId(unsigned int focus_id) {
-	camera_focus_id_ = focus_id;
+	camera_focus_id_ = focus_id % astrological_catalog_.size();
+	camera_object_->withMutext([this]() {camera_object_->setCameraFocus(astrological_catalog_.at(camera_focus_id_)); });
 }
 
 unsigned int SpaceSimulation::cycleCameraFocusId() {
-	camera_focus_id_ = (camera_focus_id_ + 1) % getSize(getSolarSystems().at(0));
+	camera_focus_id_ = (camera_focus_id_ + 1) % astrological_catalog_.size();
+	setCameraFocusId(camera_focus_id_);
 	return camera_focus_id_;
 }
 

@@ -15,6 +15,9 @@
 #include "render/camera_view.h"
 #include "simulation/object/camera_object.h"
 
+/* STL Includes */
+#include <functional>
+
 namespace wanderers {
 namespace render {
 
@@ -38,6 +41,8 @@ public:
 
 	/* Enables camera from changing. */
 	void unlock();
+
+	void withMutext(std::function<void(void)> func);
 protected:
 
 	glm::mat4 view_;

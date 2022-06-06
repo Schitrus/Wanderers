@@ -25,7 +25,7 @@ object::OrbitalSystem* generateSolarSystem(float radius);
 object::Solar* generateSolar(float radius);
 
 /* Generates a planet system that have the maximum size of the radius. */
-object::Orbit* generatePlanetSystem(float radius, float orbit_radius);
+object::OrbitalSystem* generatePlanetSystem(float radius, float orbit_radius);
 
 /* Generates a planet that has the given radius. */
 object::Planet* generatePlanet(float radius);

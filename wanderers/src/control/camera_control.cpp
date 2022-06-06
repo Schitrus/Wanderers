@@ -27,7 +27,7 @@ CameraControl::CameraControl(GLFWwindow* window, render::Camera* camera, simulat
 void CameraControl::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
 	case GLFW_KEY_V:
-		simulation_->cycleCameraMode();
+		camera_->withMutext([this]() {camera_->cycleCameraMode(); });
 		break;
 	case GLFW_KEY_TAB:
 		simulation_->cycleCameraFocusId();
@@ -40,6 +40,7 @@ void CameraControl::enactKeyRelease(int key, double seconds) {
 }
 
 void CameraControl::enactKeyPress(int key, double seconds) {
+	camera_->lock();
 	switch (key) {
 	case GLFW_KEY_W:
 		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f, 1.0f });
@@ -66,14 +67,22 @@ void CameraControl::enactKeyPress(int key, double seconds) {
 		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f,-1.0f, 0.0f });
 		break;
 	}
+	camera_->unlock();
 }
 
 void CameraControl::enactCursorPosition(glm::vec2 delta, double seconds) {
 	int width, height;
 	glfwGetFramebufferSize(window_, &width, &height);
 
-	camera_->turnYaw(-delta.x / 10.0f);
-	camera_->turnPitch(-delta.y / 10.0f);
+	camera_->lock();
+	if (camera_->getCameraMode() == simulation::object::CameraObject::CameraMode::Center) {
+		camera_->move(-delta.x / 100.0f * glm::vec3{ 1.0f, 0.0f, 0.0f });
+		camera_->move(-delta.y / 100.0f * glm::vec3{ 0.0f, 1.0f, 0.0f });
+	} else {
+		camera_->turnYaw(-delta.x / 10.0f);
+		camera_->turnPitch(-delta.y / 10.0f);
+	}
+	camera_->unlock();
 }
 
 void CameraControl::enactScrollOffset(glm::vec2 offset, double seconds) {

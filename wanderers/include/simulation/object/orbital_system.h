@@ -20,28 +20,24 @@ namespace simulation {
 namespace object {
 
 /*
- * This class is a representation fo an orbital system with an orbitee in the center of the system
+ * This class is a representation of an orbital system with an orbitee in the center of the system
  *  and orbits around it.
  * The orbital system is seen as an astronomical object.
  */
-class OrbitalSystem : public AstronomicalObject {
+class OrbitalSystem : public AbstractObject {
 public:
-	OrbitalSystem(AstronomicalObject* orbitee);
+	OrbitalSystem(AbstractObject abstract_object);
 
-	~OrbitalSystem();
-
-	AstronomicalObject* getOrbitee();
-	std::vector<Orbit*> getOrbits();
+	std::vector<std::pair<AbstractObject*, Orbit*>> getOrbits();
 
 	/* Add and orbit to the orbital system. */
-	void addOrbit(Orbit* orbit);
+	void addOrbit(AbstractObject* object, Orbit* orbit);
 
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
 
 private:
-	AstronomicalObject* orbitee_;
-	std::vector<Orbit*> orbits_;
+	std::vector<std::pair<AbstractObject*, Orbit*>> orbits_;
 };
 
 } // namespace simulation

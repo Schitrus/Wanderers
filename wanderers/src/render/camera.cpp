@@ -56,5 +56,12 @@ void Camera::unlock() {
     camera_object_mutex_.unlock();
 }
 
+void Camera::withMutext(std::function<void(void)> func) {
+    assert(func);
+    std::lock_guard<std::mutex> view_guard{ camera_view_mutex_ };
+    std::lock_guard<std::mutex> object_guard{ camera_object_mutex_ };
+    func();
+}
+
 } // namespace render
 } // namespace wanderers
