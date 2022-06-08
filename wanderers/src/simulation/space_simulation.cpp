@@ -48,9 +48,19 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 	camera_focus_id_{ 0 } {
 	addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
-	std::uniform_real_distribution<float> size(1.0f, 2.0f);
-	for (int i = 0; i < 20; i++)
-		addStars(new simulation::object::Stars{ 100, temperature(randomizer), size(randomizer) });
+	std::uniform_real_distribution<float> size(0.2f, 2.0f);
+	std::uniform_real_distribution<float> cluster_count(0.0f, 5.0f);
+	std::uniform_real_distribution<float> cluster_radius(0.2f, 2.0f);
+	for (int i = 0; i < 5; i++) {
+		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100) });
+		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(1000) });
+		float radius = cluster_radius(randomizer);
+		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
+		for (int j = 0; j < 5; j++) {
+			float count = cluster_count(randomizer);
+			addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 10'000, object::Stars::generateCluster(count, radius, cluster_center) });
+		}
+	}
 
 	constructCatalog(astrological_catalog_, solar_systems_.at(0));
 

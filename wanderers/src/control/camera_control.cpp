@@ -41,18 +41,19 @@ void CameraControl::enactKeyRelease(int key, double seconds) {
 
 void CameraControl::enactKeyPress(int key, double seconds) {
 	camera_->lock();
+	glm::vec3 move_vector{0.0f};
 	switch (key) {
 	case GLFW_KEY_W:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f, 1.0f });
+		move_vector += glm::vec3{ 0.0f, 0.0f, 1.0f };
 		break;
 	case GLFW_KEY_S:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f,-1.0f });
+		move_vector += glm::vec3{ 0.0f, 0.0f,-1.0f };
 		break;
 	case GLFW_KEY_A:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ -1.0f, 0.0f, 0.0f });
+		move_vector += glm::vec3{ -1.0f, 0.0f, 0.0f };
 		break;
 	case GLFW_KEY_D:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 1.0f, 0.0f, 0.0f });
+		move_vector += glm::vec3{ 1.0f, 0.0f, 0.0f };
 		break;
 	case GLFW_KEY_E:
 		camera_->turnRoll(static_cast<float>(90.0 * seconds));
@@ -60,13 +61,20 @@ void CameraControl::enactKeyPress(int key, double seconds) {
 	case GLFW_KEY_Q:
 		camera_->turnRoll(static_cast<float>(-90.0 * seconds));
 		break;
+	case GLFW_KEY_M:
+		camera_->setFieldOfView(camera_->getFieldOfView() * (1.0 - 0.25 * seconds));
+		break;
+	case GLFW_KEY_N:
+		camera_->setFieldOfView(camera_->getFieldOfView() * (1.0 + 0.25 * seconds));
+		break;
 	case GLFW_KEY_LEFT_SHIFT:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 1.0f, 0.0f });
+		move_vector += glm::vec3{ 0.0f, 1.0f, 0.0f };
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
-		camera_->move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f,-1.0f, 0.0f });
+		move_vector += glm::vec3{ 0.0f,-1.0f, 0.0f };
 		break;
 	}
+	camera_->move(static_cast<float>(4.0 * seconds) * move_vector);
 	camera_->unlock();
 }
 
@@ -76,11 +84,11 @@ void CameraControl::enactCursorPosition(glm::vec2 delta, double seconds) {
 
 	camera_->lock();
 	if (camera_->getCameraMode() == simulation::object::CameraObject::CameraMode::Center) {
-		camera_->move(-delta.x / 100.0f * glm::vec3{ 1.0f, 0.0f, 0.0f });
-		camera_->move(-delta.y / 100.0f * glm::vec3{ 0.0f, 1.0f, 0.0f });
+		camera_->move((camera_->getFieldOfView() / 90.0f)  * -delta.x / 1000.0f * glm::vec3{ 1.0f, 0.0f, 0.0f });
+		camera_->move((camera_->getFieldOfView() / 90.0f)  * -delta.y / 1000.0f * glm::vec3{ 0.0f, 1.0f, 0.0f });
 	} else {
-		camera_->turnYaw(-delta.x / 10.0f);
-		camera_->turnPitch(-delta.y / 10.0f);
+		camera_->turnYaw((camera_->getFieldOfView() / 90.0f) * -delta.x / 10.0f);
+		camera_->turnPitch((camera_->getFieldOfView() / 90.0f) * -delta.y / 10.0f);
 	}
 	camera_->unlock();
 }

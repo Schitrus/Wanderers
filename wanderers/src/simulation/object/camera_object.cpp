@@ -17,6 +17,7 @@
 #include <algorithm>
 
 #include <iostream>
+#include <iomanip>
 
 namespace wanderers {
 namespace simulation {
@@ -78,9 +79,31 @@ void CameraObject::setRight(glm::vec3 right) {
  */
 void CameraObject::move(glm::vec3 movement) {
     if (camera_mode_ == CameraMode::Center) {
+        //std::cout << std::setprecision(16) <<"---movement: " << movement.x << ", " << movement.y << ", " << movement.z << std::endl;
+        //std::cout << "-->RelativePosition: " << relative_position_.x << ", " << relative_position_.y << ", " << relative_position_.z << std::endl;
         relative_position_ += (glm::rotate(relative_position_, movement.x, relative_up_) - relative_position_)
                            +  (glm::rotate(relative_position_, movement.y, relative_right_) - relative_position_)
-                           -   glm::normalize(relative_position_) * movement.z * speed_;
+                           -   glm::normalize(relative_position_) * movement.z * speed_ * glm::length(relative_position_) / 10.0f;
+        //std::cout << "-->RelativePosition: " << relative_position_.x << ", " << relative_position_.y << ", " << relative_position_.z << std::endl;
+
+        if (glm::all(glm::equal(relative_direction_, glm::normalize(relative_position_)))) {
+            relative_direction_ = -glm::normalize(relative_position_);
+            relative_right_ = -relative_right_;
+
+        }
+        else if (glm::any(glm::notEqual(relative_direction_, -glm::normalize(relative_position_)))) {
+            glm::vec3 normal = glm::cross(relative_direction_, -glm::normalize(relative_position_));
+            float angle = glm::angle(relative_direction_, -glm::normalize(relative_position_));
+            //std::cout << "->Relative Direction: " << relative_direction_.x << ", " << relative_direction_.y << ", " << relative_direction_.z << std::endl;
+            //std::cout << "->normal: " << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
+            //std::cout << "->angle: " << angle << std::endl;
+            if (normal != glm::vec3{ 0.0f } && angle != 0.0f) {
+                relative_direction_ = glm::normalize(glm::rotate(relative_direction_, angle, normal));
+                relative_up_ = glm::normalize(glm::rotate(relative_up_, angle, normal));
+                relative_right_ = glm::normalize(glm::cross(relative_direction_, relative_up_));
+            }
+            //std::cout << "<-Relative Direction: " << relative_direction_.x << ", " << relative_direction_.y << ", " << relative_direction_.z << std::endl << std::endl;
+        }
     } else if (camera_mode_ == CameraMode::Orbital) {
         relative_position_ += direction_ * movement.z * speed_
                            +  up_        * movement.y * speed_
@@ -182,22 +205,8 @@ void CameraObject::elapseTime(double seconds) {
             world_matrix = parent->getMatrix() * world_matrix;
             parent = parent->getParent();
         }
+
         position_ = world_matrix * glm::vec4{ relative_position_, 1.0f };
-
-        if (glm::all(glm::equal(relative_direction_, glm::normalize(relative_position_)))) {
-            relative_direction_ = -glm::normalize(relative_position_);
-            relative_right_ = -relative_right_;
-
-        }
-        else if (glm::any(glm::notEqual(relative_direction_, -glm::normalize(relative_position_)))) {
-            glm::vec3 normal = glm::cross(relative_direction_, -glm::normalize(relative_position_));
-            float angle = glm::angle(relative_direction_, -glm::normalize(relative_position_));
-            if (normal != glm::vec3{ 0.0f } && angle != 0.0f) {
-                relative_direction_ = glm::rotate(relative_direction_, angle, normal);
-                relative_up_ = glm::rotate(relative_up_, angle, normal);
-                relative_right_ = glm::cross(relative_direction_, relative_up_);
-            }
-        }
 
         direction_ = world_matrix * glm::vec4{ relative_direction_, 0.0f };
         up_ = world_matrix * glm::vec4{ relative_up_, 0.0f };
@@ -254,7 +263,7 @@ void CameraObject::modeUpdate(CameraMode mode, AbstractObject* focus) {
         speed_ = 1.0f;
         break;
     case CameraMode::Center:
-        speed_ = 1.0f * focus->getRadius();
+        speed_ = 0.5f * focus->getRadius();
         relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
         break;
     case CameraMode::Orbital:

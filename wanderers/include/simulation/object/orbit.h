@@ -23,6 +23,7 @@ class Orbit : public AbstractObject { // MAKE CHILD OF ABSTRACT OBJECT
 public:
 
 	Orbit(float radius, glm::vec3 orbital_axis, float orbital_angle, float angular_velocity);
+	Orbit(float major_axis, float minor_axis, glm::vec3 orbital_axis, float orbital_angle, float angular_velocity);
 
 	Orbit(const Orbit& orbit) = default;
 
@@ -44,6 +45,9 @@ private:
 	/* Current position in the orbit as an angle in degrees. */
 	float orbital_angle_;
 	float angular_velocity_;
+
+	float major_axis_;
+	float minor_axis_;
 };
 
 } // namespace simulation

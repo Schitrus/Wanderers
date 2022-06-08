@@ -134,11 +134,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
 
 		// planet orbit
-		float planet_orbit_radius{ 14.0f };
+		float axis_ratio{  0.387092 / 0.378871 };
+		float planet_orbit_minor_axis{ 14.0f };
+		float planet_orbit_major_axis{ planet_orbit_minor_axis * axis_ratio };
 		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(6.35f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 		float planet_orbit_angle{ angle(randomizer) };
 		float planet_orbit_velocity{ 360.0f / 88.0f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
+		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_major_axis, planet_orbit_minor_axis, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
 
 		planet->setParent(planet_orbit);
 		planet_orbit->setParent(solar_system);
@@ -164,11 +166,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
 
 		// planet orbit
-		float planet_orbit_radius{ 28.0f };
+		float axis_ratio{ 0.723332 / 0.723315 };
+		float planet_orbit_minor_axis{ 28.0f };
+		float planet_orbit_major_axis{ planet_orbit_minor_axis * axis_ratio };
 		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(2.15f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 		float planet_orbit_angle{ angle(randomizer) };
 		float planet_orbit_velocity{ 360.0f / 224.0f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
+		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_major_axis, planet_orbit_minor_axis, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
 
 		planet->setParent(planet_orbit);
 		planet_orbit->setParent(solar_system);
@@ -222,11 +226,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
 
 			// planet orbit
-			float planet_orbit_radius{ 5.0f };
+			float axis_ratio{ 0.3884 / 0.3878 };
+			float planet_orbit_minor_axis{ 5.0f };
+			float planet_orbit_major_axis{ planet_orbit_minor_axis * axis_ratio };
 			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(6.687f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 			float planet_orbit_angle{ angle(randomizer) };
 			float planet_orbit_velocity{ 360.0f / 27.0f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
+			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_major_axis, planet_orbit_minor_axis, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
 
 			planet->setParent(planet_orbit);
 			planet_orbit->setParent(planet_system);
@@ -235,11 +241,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 		}
 
 		// planet system orbit
-		float planet_system_orbit_radius{ 40.0f };
+		float system_axis_ratio{ 0.149598 / 0.149577 };
+		float planet_system_orbit_minor_axis{ 40.0f };
+		float planet_system_orbit_major_axis{ planet_system_orbit_minor_axis * system_axis_ratio };
 		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(1.58f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 		float planet_system_orbit_angle{ angle(randomizer) };
 		float planet_system_orbit_velocity{ 360.0f / 365.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
+		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_major_axis, planet_system_orbit_minor_axis, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
 
 		planet_system->setParent(planet_system_orbit);
 		planet_system_orbit->setParent(solar_system);
@@ -336,11 +344,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 		}
 
 		// planet system orbit
-		float planet_system_orbit_radius{ 60.0f };
+		float system_axis_ratio{ 0.227956 / 0.226957 };
+		float planet_system_orbit_minor_axis{ 60.0f };
+		float planet_system_orbit_major_axis{ planet_system_orbit_minor_axis * system_axis_ratio };
 		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(1.63f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 		float planet_system_orbit_angle{ angle(randomizer) };
 		float planet_system_orbit_velocity{ 360.0f / 687.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
+		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_major_axis, planet_system_orbit_minor_axis, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
 
 		planet_system->setParent(planet_system_orbit);
 		planet_system_orbit->setParent(solar_system);
@@ -1085,11 +1095,13 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 		}
 
 		// planet system orbit
-		float planet_system_orbit_radius{ 400.0f };
+		float system_axis_ratio{ 0.586966 / 0.569225 };
+		float planet_system_orbit_minor_axis{ 400.0f };
+		float planet_system_orbit_major_axis{ planet_system_orbit_minor_axis * system_axis_ratio };
 		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(17.16f), glm::vec3{ 0.0f, 0.0f, 1.0f });
 		float planet_system_orbit_angle{ angle(randomizer) };
 		float planet_system_orbit_velocity{ 360.0f / 90560.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
+		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_major_axis, planet_system_orbit_minor_axis, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
 
 		planet_system->setParent(planet_system_orbit);
 		planet_system_orbit->setParent(solar_system);

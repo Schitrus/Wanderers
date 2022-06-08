@@ -16,6 +16,8 @@
 /* STL Includes */
 #include <typeinfo>
 
+#include <iostream>
+
 namespace wanderers {
 namespace render {
 
@@ -89,7 +91,8 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 	star_object->bind();
 
 	glm::vec3 camera_position{ camera_->getPosition() };
-	glm::mat4 model{ glm::translate(glm::mat4{1.0f}, camera_position) };
+
+	glm::mat4 model{ glm::translate(glm::mat4{1.0f}, camera_position* (1.0f - 1.0f/stars->getDistance())) };
 	shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
 	shader_->setUniform(camera_position, "camera_position");
 	shader_->setUniform(model, "model");
