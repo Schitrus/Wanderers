@@ -28,8 +28,8 @@ namespace simulation {
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
-void constructCatalog(std::vector<object::AbstractObject*>& catalog, object::OrbitalSystem* system) {
-	for (std::pair<object::AbstractObject*, object::Orbit*> orbit : system->getOrbits()) {
+void constructCatalog(std::vector<object::AstronomicalObject*>& catalog, object::OrbitalSystem* system) {
+	for (std::pair<object::AstronomicalObject*, object::Orbit*> orbit : system->getOrbits()) {
 		const std::type_info& type{ typeid(*orbit.first) };
 		if (type == typeid(object::Solar) || type == typeid(object::Planet)) {
 			catalog.push_back(orbit.first);
@@ -46,17 +46,18 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 	                                 is_paused_{false},
 	                                 simulation_speed_{1.0f},
 	camera_focus_id_{ 0 } {
-	addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
+	addSolarSystem(simulation::generator::generateTheSolarSystem());
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 	std::uniform_real_distribution<float> size(0.2f, 2.0f);
 	std::uniform_real_distribution<float> cluster_count(0.0f, 5.0f);
 	std::uniform_real_distribution<float> cluster_radius(0.2f, 2.0f);
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 100; i++) {
+		std::cout << "Group: " << i << std::endl;
 		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100) });
-		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(1000) });
+		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(100) });
 		float radius = cluster_radius(randomizer);
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
-		for (int j = 0; j < 5; j++) {
+		for (int j = 0; j < 10; j++) {
 			float count = cluster_count(randomizer);
 			addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 10'000, object::Stars::generateCluster(count, radius, cluster_center) });
 		}
@@ -82,68 +83,6 @@ std::vector<object::OrbitalSystem*> SpaceSimulation::getSolarSystems() {
 
 std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() {
 	return group_of_stars_; 
-}
-
-unsigned int SpaceSimulation::getSize(object::AbstractObject* parent) {
-	unsigned int size{ 1 };
-
-	const std::type_info& parent_type{ typeid(*parent) };
-	if (parent_type == typeid(object::OrbitalSystem)) {
-		for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-			size += getSize(child.first);
-		}
-	}
-	return size;
-}
-
-object::AbstractObject* SpaceSimulation::getChildObject(object::AbstractObject* parent, unsigned int child_id) {
-	object::AbstractObject* object{parent};
-	const std::type_info& parent_type{ typeid(*parent) };
-	if (parent_type == typeid(object::OrbitalSystem)) {
-		if (child_id == 0) {
-			object = dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits().at(0).first;
-		} else {
-			for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-				unsigned int child_size{ getSize(child.first) };
-
-				if (child_size >= child_id) {
-					object = getChildObject(child.first, child_id - 1);
-					break;
-				} else {
-					child_id -= child_size;
-				}
-			}
-		}
-	}
-
-	return object;
-}
-
-glm::mat4 SpaceSimulation::getOrbitMatrix(object::AbstractObject* parent, unsigned int child_id) {
-	glm::mat4 matrix{1.0f};
-	const std::type_info& parent_type{ typeid(*parent) };
-	if (parent_type == typeid(object::OrbitalSystem)) {
-		if (child_id == 0) {
-			matrix = glm::mat4{ 1.0f };
-		} else {
-			for (std::pair<object::AbstractObject*, object::Orbit*> child : dynamic_cast<simulation::object::OrbitalSystem*>(parent)->getOrbits()) {
-				unsigned int child_size{ getSize(child.first) };
-
-				if (child_size >= child_id) {
-					matrix *= child.first->getMatrix() * getOrbitMatrix(child.first, child_id - 1);
-					break;
-				} else {
-					child_id -= child_size;
-				}
-			}
-		}
-	}
-
-	return matrix;
-}
-
-glm::mat4 SpaceSimulation::getRotationalMatrix(object::AstronomicalObject* parent, unsigned int child_id) {
-	return getChildObject(parent, child_id)->getMatrix();
 }
 
 /*

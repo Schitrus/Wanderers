@@ -13,7 +13,7 @@
 
 /* Internal Includes */
 #include "simulation/object/abstract_object.h"
-#include "simulation/object/object.h"
+#include "simulation/object/aggregate_object.h"
 
 /* STL Includes */
 #include <vector>
@@ -22,17 +22,35 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
+// MAKE ROTATION ABSTRACT OBJECT
+
 /*
  * This class is the base for representation of astronomical objects in space simulation. 
  */
 class AstronomicalObject : public AbstractObject {
 public:
-	AstronomicalObject(AbstractObject abstract_object, Object* physical_object, glm::vec3 rotational_axis, float rotational_angle, float angular_velocity);
+	AstronomicalObject(AbstractObject abstract_object, AggregateObject* physical_object);
 
-	Object* const getPhysicalObject();
+	AstronomicalObject(AbstractObject abstract_object, AggregateObject* physical_object, 
+					   float rotational_angle, float angular_velocity,
+					   glm::vec3 rotational_axis, glm::vec3 rotational_face);
 
+	void setPhysicalObject(AggregateObject* physical_object);
+	AggregateObject* const getPhysicalObject();
+
+	void setRotationalAxis(glm::vec3 rotational_axis);
 	glm::vec3 getRotationalAxis();
+
+	void setRotationalFace(glm::vec3 rotational_face);
+	glm::vec3 getRotationalFace();
+
+	void setRotationalSide(glm::vec3 rotational_side);
+	glm::vec3 getRotationalSide();
+
+	void setRotationalAngle(float rotational_angle);
 	float getRotationalAngle();
+
+	void setAngularVelocity(float angular_velocity);
 	float getAngularVelocity();
 
 	virtual glm::mat4 getRotationalMatrix();
@@ -43,14 +61,17 @@ public:
 
 private:
 	/* Object that represents the physical representation of the astronomical object. */
-	Object* physical_object_;
+	AggregateObject* physical_object_;
 
 	glm::vec3 rotational_axis_;
+	glm::vec3 rotational_face_;
+	glm::vec3 rotational_side_;
 
 	float rotational_angle_;
-
 	float angular_velocity_;
 };
+
+static const AstronomicalObject kAbstractAstronomicalObject{ kDefaultObject, new AggregateObject{kDefaultAggregate} };
 
 } // namespace object
 } // namespace simulation

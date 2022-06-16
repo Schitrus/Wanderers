@@ -16,14 +16,16 @@ namespace object {
 
 std::uint64_t AbstractObject::id_counter_{0};
 
-glm::vec3 orthogonalize(glm::vec3 v1, glm::vec3 v2) {
+glm::vec3 AbstractObject::orthogonalize(glm::vec3 v1, glm::vec3 v2) {
 	glm::vec3 normal{ glm::cross(v1, v2) };
 	return glm::rotate(glm::normalize(v1), glm::radians(90.0f), glm::normalize(normal));
 }
 
-AbstractObject::AbstractObject(glm::vec3 position, glm::vec3 orientation, glm::vec3 face, float radius) 
+AbstractObject::AbstractObject() : AbstractObject(kOrigo, kUp, kFace, kIdentityScale) {}
+
+AbstractObject::AbstractObject(glm::vec3 position, glm::vec3 orientation, glm::vec3 face, glm::vec3 scale, AbstractObject* parent) 
 	: position_{ position }, orientation_{ glm::normalize(orientation) }, face_{ orthogonalize(orientation_, glm::normalize(face)) },
-	side_{ glm::cross(orientation_, face_) }, radius_{ radius }, parent_{nullptr}, object_id_{ id_counter_++ } {}
+	side_{ glm::cross(orientation_, face_) }, scale_{ scale }, parent_{parent}, object_id_{ id_counter_++ } {}
 
 std::uint64_t AbstractObject::getObjectId() const {
 	return object_id_;
@@ -76,12 +78,12 @@ glm::vec3 AbstractObject::getSide() const {
 	return side_;
 }
 
-void AbstractObject::setRadius(float radius) {
-	radius_ = radius;
+void AbstractObject::setScale(glm::vec3 scale) {
+	scale_ = scale;
 }
 
-float AbstractObject::getRadius() const {
-	return radius_;
+glm::vec3 AbstractObject::getScale() const {
+	return scale_;
 }
 
 void AbstractObject::setParent(AbstractObject* parent) {
@@ -93,12 +95,13 @@ AbstractObject* AbstractObject::getParent() const {
 }
 
 glm::mat4 AbstractObject::getMatrix() {
-	glm::mat4 scale_matrix{ glm::scale(glm::mat4{1.0f}, glm::vec3{radius_})};
+	glm::mat4 translation_matrix{ glm::translate(glm::mat4{1.0f}, position_) };
+	glm::mat4 scale_matrix{ glm::scale(glm::mat4{1.0f}, scale_)};
 	
 	glm::mat4 orientation_matrix{ kUp == -orientation_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), face_) : glm::orientation(kUp, orientation_) };
 	glm::mat4 face_matrix{ kFace == -face_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), orientation_) : glm::orientation(kFace, face_) };
 
-	return scale_matrix * face_matrix * orientation_matrix;
+	return translation_matrix * scale_matrix * face_matrix * orientation_matrix;
 }
 
 void AbstractObject::elapseTime(double seconds) {}

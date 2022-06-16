@@ -17,7 +17,7 @@ void main(){
     vec3 normal = normalize(normal_frag);
     vec3 reflect_direction = reflect(-camera_direction, normal);
 
-    float ambient = 0.00f;
+    float ambient = 0.5f;
     float diffuse = max(dot(normal, light_direction), 0.0f);
     float specular = diffuse * 0.5f * pow(max(dot(camera_direction, reflect_direction), 0.0f), 16);
 

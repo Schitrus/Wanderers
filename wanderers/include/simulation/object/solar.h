@@ -24,10 +24,14 @@ namespace object {
  */
 class Solar : public AstronomicalObject{
 public:
+	Solar(float radius, float temperature);
 	Solar(AstronomicalObject astronomical_object, float temperature);
 
 	/* Get the surface color of the solar. Depends on the temperature. */
 	glm::vec3 getColor();
+
+	void setTemperature(float temperature);
+	float getTemperature();
 
 private:
 	/* Temperature of the sun in Kelvin. */

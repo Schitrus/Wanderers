@@ -84,6 +84,15 @@
     <ClInclude Include="wanderers\include\control\simulation_control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\abstract_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\aggregate_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wanderers\main.cpp">
@@ -156,6 +165,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wanderers\src\control\simulation_control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\abstract_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\aggregate_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

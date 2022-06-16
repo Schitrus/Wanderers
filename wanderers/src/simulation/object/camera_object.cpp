@@ -23,6 +23,8 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
+/// MAKE IT HAVE ABSTRACT OBJECT, NOT INHERIT
+
 CameraObject::CameraObject() : CameraObject{ kDefaultPosition, kDefaultDirection, kDefaultUpVector }  {}
 
 CameraObject::CameraObject(glm::vec3 position, glm::vec3 direction, glm::vec3 up) 
@@ -253,7 +255,7 @@ void CameraObject::withMutext(std::function<void(void)> func) {
 void CameraObject::modeUpdate(CameraMode mode, AbstractObject* focus) {
     if (glm::all(glm::equal(relative_position_, glm::vec3{ 0.0f }))) {
         if (glm::all(glm::equal(position_, glm::vec3{ 0.0f }))) {
-            relative_position_ = glm::vec3{ 0.0f, 2.0f, 0.0f } *camera_focus_->getRadius();
+            relative_position_ = glm::vec3{ 0.0f, 2.0f, 0.0f } * glm::compMin(camera_focus_->getScale());
         } else {
             relative_position_ = position_;
         }
@@ -263,16 +265,16 @@ void CameraObject::modeUpdate(CameraMode mode, AbstractObject* focus) {
         speed_ = 1.0f;
         break;
     case CameraMode::Center:
-        speed_ = 0.5f * focus->getRadius();
-        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        speed_ = 0.5f * glm::compMin(focus->getScale());
+        relative_position_ = (relative_position_ / glm::compMin(camera_focus_->getScale())) * glm::compMin(focus->getScale());
         break;
     case CameraMode::Orbital:
-        speed_ = 0.1f * focus->getRadius();
-        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        speed_ = 0.1f * glm::compMin(camera_focus_->getScale());
+        relative_position_ = (relative_position_ / glm::compMin(camera_focus_->getScale())) * glm::compMin(focus->getScale());
         break;
     case CameraMode::Rotational:
-        speed_ = 0.05f * focus->getRadius();
-        relative_position_ = (relative_position_ / camera_focus_->getRadius()) * focus->getRadius();
+        speed_ = 0.05f * glm::compMin(focus->getScale());
+        relative_position_ = (relative_position_ / glm::compMin(camera_focus_->getScale())) * glm::compMin(focus->getScale());
         break;
     default:
         break;

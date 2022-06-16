@@ -36,6 +36,10 @@ public:
 	/* Returns matrix describing the projection of the camera. NOTE: perspective projection. */
 	glm::mat4 getProjectionMatrix();
 
+	bool shouldClear();
+	void setShouldClear(bool should_clear);
+	bool getShouldClear();
+
 	/* Disable camera from changing. */
 	void lock();
 
@@ -44,6 +48,7 @@ public:
 
 	void withMutext(std::function<void(void)> func);
 protected:
+	bool should_clear_ = true;
 
 	glm::mat4 view_;
 	glm::mat4 projection_;

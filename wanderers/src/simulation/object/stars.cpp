@@ -14,6 +14,7 @@
 /* STL Includes */
 #include <random>
 #include <chrono>
+#include <iostream>
 
 namespace wanderers {
 namespace simulation {
@@ -23,10 +24,8 @@ namespace object {
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
 Stars::Stars(float temperature, float size, float distance, model::Points* points) 
-    : AstronomicalObject{ AbstractObject{glm::vec3{0.0f}, kUp, kFace, 1.0f},
-      new Object{ AbstractObject{glm::vec3{0.0f}, kUp, kFace, 1.0f}, points},
-      kUp, 0.0f, 0.0f },
-    temperature_{ temperature }, size_{ size }, distance_{distance} { }
+    : AstronomicalObject{ kDefaultObject, new AggregateObject{ new Object{points} } },
+      temperature_{ temperature }, size_{ size }, distance_{distance} {}
 
 // TODO: Move generation of stars
 

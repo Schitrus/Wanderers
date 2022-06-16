@@ -14,6 +14,12 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
+AggregateObject::AggregateObject(Object* object, glm::vec3 position, AbstractObject abstract_object)
+	: AggregateObject{ abstract_object } {
+	assert(object);
+	addObject(object, position);
+}
+
 AggregateObject::AggregateObject(AbstractObject abstract_object)
 	: AbstractObject{ abstract_object }, objects_{} { }
 

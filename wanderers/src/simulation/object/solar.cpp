@@ -17,7 +17,12 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-Solar::Solar(AstronomicalObject astronomical_object, float temperature) : AstronomicalObject{ astronomical_object }, temperature_{ temperature } {}
+Solar::Solar(float radius, float temperature) 
+    : Solar{ AstronomicalObject{ AbstractObject{kOrigo, kUp, kFace, glm::vec3{radius}},
+                                 new AggregateObject{Object{model::getIcosahedron()}}}, temperature } {}
+
+Solar::Solar(AstronomicalObject astronomical_object, float temperature) 
+    : AstronomicalObject{ astronomical_object }, temperature_{ temperature } {}
 
 /*
  * Solar getColor:
@@ -42,6 +47,14 @@ glm::vec3 Solar::getColor() {
         color.b = 1.0;
     }
     return color;
+}
+
+void Solar::setTemperature(float temperature) {
+    temperature_ = temperature;
+}
+
+float Solar::getTemperature() {
+    return temperature_;
 }
 
 } // namespace object

@@ -36,15 +36,21 @@ SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram* shader, render::Came
 void SpaceRenderer::preRender() {
 	
 	glfwGetFramebufferSize(glfwGetCurrentContext(), &render_width_, &render_height_);
-	camera_->setAspectRatio(render_width_, render_height_);
 	
 	camera_->lock();
+
+	if (render_width_ != 0 && render_height_ != 0) {
+		camera_->setAspectRatio(render_width_, render_height_);
+	}
+	
 
 	view_ = camera_->getViewMatrix();
 	projection_ = camera_->getProjectionMatrix();
 
 	glViewport(0, 0, render_width_, render_height_);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (camera_->shouldClear()) {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 
 	shader_->use();
 
@@ -87,26 +93,29 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
  * - Render the solar system.
  */
 void SpaceRenderer::render(simulation::object::Stars* stars) {
-	simulation::object::Object* star_object{ stars->getPhysicalObject() };
-	star_object->bind();
+	simulation::object::AggregateObject* star_object{ stars->getPhysicalObject() };
 
 	glm::vec3 camera_position{ camera_->getPosition() };
+	glm::mat4 agg_model{ glm::translate(glm::mat4{1.0f}, camera_position * (1.0f - 1.0f / stars->getDistance())) /* * star_object->getMatrix()*/ };
+	for (std::pair<simulation::object::Object*, glm::vec3> object : star_object->getObjects()) {
+		object.first->bind();
 
-	glm::mat4 model{ glm::translate(glm::mat4{1.0f}, camera_position* (1.0f - 1.0f/stars->getDistance())) };
-	shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
-	shader_->setUniform(camera_position, "camera_position");
-	shader_->setUniform(model, "model");
-	shader_->setUniform(projection_ * view_ * model, "MVP");
-	shader_->setUniform(stars->getColor() * 0.8f * static_cast<float>(0.25f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
-	shader_->setUniform(true, "is_sun");
+		glm::mat4 obj_model{ agg_model /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/};
+		shader_->setUniform(obj_model, "model");
+		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
+		shader_->setUniform(camera_position, "camera_position");
+		shader_->setUniform(stars->getColor() * 0.8f * static_cast<float>(0.25f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
+		shader_->setUniform(true, "is_sun");
 
-	glDisable(GL_DEPTH_TEST);
-	glPointSize(stars->getSize() * render_width_ / 2000.0f);
-	glDrawArrays(GL_POINTS, 0, star_object->getModel()->size());
-	glPointSize(1.0f);
-	glEnable(GL_DEPTH_TEST);
+		glDisable(GL_DEPTH_TEST);
+		glPointSize(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()));
+		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
+		glPointSize(1.0f);
+		glEnable(GL_DEPTH_TEST);
 
-	star_object->unbind();
+		object.first->unbind();
+	}
 }
 
 /*
@@ -122,7 +131,7 @@ void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, gl
 
 	glm::mat4 system_matrix{ transform * orbital_system->getMatrix() };
 
-	for (std::pair<simulation::object::AbstractObject*, simulation::object::Orbit*> orbit : orbital_system->getOrbits()) {
+	for (std::pair<simulation::object::AstronomicalObject*, simulation::object::Orbit*> orbit : orbital_system->getOrbits()) {
 		render(orbit.first, system_matrix * orbit.second->getMatrix());
 	}
 }
@@ -136,17 +145,21 @@ void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, gl
  * - Unbind the solar model.
  */
 void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform) {
-	simulation::object::Object* solar_object{ solar->getPhysicalObject() };
-	solar_object->bind();
+	simulation::object::AggregateObject* solar_object{ solar->getPhysicalObject() };
 
-	glm::mat4 model{ transform * solar->getMatrix() };
-	shader_->setUniform(model, "model");
-	shader_->setUniform(projection_ * view_ * model, "MVP");
-	shader_->setUniform(solar->getColor(), "color");
-	shader_->setUniform(true, "is_sun");
+	glm::mat4 agg_model{ transform * solar->getMatrix() * solar_object->getMatrix() };
+	for (std::pair<simulation::object::Object*, glm::vec3> object : solar_object->getObjects()) {
+		object.first->bind();
 
-	glDrawArrays(GL_TRIANGLES, 0, solar_object->getModel()->size());
-	solar_object->unbind();
+		glm::mat4 obj_model{ agg_model * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix() };
+		shader_->setUniform(obj_model, "model");
+		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(solar->getColor(), "color");
+		shader_->setUniform(true, "is_sun");
+
+		glDrawArrays(GL_TRIANGLES, 0, object.first->getModel()->size());
+		object.first->unbind();
+	}
 }
 
 /*
@@ -158,17 +171,21 @@ void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform
  * - Unbind the planet model.
  */
 void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transform) {
-	simulation::object::Object* planet_object{ planet->getPhysicalObject() };
-	planet_object->bind();
+	simulation::object::AggregateObject* planet_object{ planet->getPhysicalObject() };
+	
+	glm::mat4 agg_model{ transform * planet->getMatrix() * planet_object->getMatrix() };
+	for (std::pair<simulation::object::Object*, glm::vec3> object : planet_object->getObjects()) {
+		object.first->bind();
 
-	glm::mat4 model{ transform * planet->getMatrix() };
-	shader_->setUniform(model, "model");
-	shader_->setUniform(projection_ * view_ * model, "MVP");
-	shader_->setUniform(planet->getColor(), "color");
-	shader_->setUniform(false, "is_sun");
+		glm::mat4 obj_model{ agg_model * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix() };
+		shader_->setUniform(obj_model, "model");
+		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(planet->getColor(), "color");
+		shader_->setUniform(false, "is_sun");
 
-	glDrawArrays(GL_TRIANGLES, 0, planet_object->getModel()->size());
-	planet_object->unbind();
+		glDrawArrays(GL_TRIANGLES, 0, object.first->getModel()->size());
+		object.first->unbind();
+	}
 }
 
 /*
@@ -177,7 +194,7 @@ void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transfo
  * - Render the object depending on the type.
  * - Do nothing if the type is not renderable.
  */
-void SpaceRenderer::render(simulation::object::AbstractObject* object, glm::mat4 transform) {
+void SpaceRenderer::render(simulation::object::AstronomicalObject* object, glm::mat4 transform) {
 	const std::type_info& object_type{ typeid(*object) };
 	if (object_type == typeid(simulation::object::Solar))
 		render(dynamic_cast<simulation::object::Solar*>(object), transform);

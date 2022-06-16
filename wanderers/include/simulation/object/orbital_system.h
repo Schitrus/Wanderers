@@ -24,20 +24,25 @@ namespace object {
  *  and orbits around it.
  * The orbital system is seen as an astronomical object.
  */
-class OrbitalSystem : public AbstractObject {
+class OrbitalSystem : public AstronomicalObject {
 public:
-	OrbitalSystem(AbstractObject abstract_object);
+	OrbitalSystem();
+	OrbitalSystem(AstronomicalObject* center_object);
 
-	std::vector<std::pair<AbstractObject*, Orbit*>> getOrbits();
+	OrbitalSystem(AstronomicalObject astronomical_object);
+	OrbitalSystem(AstronomicalObject astronomical_object, AstronomicalObject* center_object);
+
+	std::vector<std::pair<AstronomicalObject*, Orbit*>> getOrbits();
 
 	/* Add and orbit to the orbital system. */
-	void addOrbit(AbstractObject* object, Orbit* orbit);
+	void addOrbit(AstronomicalObject* object, Orbit* orbit);
+	void addOrbit(AstronomicalObject* object);
 
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
 
 private:
-	std::vector<std::pair<AbstractObject*, Orbit*>> orbits_;
+	std::vector<std::pair<AstronomicalObject*, Orbit*>> orbits_;
 };
 
 } // namespace simulation

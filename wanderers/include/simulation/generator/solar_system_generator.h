@@ -19,7 +19,13 @@ namespace simulation {
 namespace generator {
 
 /* Generates a solarsystem that stretches out as far out as the radius. */
+object::OrbitalSystem* generateTheSolarSystem();
+
+/* Generates a solarsystem that stretches out as far out as the radius. */
 object::OrbitalSystem* generateSolarSystem(float radius);
+
+/* Generates a solar that has the given radius. */
+object::Orbit* generateOrbit(float lower_radius, float upper_radius, float velocity_factor);
 
 /* Generates a solar that has the given radius. */
 object::Solar* generateSolar(float radius);

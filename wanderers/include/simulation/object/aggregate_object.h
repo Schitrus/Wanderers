@@ -27,7 +27,8 @@ namespace object {
  */
 class AggregateObject : public AbstractObject {
 public:
-	AggregateObject(AbstractObject abstract_object);
+	AggregateObject(AbstractObject abstract_object = kDefaultObject);
+	AggregateObject(Object* object, glm::vec3 position = kOrigo, AbstractObject abstract_object = kDefaultObject);
 
 	void addObject(Object* object, glm::vec3 position);
 	void removeObject(Object* object);
@@ -39,6 +40,8 @@ public:
 private:
 	std::vector<std::pair<Object*, glm::vec3>> objects_;
 };
+
+static const AggregateObject& kDefaultAggregate{};
 
 } // namespace object
 } // namespace simulation

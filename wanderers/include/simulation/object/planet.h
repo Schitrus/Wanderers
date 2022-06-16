@@ -24,8 +24,10 @@ namespace object {
  */
 class Planet : public AstronomicalObject {
 public:
+	Planet(float radius, glm::vec3 surface_color);
 	Planet(AstronomicalObject astronomical_object, glm::vec3 surface_color);
 
+	void setColor(glm::vec3 color);
 	/* Get the surface color of the planet. */
 	glm::vec3 getColor();
 

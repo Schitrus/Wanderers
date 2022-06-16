@@ -32,6 +32,8 @@ void CameraControl::enactKeyTrigger(int key, double seconds) {
 	case GLFW_KEY_TAB:
 		simulation_->cycleCameraFocusId();
 		break;
+	case GLFW_KEY_R:
+		camera_->setShouldClear(!camera_->getShouldClear());
 	}
 }
 

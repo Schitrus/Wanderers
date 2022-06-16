@@ -49,8 +49,6 @@ public:
 	void elapseTime(double seconds);
 
 private:
-	glm::vec3 star_positions_;
-
 	float temperature_;
 
 	float distance_;

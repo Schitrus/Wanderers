@@ -63,5 +63,15 @@ void Camera::withMutext(std::function<void(void)> func) {
     func();
 }
 
+bool Camera::shouldClear() {
+    return getShouldClear();
+}
+void Camera::setShouldClear(bool should_clear) {
+    should_clear_ = should_clear;
+}
+bool Camera::getShouldClear() {
+    return should_clear_;
+}
+
 } // namespace render
 } // namespace wanderers

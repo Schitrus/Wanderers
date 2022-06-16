@@ -52,14 +52,6 @@ public:
 	void setSpeed(double simulation_speed);
 	double getSpeed();
 
-	unsigned int getSize(object::AbstractObject* parent);
-
-	object::AbstractObject* getChildObject(object::AbstractObject* parent, unsigned int child_id);
-
-	glm::mat4 getOrbitMatrix(object::AbstractObject* parent, unsigned int child_id);
-
-	glm::mat4 getRotationalMatrix(object::AstronomicalObject* parent, unsigned int child_id);
-
 	unsigned int getCameraFocusId();
 
 	void setCameraFocusId(unsigned int focus_id);
@@ -72,7 +64,7 @@ private:
 
 	object::CameraObject* camera_object_;
 
-	std::vector<object::AbstractObject*> astrological_catalog_;
+	std::vector<object::AstronomicalObject*> astrological_catalog_;
 
 	bool is_paused_;
 

@@ -11,6 +11,8 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
+Object::Object(model::Mesh* model) : Object{kDefaultObject, model} {}
+
 Object::Object(AbstractObject abstract_object, model::Mesh* model)
 	: AbstractObject{ abstract_object }, model_{ model } { assert(model_ != nullptr); }
 

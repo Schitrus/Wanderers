@@ -19,24 +19,102 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-Orbit::Orbit(float radius, glm::vec3 orbital_axis, float orbital_angle, float angular_velocity) : Orbit{radius, radius, orbital_axis, orbital_angle, angular_velocity} {}
+Orbit::Orbit(float eccentricity, float semimajor_axis, float inclination, float longitude_of_acending_node, float argument_of_periapsis, float true_anomaly, float angular_velocity)
+    : Orbit{semimajor_axis, 
+            semimajor_axis * sqrt(1 - eccentricity * eccentricity),
+            angular_velocity,
+            true_anomaly, 
+            glm::rotate(object::AbstractObject::kUp, inclination, glm::rotate(object::AbstractObject::kFace, longitude_of_acending_node, object::AbstractObject::kUp)),
+            glm::rotate(glm::rotate(object::AbstractObject::kFace, longitude_of_acending_node, object::AbstractObject::kUp), argument_of_periapsis, object::AbstractObject::kUp)
+      } {}
 
-Orbit::Orbit(float major_axis, float minor_axis, glm::vec3 orbital_axis, float orbital_angle, float angular_velocity)
-            : AbstractObject{ glm::vec3{0.0f}, orbital_axis, kFace, minor_axis },
-              orbital_axis_{ orbital_axis },
-              orbital_angle_{ orbital_angle },
-              angular_velocity_{ angular_velocity },
-              major_axis_{ major_axis },
-              minor_axis_{ minor_axis } {}
+Orbit::Orbit(float radius, float angular_velocity, float orbital_angle) 
+    : Orbit(radius, radius, angular_velocity, orbital_angle) {}
 
+Orbit::Orbit(float major_axis, float minor_axis, float angular_velocity, float orbital_angle) 
+    : Orbit(major_axis, minor_axis, angular_velocity, orbital_angle, kUp, kFace) {}
 
+Orbit::Orbit(float radius, float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face) 
+    : Orbit{radius, radius, angular_velocity, orbital_angle, orbital_axis, orbital_face} {}
+Orbit::Orbit(float major_axis, float minor_axis, float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face) 
+    : Orbit{ kAbstractAstronomicalObject, major_axis, minor_axis, angular_velocity, orbital_angle, orbital_axis, orbital_face } {}
+
+Orbit::Orbit(AstronomicalObject astronomical_object, float major_axis, float minor_axis, 
+             float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face)
+            : AstronomicalObject{ astronomical_object },
+              major_axis_{ major_axis }, minor_axis_{ minor_axis },
+              angular_velocity_{ angular_velocity }, orbital_angle_{ orbital_angle },
+              orbital_axis_{ glm::normalize(orbital_axis) },
+              orbital_face_{ orthogonalize(orbital_axis_, glm::normalize(orbital_face)) },
+              orbital_side_{ glm::cross(orbital_axis_, orbital_face_) }{}
+
+void Orbit::setMajorAxis(float major_axis) {
+    major_axis_ = major_axis;
+}
+float Orbit::getMajorAxis() {
+    return major_axis_;
+}
+
+void Orbit::setMinorAxis(float minor_axis) {
+    minor_axis_ = minor_axis;
+}
+float Orbit::getMinorAxis() {
+    return minor_axis_;
+}
+
+void Orbit::setAngularVelocity(float angular_velocity) {
+    angular_velocity_ = angular_velocity;
+}
+
+float Orbit::getAngularVelocity() {
+    return angular_velocity_;
+}
+
+void Orbit::setOrbitalAngle(float orbital_angle) {
+    orbital_angle_ = orbital_angle;
+}
+
+float Orbit::getOrbitalAngle() {
+    return orbital_angle_;
+}
+
+void Orbit::setOrbitalAxis(glm::vec3 orbital_axis) {
+    if (glm::normalize(orbital_axis) != orbital_axis_) {
+        glm::mat4 rotation{ glm::orientation(orbital_axis_, glm::normalize(orbital_axis)) };
+        orbital_axis_ = glm::normalize(orbital_axis);
+        orbital_face_ = rotation * glm::vec4{ orbital_face_, 0.0f };
+        orbital_side_ = rotation * glm::vec4{ orbital_side_, 0.0f };
+    }
+}
 
 glm::vec3 Orbit::getOrbitalAxis() {
     return orbital_axis_;
 }
 
-float Orbit::getAngle() {
-    return orbital_angle_;
+void Orbit::setOrbitalFace(glm::vec3 orbital_face) {
+    if (glm::normalize(orbital_face) != orbital_face_) {
+        glm::mat4 rotation{ glm::orientation(orbital_face_, glm::normalize(orbital_face)) };
+        orbital_face_ = glm::normalize(orbital_face);
+        orbital_side_ = rotation * glm::vec4{ orbital_side_, 0.0f };
+        orbital_axis_ = rotation * glm::vec4{ orbital_axis_, 0.0f };
+    }
+}
+
+glm::vec3 Orbit::getOrbitalFace() {
+    return orbital_face_;
+}
+
+void Orbit::setOrbitalSide(glm::vec3 orbital_side) {
+    if (glm::normalize(orbital_side) != orbital_side_) {
+        glm::mat4 rotation{ glm::orientation(orbital_side_, glm::normalize(orbital_side)) };
+        orbital_side_ = glm::normalize(orbital_side);
+        orbital_axis_ = rotation * glm::vec4{ orbital_axis_, 0.0f };
+        orbital_face_ = rotation * glm::vec4{ orbital_face_, 0.0f };
+    }
+}
+
+glm::vec3 Orbit::getOrbitalSide() {
+    return orbital_side_;
 }
 
 /*
@@ -50,10 +128,11 @@ glm::mat4 Orbit::getOrbitMatrix() {
     glm::mat4 orientation_matrix{ kUp == -orbital_axis_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), kFace) : glm::orientation(kUp, orbital_axis_) };
     float normalized_major = minor_axis_ > 0.00001f ? major_axis_ / minor_axis_ : 1.0f;
     float focus_point = sqrt(normalized_major * normalized_major - 1.0f);
-    return orientation_matrix * glm::translate(glm::mat4{ 1.0f }, kSide * radius_ * focus_point)
+    return orientation_matrix * glm::orientation(kFace, orbital_face_)
+                              * glm::translate(glm::mat4{ 1.0f }, kSide * minor_axis_ * focus_point)
                               * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ normalized_major, 1.0f, 1.0f })
                               * glm::rotate(glm::mat4{ 1.0f }, glm::radians(orbital_angle_), kUp) 
-                              * glm::translate(glm::mat4{ 1.0f }, kSide * radius_) 
+                              * glm::translate(glm::mat4{ 1.0f }, kSide * minor_axis_) 
                               * glm::rotate(glm::mat4{ 1.0f }, -glm::radians(orbital_angle_), kUp) 
                               * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ 1.0f / normalized_major, 1.0f, 1.0f });
 }

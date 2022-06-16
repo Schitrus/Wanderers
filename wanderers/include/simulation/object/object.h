@@ -25,6 +25,8 @@ namespace object {
  */
 class Object : public AbstractObject {
 public:
+	Object(model::Mesh* model = model::getIcosahedron());
+
 	Object(AbstractObject abstract_object, model::Mesh* model = model::getIcosahedron());
 
 	void setModel(model::Mesh* model);

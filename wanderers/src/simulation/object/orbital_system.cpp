@@ -14,14 +14,32 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-OrbitalSystem::OrbitalSystem(AbstractObject abstract_object) 
-	: AbstractObject{ abstract_object } {}
+OrbitalSystem::OrbitalSystem() : OrbitalSystem{kAbstractAstronomicalObject} {}
 
-std::vector<std::pair<AbstractObject*, Orbit*>> OrbitalSystem::getOrbits() {
+OrbitalSystem::OrbitalSystem(AstronomicalObject* center_object) 
+	: OrbitalSystem{ kAbstractAstronomicalObject, center_object } {}
+
+OrbitalSystem::OrbitalSystem(AstronomicalObject astronomical_object) 
+	: AstronomicalObject{ astronomical_object } {}
+
+OrbitalSystem::OrbitalSystem(AstronomicalObject astronomical_object, AstronomicalObject* center_object)
+	: OrbitalSystem{astronomical_object} {
+	addOrbit(center_object);
+}
+
+std::vector<std::pair<AstronomicalObject*, Orbit*>> OrbitalSystem::getOrbits() {
 	return orbits_;
 }
 
-void OrbitalSystem::addOrbit(AbstractObject* object, Orbit* orbit) { orbits_.push_back(std::make_pair(object, orbit)); }
+void OrbitalSystem::addOrbit(AstronomicalObject* object) {
+	addOrbit(object, new Orbit{ kNoOrbit });
+}
+
+void OrbitalSystem::addOrbit(AstronomicalObject* object, Orbit* orbit) {
+	orbit->setParent(this);
+	object->setParent(orbit);
+	orbits_.push_back(std::make_pair(object, orbit)); 
+}
 
 /*
  * OrbitalSystem elapseTime:
@@ -31,7 +49,7 @@ void OrbitalSystem::addOrbit(AbstractObject* object, Orbit* orbit) { orbits_.pus
  */
 void OrbitalSystem::elapseTime(double seconds) {
 	std::for_each(orbits_.begin(), orbits_.end(), 
-		[seconds](std::pair<AbstractObject*, Orbit*> current_orbit) { 
+		[seconds](std::pair<AstronomicalObject*, Orbit*> current_orbit) {
 			current_orbit.first->elapseTime(seconds); 
 			current_orbit.second->elapseTime(seconds);  
 		});
