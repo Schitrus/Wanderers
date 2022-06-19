@@ -34,6 +34,7 @@ void CameraControl::enactKeyTrigger(int key, double seconds) {
 		break;
 	case GLFW_KEY_R:
 		camera_->setShouldClear(!camera_->getShouldClear());
+		break;
 	}
 }
 
@@ -74,6 +75,9 @@ void CameraControl::enactKeyPress(int key, double seconds) {
 		break;
 	case GLFW_KEY_LEFT_CONTROL:
 		move_vector += glm::vec3{ 0.0f,-1.0f, 0.0f };
+		break;
+	case GLFW_KEY_F:
+		camera_->focus();
 		break;
 	}
 	camera_->move(static_cast<float>(4.0 * seconds) * move_vector);

@@ -53,9 +53,6 @@ public:
 	void setScale(glm::vec3 scale);
 	glm::vec3 getScale() const;
 
-	void setParent(AbstractObject* parent);
-	AbstractObject* getParent() const;
-
 	virtual glm::mat4 getMatrix();
 
 	virtual void elapseTime(double seconds);
@@ -70,8 +67,6 @@ protected:
 	glm::vec3 side_;
 
 	glm::vec3 scale_;
-
-	AbstractObject* parent_;
 
 private:
 	const std::uint64_t object_id_;

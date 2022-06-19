@@ -29,8 +29,9 @@ AstronomicalObject::AstronomicalObject(AbstractObject abstract_object, Aggregate
 	: AbstractObject{ abstract_object }, physical_object_{ physical_object }, 
 	  rotational_angle_{ rotational_angle }, angular_velocity_{ angular_velocity },
 	  rotational_axis_{ glm::normalize(rotational_axis) }, 
-	  rotational_face_{ orthogonalize(rotational_axis_, glm::normalize(rotational_face)) },
-	  rotational_side_{ glm::cross(rotational_axis_, rotational_face_) } {}
+	  rotational_face_{ orthogonalize(rotational_face, rotational_axis_) },
+	  rotational_side_{ glm::cross(rotational_axis_, rotational_face_) },
+	  parent_{nullptr} {}
 
 void AstronomicalObject::setPhysicalObject(AggregateObject* physical_object) {
 	physical_object_ = physical_object;
@@ -95,12 +96,24 @@ float AstronomicalObject::getAngularVelocity() {
 	return angular_velocity_;
 }
 
+void AstronomicalObject::setParent(AstronomicalObject* parent) {
+	parent_ = parent;
+}
+
+AstronomicalObject* AstronomicalObject::getParent() const {
+	return parent_;
+}
+
 glm::mat4 AstronomicalObject::getRotationalMatrix() {
 	return glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_);
 }
 
+glm::mat4 AstronomicalObject::getPhysicalMatrix() {
+	return AbstractObject::getMatrix();
+}
+
 glm::mat4 AstronomicalObject::getMatrix() {
-	return getRotationalMatrix() * AbstractObject::getMatrix();
+	return getRotationalMatrix() * getPhysicalMatrix();
 }
 
 void AstronomicalObject::elapseTime(double seconds) {

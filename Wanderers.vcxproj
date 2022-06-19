@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="wanderers\include\common\orientation.h" />
     <ClInclude Include="wanderers\include\control\camera_control.h" />
     <ClInclude Include="wanderers\include\control\controller.h" />
     <ClInclude Include="wanderers\include\control\control_interface.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="wanderers\include\wanderers.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="wanderers\src\common\orientation.cpp" />
     <ClCompile Include="wanderers\src\control\camera_control.cpp" />
     <ClCompile Include="wanderers\main.cpp" />
     <ClCompile Include="wanderers\src\control\controller.cpp" />

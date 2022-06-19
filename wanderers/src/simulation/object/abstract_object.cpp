@@ -16,16 +16,16 @@ namespace object {
 
 std::uint64_t AbstractObject::id_counter_{0};
 
-glm::vec3 AbstractObject::orthogonalize(glm::vec3 v1, glm::vec3 v2) {
-	glm::vec3 normal{ glm::cross(v1, v2) };
-	return glm::rotate(glm::normalize(v1), glm::radians(90.0f), glm::normalize(normal));
+glm::vec3 AbstractObject::orthogonalize(glm::vec3 vector, glm::vec3 normal) {
+	glm::vec3 cross_normal{ glm::cross(glm::normalize(vector), glm::normalize(normal)) };
+	return glm::cross(glm::normalize(normal), glm::normalize(cross_normal));
 }
 
 AbstractObject::AbstractObject() : AbstractObject(kOrigo, kUp, kFace, kIdentityScale) {}
 
 AbstractObject::AbstractObject(glm::vec3 position, glm::vec3 orientation, glm::vec3 face, glm::vec3 scale, AbstractObject* parent) 
-	: position_{ position }, orientation_{ glm::normalize(orientation) }, face_{ orthogonalize(orientation_, glm::normalize(face)) },
-	side_{ glm::cross(orientation_, face_) }, scale_{ scale }, parent_{parent}, object_id_{ id_counter_++ } {}
+	: position_{ position }, orientation_{ glm::normalize(orientation) }, face_{ orthogonalize(face, orientation_) },
+	side_{ glm::cross(orientation_, face_) }, scale_{ scale }, object_id_{ id_counter_++ } {}
 
 std::uint64_t AbstractObject::getObjectId() const {
 	return object_id_;
@@ -84,14 +84,6 @@ void AbstractObject::setScale(glm::vec3 scale) {
 
 glm::vec3 AbstractObject::getScale() const {
 	return scale_;
-}
-
-void AbstractObject::setParent(AbstractObject* parent) {
-	parent_ = parent;
-}
-
-AbstractObject* AbstractObject::getParent() const {
-	return parent_;
 }
 
 glm::mat4 AbstractObject::getMatrix() {

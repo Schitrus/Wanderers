@@ -33,7 +33,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float fiel
  * - Create and return view matrix.
  */
 glm::mat4 Camera::getViewMatrix() {
-    view_ = glm::lookAt(position_, position_ + direction_, up_);
+    view_ = glm::lookAt(position_, position_ + getDirection(), getUp());
     return view_;
 }
 

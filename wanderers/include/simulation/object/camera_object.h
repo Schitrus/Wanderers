@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 
 /* Internal Includes */
+#include "common/orientation.h"
 #include "simulation/object/astronomical_object.h"
 
 #include <mutex>
@@ -45,6 +46,8 @@ public:
 	void setUp(glm::vec3 up);
 	void setRight(glm::vec3 right);
 
+	void setRelativeDirection(glm::vec3 relative_direction);
+
 	/* Translates the camera relative to it's position. */
 	void translate(glm::vec3 movement);
 
@@ -66,18 +69,20 @@ public:
 
 	void elapseTime(double seconds);
 
-	void setCameraFocus(AbstractObject* camera_focus);
+	void setCameraFocus(AstronomicalObject* camera_focus);
 
-	AbstractObject* getCameraFocus();
+	AstronomicalObject* getCameraFocus();
+
+	void focus();
 
 	void withMutext(std::function<void(void)> func);
 
 protected:
 
-	void modeUpdate(CameraMode mode, AbstractObject* focus);
+	void modeUpdate(CameraMode mode, AstronomicalObject* focus);
 
 	/* The focus of the camera */
-	AbstractObject* camera_focus_;
+	AstronomicalObject* camera_focus_;
 	
 	CameraMode camera_mode_;
 
@@ -90,20 +95,16 @@ protected:
 	glm::vec3 relative_position_;
 
 	/* Direction of the camera as a vector in world space. */
-	glm::vec3 direction_;
-	glm::vec3 right_;
-	glm::vec3 up_;
+	common::Orientation orientation_;
 
 	/* Direction of the camera as a vector relative to the focus object. */
-	glm::vec3 relative_direction_;
-	glm::vec3 relative_right_;
-	glm::vec3 relative_up_;
+	common::Orientation relative_orientation_;
 
 	std::mutex camera_object_mutex_;
 
 private:
 	static constexpr glm::vec3 kDefaultPosition{ 0.0f, 0.0f, 0.0f };
-	static constexpr glm::vec3 kDefaultDirection{ 0.0f, 0.0f, -1.0f };
+	static constexpr glm::vec3 kDefaultDirection{ 0.0f, 0.0f, 1.0f };
 	static constexpr glm::vec3 kDefaultUpVector{ 0.0f, 1.0f, 0.0f };
 
 	static constexpr CameraMode kDefaultCameraMode{ CameraMode::Free };

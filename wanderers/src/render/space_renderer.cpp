@@ -108,11 +108,12 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		shader_->setUniform(stars->getColor() * 0.8f * static_cast<float>(0.25f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
 		shader_->setUniform(true, "is_sun");
 
-		glDisable(GL_DEPTH_TEST);
+		glDepthRange(1.0f, 1.0f);
+		glDepthFunc(GL_LEQUAL);
 		glPointSize(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()));
 		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
-		glPointSize(1.0f);
-		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+		glDepthRange(0.0f, 1.0f);
 
 		object.first->unbind();
 	}

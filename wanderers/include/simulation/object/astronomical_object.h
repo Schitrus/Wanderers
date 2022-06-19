@@ -53,7 +53,12 @@ public:
 	void setAngularVelocity(float angular_velocity);
 	float getAngularVelocity();
 
+	void setParent(AstronomicalObject* parent);
+	AstronomicalObject* getParent() const;
+
 	virtual glm::mat4 getRotationalMatrix();
+
+	virtual glm::mat4 getPhysicalMatrix();
 
 	virtual glm::mat4 getMatrix();
 
@@ -69,6 +74,8 @@ private:
 
 	float rotational_angle_;
 	float angular_velocity_;
+
+	AstronomicalObject* parent_;
 };
 
 static const AstronomicalObject kAbstractAstronomicalObject{ kDefaultObject, new AggregateObject{kDefaultAggregate} };

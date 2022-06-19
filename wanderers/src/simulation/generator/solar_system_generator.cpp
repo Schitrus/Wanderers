@@ -467,62 +467,57 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
 
-	/*
-
 	// JUPITER MOON SYSTEM
 	{
 		// planet system
-		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ default_object };
+		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getIcosahedron() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 3.0f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(3.13f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(3.13f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ 360.0f / 0.42f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 1.0f, 0.75f, 0.0f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
 
-		// planet orbit
-		object::Orbit* planet_orbit = new object::Orbit{ *no_orbit };
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.75f, 0.0f } };
 
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
-
-		planet_system->addOrbit(planet, planet_orbit);
+		planet_system->addOrbit(planet);
 
 		// IO
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.18f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 1.8f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.95f, 1.0f, 0.5f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.95f, 1.0f, 0.5f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 10.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.05f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 1.8f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0041f;
+			constexpr float semimajor_axis = 10.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.05f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 1.8f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -530,29 +525,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// EUROPA
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.15f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 3.6f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.5f, 0.25f, 0.1f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.5f, 0.25f, 0.1f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 15.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.47f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 3.6f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0009f;
+			constexpr float semimajor_axis = 15.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.47f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 3.6f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -560,29 +557,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// GANYMEDE
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.26f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 7.2f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.95f, 1.0f, 0.8f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.95f, 1.0f, 0.8f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 25.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.20f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 7.2f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0013f;
+			constexpr float semimajor_axis = 25.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.20f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 7.2f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -590,42 +589,45 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// CALLISTO
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
-			float planet_radius{ 0.24f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			float planet_radius{ 0.26f };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 16.0f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.28f, 0.25f, 0.3f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+																 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.28f, 0.25f, 0.3f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 30.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.20f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 16.0f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0074f;
+			constexpr float semimajor_axis = 30.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.192f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 16.0f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
 
 		// planet system orbit
-		float planet_system_orbit_radius{ 120.0f };
-		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.32f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_system_orbit_angle{ angle(randomizer) };
-		float planet_system_orbit_velocity{ 360.0f / 4333.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
-
-		planet_system->setParent(planet_system_orbit);
-		planet_system_orbit->setParent(solar_system);
+		constexpr float eccentricity               = 0.0489f;
+		constexpr float semimajor_axis             = 120.0f;
+		constexpr float longitude_of_acending_node = glm::radians(100.464f);
+		constexpr float argument_of_perihelion     = glm::radians(273.867f);
+		constexpr float inclination                = glm::radians(0.32f);
+		const float true_anomaly                   = angle(randomizer);
+		constexpr float angular_velocity           = 360.0f / 4333.0f;
+		object::Orbit* planet_system_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+																argument_of_perihelion, true_anomaly, angular_velocity };
 
 		solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
@@ -633,57 +635,54 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// SATURN MOON SYSTEM
 	{
 		// planet system
-		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ default_object };
+		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getIcosahedron() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 2.0f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(26.73f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(26.73f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ 360.0f / 0.5f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 1.0f, 0.95f, 0.5f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
 
-		// planet orbit
-		object::Orbit* planet_orbit = new object::Orbit{ *no_orbit };
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.95f, 0.5f } };
 
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
-
-		planet_system->addOrbit(planet, planet_orbit);
+		planet_system->addOrbit(planet);
 
 		// MIMAS
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.02f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 0.95f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.9f, 0.9f, 0.9f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.9f, 0.9f, 0.9f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 5.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(1.574f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 0.95f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0196f;
+			constexpr float semimajor_axis = 5.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(1.574f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 0.95f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -691,29 +690,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// Enceladus
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.025f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 1.37f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.8f, 0.85f, 0.9f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+											         planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.8f, 0.85f, 0.9f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 6.5f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.009f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 1.37f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0047f;
+			constexpr float semimajor_axis = 6.5f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.009f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 1.37f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -721,29 +722,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// TETHYS
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.053f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 1.887f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.95f, 0.95f, 0.95f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.95f, 0.95f, 0.95f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 9.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(1.12f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 1.887f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0001f;
+			constexpr float semimajor_axis = 9.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(1.12f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 1.887f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -751,29 +754,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// DIONE
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.056f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 2.7f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.85f, 0.85f, 0.85f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.85f, 0.85f, 0.85f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 12.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.019f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 2.7f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0022f;
+			constexpr float semimajor_axis = 12.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.019f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 2.7f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -781,29 +786,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// RHEA
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.076f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 4.5f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.9f, 0.9f, 0.95f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.9f, 0.9f, 0.95f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 15.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.345f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 4.5f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0012583f;
+			constexpr float semimajor_axis = 15.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.345f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 4.5f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -811,29 +818,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// TITAN
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.26f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 16.0f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 1.0f, 0.9f, 0.0f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.9f, 0.0f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 25.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.35f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 16.0f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0288f;
+			constexpr float semimajor_axis = 25.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(0.35f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 16.0f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
@@ -841,130 +850,134 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		// IAPETUS
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.073f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
 			float planet_rot_angle_velocity{ -360.0f / 79.0f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.3f, 0.3f, 0.15f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.3f, 0.3f, 0.15f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 40.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(8.13f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ angle(randomizer) };
-			float planet_orbit_velocity{ 360.0f / 79.0f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0276812f;
+			constexpr float semimajor_axis = 40.0f;
+			const     float longitude_of_acending_node = angle(randomizer);
+			const     float argument_of_perihelion = angle(randomizer);
+			constexpr float inclination = glm::radians(8.13f);
+			const     float true_anomaly = angle(randomizer);
+			constexpr float angular_velocity = 360.0f / 79.0f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
 
 		// planet system orbit
-		float planet_system_orbit_radius{ 200.0f };
-		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.93f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_system_orbit_angle{ angle(randomizer) };
-		float planet_system_orbit_velocity{ 360.0f / 24491.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
-
-		planet_system->setParent(planet_system_orbit);
-		planet_system_orbit->setParent(solar_system);
+		constexpr float eccentricity               = 0.0489f;
+		constexpr float semimajor_axis             = 200.0f;
+		constexpr float longitude_of_acending_node = glm::radians(113.665f);
+		constexpr float argument_of_perihelion     = glm::radians(339.392f);
+		constexpr float inclination                = glm::radians(0.93f);
+		const float true_anomaly                   = angle(randomizer);
+		constexpr float angular_velocity           = 360.0f / 24491.0f;
+		object::Orbit* planet_system_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+																argument_of_perihelion, true_anomaly, angular_velocity };
 
 		solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
 
+	
+
 	// URANUS MOON SYSTEM
 	{
 	// planet system
-	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ default_object };
+	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 	// planet physical object
-	object::model::Mesh* planet_model{ object::model::getIcosahedron() };
-	object::Object* planet_object = new object::Object{ default_object, planet_model };
+	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 	// planet
 	float planet_radius{ 1.3f };
-	object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+	object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+									  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-	glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(97.77f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+	glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(97.77f), object::AbstractObject::kFace);
 	float planet_rot_angle{ angle(randomizer) };
 	float planet_rot_angle_velocity{ 360.0f / 0.75f };
-	object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-	glm::vec3 planet_color{ 0.5f, 1.0f, 1.0f };
-	object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+	object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+										     planet_rot_axis, object::AbstractObject::kFace };
 
-	// planet orbit
-	object::Orbit* planet_orbit = new object::Orbit{ *no_orbit };
+	object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.5f, 1.0f, 1.0f } };
 
-	planet->setParent(planet_orbit);
-	planet_orbit->setParent(planet_system);
-
-	planet_system->addOrbit(planet, planet_orbit);
+	planet_system->addOrbit(planet);
 
 	// MIRANDA
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.024f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 1.4f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.85f, 0.85f, 0.85f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.85f, 0.85f, 0.85f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 4.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(4.23f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 1.4f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
-
+		constexpr float eccentricity = 0.0013;
+		constexpr float semimajor_axis = 4.0f;
+		const     float longitude_of_acending_node = 0.0f;
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(4.23f + 97.77f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 1.4f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
+		
 		planet_system->addOrbit(planet, planet_orbit);
 	}
 
 	// ARIEL
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.058f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 2.52f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.5f, 0.5f, 0.5f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.5f, 0.5f, 0.5f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 6.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.26f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 2.52f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		constexpr float eccentricity = 0.0012f;
+		constexpr float semimajor_axis = 6.0f;
+		const     float longitude_of_acending_node = 0.0f;
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(0.26f + 97.77f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 2.52f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
 
 		planet_system->addOrbit(planet, planet_orbit);
 	}
@@ -972,29 +985,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// UMBRIEL
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.059f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 4.144f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.35f, 0.35f, 0.35f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.35f, 0.35f, 0.35f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 9.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.128f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 4.144f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		constexpr float eccentricity = 0.0039f;
+		constexpr float semimajor_axis = 9.0f;
+		const     float longitude_of_acending_node = 0.0f;
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(0.128f + 97.77f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 4.144f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
 
 		planet_system->addOrbit(planet, planet_orbit);
 	}
@@ -1002,29 +1017,31 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// TITANIA
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.079f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 8.7f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.9f, 0.9f, 0.75f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+													 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.9f, 0.9f, 0.75f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 20.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.340f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 8.7f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		constexpr float eccentricity = 0.0011f;
+		constexpr float semimajor_axis = 20.0f;
+		const     float longitude_of_acending_node = 0.0f;
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(0.340f + 97.77f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 8.7f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
 
 		planet_system->addOrbit(planet, planet_orbit);
 	}
@@ -1032,42 +1049,45 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// OBERON
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.076f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 13.5f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.9f, 0.75f, 0.65f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+															 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.9f, 0.75f, 0.65f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 25.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.058f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 13.5f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		constexpr float eccentricity = 0.0014;
+		constexpr float semimajor_axis = 25.0f;
+		const     float longitude_of_acending_node = 0.0f;
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(0.058f + 97.77f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 13.5f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
 
 		planet_system->addOrbit(planet, planet_orbit);
 	}
 
 	// planet system orbit
-	float planet_system_orbit_radius{ 250.0f };
-	glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.99f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-	float planet_system_orbit_angle{ angle(randomizer) };
-	float planet_system_orbit_velocity{ 360.0f / 30689.0f };
-	object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
-
-	planet_system->setParent(planet_system_orbit);
-	planet_system_orbit->setParent(solar_system);
+	constexpr float eccentricity = 0.04717f;
+	constexpr float semimajor_axis = 250.0f;
+	constexpr float longitude_of_acending_node = glm::radians(74.006f);
+	constexpr float argument_of_perihelion = glm::radians(96.998857f);
+	constexpr float inclination = glm::radians(0.99f);
+	const float true_anomaly = angle(randomizer);
+	constexpr float angular_velocity = 360.0f / 30689.0f;
+	object::Orbit* planet_system_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															argument_of_perihelion, true_anomaly, angular_velocity };
 
 	solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
@@ -1075,70 +1095,68 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// NEPTUNE MOON SYSTEM
 	{
 	// planet system
-	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ default_object };
+	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 	// planet physical object
-	object::model::Mesh* planet_model{ object::model::getIcosahedron() };
-	object::Object* planet_object = new object::Object{ default_object, planet_model };
+	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 	// planet
 	float planet_radius{ 1.3f };
-	object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+	object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+									  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-	glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(28.32f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+	glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(28.32f), object::AbstractObject::kFace);
 	float planet_rot_angle{ angle(randomizer) };
 	float planet_rot_angle_velocity{ 360.0f / 0.67f };
-	object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-	glm::vec3 planet_color{ 0.65f, 0.75f, 1.0f };
-	object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+	object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+											 planet_rot_axis, object::AbstractObject::kFace };
 
-	// planet orbit
-	object::Orbit* planet_orbit = new object::Orbit{ *no_orbit };
+	object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.65f, 0.75f, 1.0f } };
 
-	planet->setParent(planet_orbit);
-	planet_orbit->setParent(planet_system);
-
-	planet_system->addOrbit(planet, planet_orbit);
+	planet_system->addOrbit(planet);
 
 	// TRITON
 	{
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.14f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ -360.0f / 5.88f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 0.75f, 0.7f, 0.65f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+															 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.75f, 0.7f, 0.65f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 12.0f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(129.6f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ angle(randomizer) };
-		float planet_orbit_velocity{ 360.0f / 5.88f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		constexpr float eccentricity = 0.000016;
+		constexpr float semimajor_axis = 12.0f;
+		const     float longitude_of_acending_node = angle(randomizer);
+		const     float argument_of_perihelion = angle(randomizer);
+		constexpr float inclination = glm::radians(129.6f);
+		const     float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 5.88f;
+		object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+														 argument_of_perihelion, true_anomaly, angular_velocity };
 
 		planet_system->addOrbit(planet, planet_orbit);
 	}
 
 	// planet system orbit
-	float planet_system_orbit_radius{ 300.0f };
-	glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.74f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-	float planet_system_orbit_angle{ angle(randomizer) };
-	float planet_system_orbit_velocity{ 360.0f / 60195.0f };
-	object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_radius, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
-
-	planet_system->setParent(planet_system_orbit);
-	planet_system_orbit->setParent(solar_system);
+	constexpr float eccentricity = 0.008678;
+	constexpr float semimajor_axis = 300.0f;
+	constexpr float longitude_of_acending_node = glm::radians(131.783f);
+	constexpr float argument_of_perihelion = glm::radians(273.187f);
+	constexpr float inclination = glm::radians(0.74f);
+	const float true_anomaly = angle(randomizer);
+	constexpr float angular_velocity = 360.0f / 60195.0f;
+	object::Orbit* planet_system_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															argument_of_perihelion, true_anomaly, angular_velocity };
 
 	solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
@@ -1146,81 +1164,87 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// PLUTO MOON SYSTEM
 	{
 		// planet system
-		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ default_object };
+		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 		// planet physical object
-		object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-		object::Object* planet_object = new object::Object{ default_object, planet_model };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 		// planet
 		float planet_radius{ 0.12f };
-		object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+		object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+										  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-		glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(122.53f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+		glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 		float planet_rot_angle{ angle(randomizer) };
 		float planet_rot_angle_velocity{ 360.0f / 6.4f };
-		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-		glm::vec3 planet_color{ 1.0f, 0.95f, 0.75f };
-		object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+												 planet_rot_axis, object::AbstractObject::kFace };
+
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.95f, 0.75f } };
 
 		// planet orbit
-		float planet_orbit_radius{ 0.2f };
-		glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(129.6f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_orbit_angle{ 0.0f };
-		float planet_orbit_velocity{ 360.0f / 6.4f };
-		object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
 
-		planet->setParent(planet_orbit);
-		planet_orbit->setParent(planet_system);
+		{
 
-		planet_system->addOrbit(planet, planet_orbit);
+			constexpr float eccentricity = 0.0f;
+			constexpr float semimajor_axis = 0.2f;
+			const     float longitude_of_acending_node = 0.0f;
+			const     float argument_of_perihelion = 0.0f;
+			constexpr float inclination = glm::radians(119.6f);
+			constexpr float true_anomaly = 0.0f;
+			constexpr float angular_velocity = 360.0f / 6.4f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
+
+			planet_system->addOrbit(planet, planet_orbit);
+
+		}
 
 		// CHARON
 		{
 			// planet physical object
-			object::model::Mesh* planet_model{ object::model::getDefaultSurface() };
-			object::Object* planet_object = new object::Object{ default_object, planet_model };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
 
 			// planet
 			float planet_radius{ 0.06f };
-			object::AbstractObject planet_ao{ default_pos, default_axis, default_face, planet_radius };
+			object::AbstractObject planet_ao{ object::AbstractObject::kOrigo, object::AbstractObject::kUp,
+											  object::AbstractObject::kFace, glm::vec3{planet_radius} };
 
-			glm::vec3 planet_rot_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(0.0f), glm::vec3{ 0.0f, 0.0f, 1.0f });
+			glm::vec3 planet_rot_axis = glm::rotate(object::AbstractObject::kUp, glm::radians(0.0f), object::AbstractObject::kFace);
 			float planet_rot_angle{ angle(randomizer) };
-			float planet_rot_angle_velocity{ -360.0f / 6.4f };
-			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_axis, planet_rot_angle, planet_rot_angle_velocity };
-			glm::vec3 planet_color{ 0.75f, 0.7f, 0.65f };
-			object::Planet* planet = new object::Planet{ planet_astro, planet_color };
+			float planet_rot_angle_velocity{ 360.0f / 6.4f };
+			object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
+																 planet_rot_axis, object::AbstractObject::kFace };
+
+			object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.75f, 0.7f, 0.65f } };
 
 			// planet orbit
-			float planet_orbit_radius{ 1.0f };
-			glm::vec3 planet_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(119.6f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-			float planet_orbit_angle{ 180.0f };
-			float planet_orbit_velocity{ 360.0f / 6.4f };
-			object::Orbit* planet_orbit = new object::Orbit{ planet_orbit_radius, planet_orbit_axis, planet_orbit_angle, planet_orbit_velocity };
-
-			planet->setParent(planet_orbit);
-			planet_orbit->setParent(planet_system);
+			constexpr float eccentricity = 0.0002f;
+			constexpr float semimajor_axis = 1.0f;
+			const     float longitude_of_acending_node = 0.0f;
+			const     float argument_of_perihelion = 0.0f;
+			constexpr float inclination = glm::radians(119.6f);
+			constexpr float true_anomaly = 180.0f;
+			constexpr float angular_velocity = 360.0f / 6.4f;
+			object::Orbit* planet_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+															 argument_of_perihelion, true_anomaly, angular_velocity };
 
 			planet_system->addOrbit(planet, planet_orbit);
 		}
 
 		// planet system orbit
-		float system_axis_ratio{ 0.586966 / 0.569225 };
-		float planet_system_orbit_minor_axis{ 400.0f };
-		float planet_system_orbit_major_axis{ planet_system_orbit_minor_axis * system_axis_ratio };
-		glm::vec3 planet_system_orbit_axis = glm::rotate(glm::vec3{ 0.0f, 1.0f, 0.0f }, glm::radians(17.16f), glm::vec3{ 0.0f, 0.0f, 1.0f });
-		float planet_system_orbit_angle{ angle(randomizer) };
-		float planet_system_orbit_velocity{ 360.0f / 90560.0f };
-		object::Orbit* planet_system_orbit = new object::Orbit{ planet_system_orbit_major_axis, planet_system_orbit_minor_axis, planet_system_orbit_axis, planet_system_orbit_angle, planet_system_orbit_velocity };
-
-		planet_system->setParent(planet_system_orbit);
-		planet_system_orbit->setParent(solar_system);
+		constexpr float eccentricity = 0.2488f;
+		constexpr float semimajor_axis = 400.0f;
+		constexpr float longitude_of_acending_node = glm::radians(110.299f);
+		constexpr float argument_of_perihelion = glm::radians(113.834f);
+		constexpr float inclination = glm::radians(17.16f);
+		const float true_anomaly = angle(randomizer);
+		constexpr float angular_velocity = 360.0f / 90560.0f;
+		object::Orbit* planet_system_orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
+																argument_of_perihelion, true_anomaly, angular_velocity };
 
 		solar_system->addOrbit(planet_system, planet_system_orbit);
 	}
-
-	*/
 
 	return solar_system;
 }
