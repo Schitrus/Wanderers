@@ -25,6 +25,7 @@ SimulationControl::SimulationControl(GLFWwindow* window, simulation::SpaceSimula
 
 void SimulationControl::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
+	// SPACE: Pause/resume simulation.
 	case GLFW_KEY_SPACE:
 		simulation_->isPaused() ? simulation_->unpause() : simulation_->pause();
 		break;
@@ -36,12 +37,15 @@ void SimulationControl::enactKeyRelease(int key, double seconds) {
 }
 
 void SimulationControl::enactKeyPress(int key, double seconds) {
+	// No function for now.
 }
 
 void SimulationControl::enactCursorPosition(glm::vec2 delta, double seconds) {
+	// No function for now.
 }
 
 void SimulationControl::enactScrollOffset(glm::vec2 offset, double seconds) {
+	// Increase/decrease simulation speed.
 	simulation_->setSpeed(simulation_->getSpeed() * pow(1.01f, offset.y));
 }
 

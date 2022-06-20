@@ -13,11 +13,6 @@
 namespace wanderers {
 namespace control {
 
-/*
- * Controller Constructor:
- * - Set input callbacks.
- * - Start controller thread.
- */
 ControlInterface::ControlInterface(GLFWwindow* window) : window_{ window } {}
 
 } // namsepace wanderers

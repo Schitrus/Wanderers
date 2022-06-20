@@ -20,10 +20,6 @@ namespace control {
  */
 class SimulationControl : public ControlInterface {
 public:
-	enum class Mode {
-		Free, Orbital, Rotational, Count
-	};
-
 	SimulationControl(GLFWwindow* window, simulation::SpaceSimulation* simulation);
 
 	/* Interpret key changes and change state of the program. */

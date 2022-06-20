@@ -16,7 +16,7 @@ namespace common {
 
 
 /*
- * Class for representing orientation. 
+ * Class for representing orientation in space. 
  */
 class Orientation {
 public:
@@ -32,24 +32,16 @@ public:
 
 	Orientation(glm::vec3 normal, glm::vec3 tangent);
 
-	/*
-	 * Sets the orientation with the matrix over the passed orientation.
-	 */
+	/* Sets the orientation with the matrix over the passed orientation. */
 	void transform(glm::mat4 matrix, Orientation orientation);
 	
-	/*
-	 * Returns the movement translated according to the orientation.
-	 */
+	/* Returns the movement translated according to the orientation. */
 	glm::vec3 translate(glm::vec3 movement);
 
-	/*
-	 * Rotate the orientation and the passed vector around a point in origo.
-	 */
+	/* Rotate the orientation and the passed vector around a point in origo. */
 	glm::vec3 focusRotation(glm::vec2 angles_in_radians, glm::vec3 vector);
 
-	/*
-	 * Rotate around normal/tangent/bitangent and return the passed vector rotated.
-	 */
+	/* Rotate around normal/tangent/bitangent and return the passed vector rotated. */
 	glm::vec3 normalRotation(float angle_in_radians, glm::vec3 vector = kOrigo);
 	glm::vec3 tangentRotation(float angle_in_radians, glm::vec3 vector = kOrigo);
 	glm::vec3 bitangentRotation(float angle_in_radians, glm::vec3 vector = kOrigo);
@@ -72,24 +64,16 @@ public:
 	glm::mat4 orientationMatrix(Orientation from);
 
 protected:
-	/*
-	 * Normalized a vector, asserts error if vector is zero.
-	 */
+	/* Normalized a vector, asserts error if vector is zero. */
 	glm::vec3 normalize(glm::vec3 vector);
 
-	/*
-	 * Returns a vector that is orthogonal to the normal based on the vector given.
-	 */
+	/* Returns a vector that is orthogonal to the normal based on the vector given. */
 	glm::vec3 orthogonalize(glm::vec3 vector, glm::vec3 normal);
 
-	/*
-	 * Sets the passed normal to axis, and sets passed tangent and bitangent correspondingly.
-	 */
+	/* Sets the passed normal to axis, and sets passed tangent and bitangent correspondingly. */
 	void setAxis(glm::vec3 axis, glm::vec3& normal, glm::vec3& tangent, glm::vec3& bitangent);
 
-	/*
-	 * Rotate tangent and bitangent around the normal and return the passed vector rotated.
-	 */
+	/* Rotate tangent and bitangent around the normal and return the passed vector rotated. */
 	glm::vec3 rotation(float angle_in_radians, glm::vec3 vector, glm::vec3 normal, glm::vec3& tangent, glm::vec3& bitangent);
 
 	glm::vec3 normal_;
