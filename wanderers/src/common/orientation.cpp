@@ -19,9 +19,9 @@ glm::vec3 Orientation::orthogonalize(glm::vec3 vector, glm::vec3 normal) {
 	return glm::cross(normal, cross_product);
 }
 
-glm::vec3 Orientation::normalize(glm::vec3 normal) {
-	assert((glm::length(normal) > 0.0f) && "Vector have no direction!");
-	return glm::normalize(normal);
+glm::vec3 Orientation::normalize(glm::vec3 vector) {
+	assert((glm::length(vector) > 0.0f) && "Vector have no direction!");
+	return glm::normalize(vector);
 }
 
 Orientation::Orientation() : Orientation(kUp, kFront) {}
@@ -40,29 +40,35 @@ glm::vec3 Orientation::translate(glm::vec3 movement) {
     return normal_ * movement.z + tangent_ * movement.y + bitangent_ * movement.x;
 }
 
-glm::vec3 rotation(float angle_in_radians, glm::vec3 point, glm::vec3 normal, glm::vec3& tangent, glm::vec3& bitangent) {
+glm::vec3 Orientation::rotation(float angle_in_radians, glm::vec3 vector, glm::vec3 normal, glm::vec3& tangent, glm::vec3& bitangent) {
     tangent = glm::rotate(tangent, angle_in_radians, normal);
     bitangent = glm::rotate(bitangent, angle_in_radians, normal);
-    return glm::rotate(point, angle_in_radians, normal);
+    return glm::rotate(vector, angle_in_radians, normal);
 }
 
-glm::vec3 Orientation::focusRotation(glm::vec2 angles_in_radians, glm::vec3 point) {
-    return tangentRotation(angles_in_radians.x, point) + bitangentRotation(angles_in_radians.y, point) - 2.0f * point;
+glm::vec3 Orientation::focusRotation(glm::vec2 angles_in_radians, glm::vec3 vector) {
+    return tangentRotation(angles_in_radians.x, vector) + bitangentRotation(angles_in_radians.y, vector) - 2.0f * vector;
 }
 
-glm::vec3 Orientation::normalRotation(float angle_in_radians, glm::vec3 point) {
-    return rotation(angle_in_radians, point, normal_, tangent_, bitangent_);
+glm::vec3 Orientation::normalRotation(float angle_in_radians, glm::vec3 vector) {
+    return rotation(angle_in_radians, vector, normal_, tangent_, bitangent_);
 }
 
-glm::vec3 Orientation::tangentRotation(float angle_in_radians, glm::vec3 point) {
-    return rotation(angle_in_radians, point, tangent_, bitangent_, normal_);
+glm::vec3 Orientation::tangentRotation(float angle_in_radians, glm::vec3 vector) {
+    return rotation(angle_in_radians, vector, tangent_, bitangent_, normal_);
 }
 
-glm::vec3 Orientation::bitangentRotation(float angle_in_radians, glm::vec3 point) {
-    return rotation(angle_in_radians, point, bitangent_, normal_, tangent_);
+glm::vec3 Orientation::bitangentRotation(float angle_in_radians, glm::vec3 vector) {
+    return rotation(angle_in_radians, vector, bitangent_, normal_, tangent_);
 }
 
-void setAxis(glm::vec3 axis, glm::vec3& normal, glm::vec3& tangent, glm::vec3& bitangent) {
+/*
+ * Orientation setAxis.
+ * - If axis is zero do nothing.
+ * - If axis is opposite, mirror orientation.
+ * - Otherwise rotate normal and tangent with the rotation from normal to axis.
+ */
+void Orientation::setAxis(glm::vec3 axis, glm::vec3& normal, glm::vec3& tangent, glm::vec3& bitangent) {
     // Axis not zero
     if (glm::length(axis) > 0.0f) {
         glm::vec3 naxis = glm::normalize(axis);
@@ -104,7 +110,13 @@ glm::mat4 Orientation::orientationMatrix() {
     return orientationMatrix(kYOrientation);
 }
 
-
+/*
+ * Orientation orientationMatrix.
+ * - Calculate rotation matrix based on the normal.
+ * - Rotate the tangent with the calculated matrix.
+ * - Calculate rotation matrix based on the rotated tangent.
+ * - Combine the rotation matrices and return it.
+ */
 glm::mat4 Orientation::orientationMatrix(Orientation from) {
     glm::mat4 normal_matrix{ from.normal_ == -this->normal_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), from.tangent_) : glm::rotation(from.normal_, this->normal_) };
     glm::vec3 rotated_tangent{ normal_matrix * glm::vec4{ from.tangent_, 0.0f } };
