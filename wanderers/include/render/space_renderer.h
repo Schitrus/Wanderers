@@ -31,7 +31,7 @@ namespace render {
  */
 class SpaceRenderer {
 public:
-	SpaceRenderer(render::shader::ShaderProgram& shader, render::Camera& camera);
+	SpaceRenderer(render::shader::ShaderProgram* shader, render::Camera* camera);
 
 	/* Does some pre render operations. Has to be done befor each render iteration.*/
 	void preRender();
@@ -47,8 +47,6 @@ public:
 	/* Renders the objects of an orbital system. */
 	void render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform = glm::mat4{ 1.0f });
 
-	/* Renders the objects of an orbit. */
-	void render(simulation::object::Orbit* orbit, glm::mat4 transform = glm::mat4{ 1.0f });
 	/* Renders the solar object. */
 	void render(simulation::object::Solar* solar, glm::mat4 transform = glm::mat4{ 1.0f });
 	/* Renders the planet object. */
@@ -60,9 +58,9 @@ private:
 	int render_width_{};
 	int render_height_{};
 
-	render::shader::ShaderProgram& shader_;
+	render::shader::ShaderProgram* shader_;
 
-	render::Camera& camera_;
+	render::Camera* camera_;
 
 	glm::mat4 projection_;
 	glm::mat4 view_;

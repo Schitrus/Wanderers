@@ -13,6 +13,7 @@
 
 /* Internal Includes */
 #include "simulation/object/astronomical_object.h"
+#include "model/points.h"
 
 /* STL Includes */
 #include <vector>
@@ -27,22 +28,36 @@ namespace object {
  */
 class Stars : public AstronomicalObject {
 public:
-	Stars(int number_of_stars, float temperature, float size);
+	Stars(float temperature, float size, float distance, model::Points* points);
 
-	std::vector<glm::vec3>* generateStars(int number_of_stars);
+	/* Generate a random direction in space. */
+	static glm::vec3 generateRandomDirection();
+
+	/* Generate arbitrary stars. */
+	static model::Points* generateStars(int number_of_stars, float max_distance);
+
+	/* Generate a star cluster. */
+	static model::Points* generateCluster(int number_of_stars, float angle, glm::vec3 direction = generateRandomDirection());
+
+	/* Generate stars in a galaxy disc. */
+	static model::Points* generateGalaxyDisc(int number_of_stars);
 
 	/* Get the color of the stars. Depends on the temperature. */
 	glm::vec3 getColor();
 	
+	/* Returns the number of stars. */
 	float getSize();
+
+	/* Returns the distance factor of the stars. */
+	float getDistance();
 
 	/* Advance the simulation. */
 	void elapseTime(double seconds);
 
 private:
-	glm::vec3 star_positions_;
-
 	float temperature_;
+
+	float distance_;
 
 	float size_;
 };

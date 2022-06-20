@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * This class controls the Camera and calculates matrices it uses in render  *
+ * This class represents the camera.                                         *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -11,24 +11,24 @@
 /* External Includes */
 #include "glm/glm.hpp"
 
-/* STL Includes */
-#include <mutex>
+/* Internal Includes */
+#include "render/camera_view.h"
+#include "simulation/object/camera_object.h"
 
-// TODO: Add more camera modes.
+/* STL Includes */
+#include <functional>
 
 namespace wanderers {
 namespace render {
 
 /*
- * Class for controlling the camera and translating it's state into matrices.
+ * Class for the Camera.
  */
-class Camera {
+class Camera : public simulation::object::CameraObject, public CameraView {
 public:
 	Camera();
 
-	Camera(glm::vec3 position, float yaw, float pitch, float roll);
-
-	glm::vec3 getPosition();
+	Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float field_of_view, float aspect_ratio, float near, float far);
 
 	/* Returns matrix describing the cameras position and direction in world space. */
 	glm::mat4 getViewMatrix();
@@ -36,22 +36,10 @@ public:
 	/* Returns matrix describing the projection of the camera. NOTE: perspective projection. */
 	glm::mat4 getProjectionMatrix();
 
-	/* Moves the camera relative to it's position and direction. */
-	void move(glm::vec3 movement);
-
-	/* Changes the direction of the camera by rotating around the y axis. */
-	void turnYaw(float angle); 
-	/* Changes the direction of the camera by rotating around the x axis. */
-	void turnPitch(float angle);
-	/* Changes the direction of the camera by rotating around the z axis. 
-	   Note: Not used as of the moment. */
-	void turnRoll(float angle);
-
-	/* Sets the absolute position of the camera. */
-	void setPosition(glm::vec3 position);
-
-	void setAspectRatio(float aspect_ratio);
-	void setAspectRatio(int width, int height);
+	/* Functions to control the clearing before rendering. */
+	bool shouldClear();
+	void setShouldClear(bool should_clear);
+	bool getShouldClear();
 
 	/* Disable camera from changing. */
 	void lock();
@@ -59,40 +47,12 @@ public:
 	/* Enables camera from changing. */
 	void unlock();
 
-private:
-	/* The position of the camera in world space. */
-	glm::vec3 position_;
-
-	/* The direction of the camera described in angle degrees.*/
-	float yaw_, pitch_, roll_;
-	/* Direction of the camera as a vector. */
-	glm::vec3 direction_;
-
-	float field_of_view_;
-	float aspect_ratio_;
-	/* Describes the plane closest to the camera where objects are clipped. */
-	float near_;
-	/* Describes the plane furthest away from the camera where objects are clipped. */
-	float far_;
+	void withMutext(std::function<void(void)> func);
+protected:
+	bool should_clear_ = true;
 
 	glm::mat4 view_;
 	glm::mat4 projection_;
-
-	std::mutex camera_mutex_;
-
-	static constexpr glm::vec3 kDefaultStartingPosition{ 0.0f, 0.0f, 0.0f};
-	static constexpr float kDefaultStartingYaw{ 0.0f };
-	static constexpr float kDefaultStartingPitch{ 0.0f };
-	static constexpr float kDefaultStartingRoll{ 0.0f };
-	static constexpr float kDefaultFieldOfView{ 60.0f };
-	static constexpr float kDefaultAspectRatio{ 1.0f };
-	static constexpr float kDefaultNear{ 0.01f };
-	static constexpr float kDefaultFar{ 1000.0f };
-
-	static constexpr glm::vec3 kUpVector{ 0.0f, 1.0f, 0.0f };
-
-	/* Translates the direction angles to direction vector. */
-	glm::vec3 toDirection(float yaw, float pitch);
 };
 
 } // namespace render

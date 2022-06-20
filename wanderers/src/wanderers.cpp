@@ -1,3 +1,4 @@
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
  * Implementation of setup Wanderers program and running it.                 *
@@ -27,9 +28,6 @@
 
 namespace wanderers {
 
-/* Random generator with seed set as the time of execution. */
-static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
-
 /*  
  *  setupWindow:
  *  - Create window.
@@ -40,7 +38,7 @@ GLFWwindow* setupWindow() {
 	constexpr int window_width{ 1920 };
 	constexpr int window_height{ 1080 };
 
-	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, nullptr, nullptr) };
+	GLFWwindow* window{ glfwCreateWindow(window_width, window_height, window_title, glfwGetPrimaryMonitor(), nullptr) };
 
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);
@@ -63,9 +61,7 @@ void renderLoop(simulation::SpaceSimulation* simulation, render::SpaceRenderer* 
 
 		simulation->elapseTime(dt);
 
-		renderer->preRender();
 		renderer->render(simulation);
-		renderer->postRender();
 	}
 }
 
@@ -89,22 +85,17 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{};
-	space_simulation->addSolarSystem(simulation::generator::generateSolarSystem(40.0f));
-	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
-	std::uniform_real_distribution<float> size(1.0f, 2.0f);
-	for(int i = 0; i < 20; i++)
-		space_simulation->addStars(new simulation::object::Stars{100, temperature(randomizer), size(randomizer)});
+	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f, 0.0f, 1.0f}, 60.0f, 1.0f, 0.1f, 10000.0f } };
+	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	
 	// Setup render engine.
-	render::shader::ShaderProgram shader{ "shaders/vertex.glsl", "shaders/fragment.glsl" };
-	shader.link();
+	render::shader::ShaderProgram* shader{ new render::shader::ShaderProgram{"shaders/vertex.glsl", "shaders/fragment.glsl"} };
+	shader->link();
 	
-	render::Camera camera{ glm::vec3{0.0f, 16.0f, 0.0f}, 180.0f, -89.0f, 0.0f };
 	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
-	control::Controller::initController(camera, *space_simulation);
+	control::Controller::initController(camera, space_simulation);
 	
 	// Render loop until exit is requested.
 	renderLoop(space_simulation, space_renderer);

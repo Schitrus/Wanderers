@@ -121,6 +121,16 @@ std::vector<glm::vec3>* Icosahedron::generateIcosahedron() {
 	return vertices;
 }
 
+/*
+ * Icosahedron subDivide.
+ * - If sub division level is zero return vertices.
+ * - If sub division level is not zero.
+ *   - Generate four new triangles within the triangle.
+ *   - Set the vertices whitin the triangles to be of same distance to origo.
+ *   - Delete old vertices.
+ *   - Call subDivide with a level less.
+ * - Return vertices.
+ */
 std::vector<glm::vec3>* Icosahedron::subDivide(std::vector<glm::vec3>* vertices, int level) {
 	std::vector<glm::vec3>* sub_divided_vertices;
 	if (level == 0) {

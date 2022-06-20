@@ -12,7 +12,9 @@
 #include "glm/glm.hpp"
 
 /* Internal Includes */
-#include "simulation/object/model/mesh.h"
+#include "common/orientation.h"
+#include "simulation/object/abstract_object.h"
+#include "simulation/object/aggregate_object.h"
 
 /* STL Includes */
 #include <vector>
@@ -21,31 +23,61 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-// TODO: Generalize the model.
-
 /*
  * This class is the base for representation of astronomical objects in space simulation. 
  */
-class AstronomicalObject {
+class AstronomicalObject : public AbstractObject {
 public:
-	AstronomicalObject();
+	AstronomicalObject(AbstractObject abstract_object, AggregateObject* physical_object);
 
-	AstronomicalObject(model::Mesh* surface);
+	AstronomicalObject(AbstractObject abstract_object, AggregateObject* physical_object, 
+					   float rotational_angle, float angular_velocity,
+					   glm::vec3 rotational_axis, glm::vec3 rotational_face);
 
-	/* Gets the set model for the astronomical object. */
-	virtual std::vector<glm::vec3>* getSurface();
+	void setPhysicalObject(AggregateObject* physical_object);
+	AggregateObject* const getPhysicalObject();
 
-	/* Advance the simulation. */
-	virtual void elapseTime(double seconds) = 0;
+	void setRotationalAxis(glm::vec3 rotational_axis);
+	glm::vec3 getRotationalAxis() const;
 
-	/* Bind/unbind the astronomical object model for rendering. */
-	void bind();
-	void unbind();
+	void setRotationalFace(glm::vec3 rotational_face);
+	glm::vec3 getRotationalFace() const;
+
+	void setRotationalSide(glm::vec3 rotational_side);
+	glm::vec3 getRotationalSide() const;
+
+	void setRotationalAngle(float rotational_angle);
+	float getRotationalAngle();
+
+	void setAngularVelocity(float angular_velocity);
+	float getAngularVelocity();
+
+	/* The parent object that this object depends on. */
+	void setParent(AstronomicalObject* parent);
+	AstronomicalObject* getParent() const;
+
+	virtual glm::mat4 getRotationalMatrix();
+
+	virtual glm::mat4 getPhysicalMatrix();
+
+	virtual glm::mat4 getMatrix();
+
+	virtual void elapseTime(double seconds);
 
 private:
-	/* Model of the astronomical object. */
-	model::Mesh* surface_;
+	/* Object that represents the physical representation of the astronomical object. */
+	AggregateObject* physical_object_;
+
+	/* Orientation of the rotation of the astronomical object. */
+	common::Orientation rotational_orientation_;
+
+	float rotational_angle_;
+	float angular_velocity_;
+
+	AstronomicalObject* parent_;
 };
+
+static const AstronomicalObject kAbstractAstronomicalObject{ kDefaultObject, new AggregateObject{kDefaultAggregate} };
 
 } // namespace object
 } // namespace simulation

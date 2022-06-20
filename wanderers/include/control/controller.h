@@ -15,11 +15,13 @@
 /* Internal Includes */
 #include "render/camera.h"
 #include "simulation/space_simulation.h"
+#include "control/control_interface.h"
 
 /* STL Includes */
 #include <set>
 #include <atomic>
 #include <mutex>
+#include <vector>
 
 namespace wanderers {
 namespace control {
@@ -28,10 +30,10 @@ namespace control {
  * Class for which to store key and mouse input changes and interpret them
  *   in the context of the program.
  */
-class Controller {
+class Controller : public ControlInterface{
 public:
 	/* Intitializes the controller singleton and start controller thread. */
-	static void initController(render::Camera& camera, simulation::SpaceSimulation& simulation);
+	static void initController(render::Camera* camera, simulation::SpaceSimulation* simulation);
 	/* Deinitializes the controller singleton and stops the controller thread. */
 	static void deinitController();
 
@@ -40,11 +42,7 @@ public:
 
 	~Controller();
 private:
-	/* Window for which to interpret input from. */
-	GLFWwindow* window_;
-
-	render::Camera& camera_;
-	simulation::SpaceSimulation& simulation_;
+	std::vector<ControlInterface*> controls_;
 
 	/* Boolean for stopping the controller thread. */
 	std::atomic<bool> should_stop_;
@@ -83,7 +81,7 @@ private:
 	std::mutex controller_mutex_;
 
 	/* Constructor for singleton. */
-	Controller(GLFWwindow* window, render::Camera& camera, simulation::SpaceSimulation& simulation);
+	Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation);
 
 	/* Run the controller handling loop. */
 	void runController();
@@ -101,9 +99,9 @@ private:
 	void enactKeyRelease(int key, double seconds);
 	void enactKeyPress(int key, double seconds);
 	/* Interpret cursor position changes and change state of the program. */
-	void enactCursorPosition(double seconds);
+	void enactCursorPosition(glm::vec2 delta, double seconds);
 	/* Interpret scroll offset changes and change state of the program. */
-	void enactScrollOffset(double seconds);
+	void enactScrollOffset(glm::vec2 offset, double seconds);
 
 	/* Number of possible different key presses. */
 	static constexpr int kNumKeys{ GLFW_KEY_LAST };

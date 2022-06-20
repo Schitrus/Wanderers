@@ -24,40 +24,18 @@ namespace object {
  */
 class Solar : public AstronomicalObject{
 public:
-	Solar();
-
-	Solar(float temperature, float radius,
-		  float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
-
-	Solar(model::Mesh* surface, float temperature, float radius,
-		  float angular_velocity, glm::vec3 rotational_axis, float rotational_angle);
+	Solar(float radius, float temperature);
+	Solar(AstronomicalObject astronomical_object, float temperature);
 
 	/* Get the surface color of the solar. Depends on the temperature. */
 	glm::vec3 getColor();
 
-	/* Returns the matrix describing the solar current rotation and size. */
-	glm::mat4 getSolarMatrix();
-
-	/* Advance the simulation. */
-	void elapseTime(double seconds);
+	void setTemperature(float temperature);
+	float getTemperature();
 
 private:
 	/* Temperature of the sun in Kelvin. */
 	float temperature_;
-	
-	float radius_;
-
-	/* The time in seconds it takes for the solar to make one revolution around its axis. */
-	float angular_velocity_;
-	glm::vec3 rotational_axis_;
-	/* Current rotation of the solar as an angle in degrees. */
-	float rotational_angle_;
-
-	static constexpr float kDefaultTemperature{ 2500.0f };
-	static constexpr float kDefaultRadius{ 1.0f };
-	static constexpr float kDefaultAngularVelocity{ 0.0f };
-	static constexpr glm::vec3 kDefaultRotationalAxis{ 0.0f, 1.0f, 0.0f };
-	static constexpr float kDefaultStartingRotationalAngle{ 0.0f };
 };
 
 } // namespace simulation

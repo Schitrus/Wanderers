@@ -12,58 +12,24 @@
 
 /* Internal Includes */
 #include "simulation/object/model/icosahedron.h"
+#include "simulation/object/model/surface.h"
 
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-Planet::Planet() : AstronomicalObject{model::getIcosahedron()},
-	               surface_color_{ kDefaultSurfaceColor },
-				   radius_{ kDefaultRadius },
-				   angular_velocity_{ kDefaultAngularVelocity },
-				   rotational_axis_{ glm::normalize(kDefaultRotationalAxis) },
-				   rotational_angle_{ kDefaultStartingRotationalAngle } {}
+Planet::Planet(float radius, glm::vec3 surface_color)
+    : Planet{ AstronomicalObject{ AbstractObject{kOrigo, kUp, kFace, glm::vec3{radius}},
+                                  new AggregateObject{Object{model::getDefaultSurface()}}}, surface_color } {}
 
-Planet::Planet(glm::vec3 surface_color, float radius,
-	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-	           : AstronomicalObject{ model::getIcosahedron() },
-	             surface_color_{ surface_color },
-				 radius_{ radius },
-				 angular_velocity_{ angular_velocity },
-				 rotational_axis_{ glm::normalize(rotational_axis) },
-				 rotational_angle_{ rotational_angle } {}
+Planet::Planet(AstronomicalObject astronomical_object, glm::vec3 surface_color) 
+	: AstronomicalObject{ astronomical_object }, surface_color_{surface_color} {}
 
-Planet::Planet(model::Mesh* surface, glm::vec3 surface_color, float radius,
-	           float angular_velocity, glm::vec3 rotational_axis, float rotational_angle)
-	           : AstronomicalObject{ surface },
-	             surface_color_{ surface_color },
-	             radius_{ radius },
-	             angular_velocity_{ angular_velocity },
-	             rotational_axis_{ glm::normalize(rotational_axis) },
-	             rotational_angle_{ rotational_angle } {}
+void Planet::setColor(glm::vec3 color) {
+	surface_color_ = color;
+}
 
 glm::vec3 Planet::getColor() { return surface_color_; }
-
-/*
- * Planet getPlanetMatrix:
- * - Create matrix (matrix multiplication reverse order):
- *   - Scale the planet to its current size.
- *   - Rotate the planet around it's axis.
- */
-glm::mat4 Planet::getPlanetMatrix() {
-	glm::mat4 planet_matrix = glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_)
-		                    * glm::scale(glm::mat4{ 1.0f }, glm::vec3{ radius_ });
-	return planet_matrix;
-}
-
-/*
- * Planet elapseTime:
- * - Increase rotational angle as much as the angular velocity.
- */
-void Planet::elapseTime(double seconds) {
-	rotational_angle_ += angular_velocity_ * seconds;
-	rotational_angle_ = fmod(rotational_angle_, 360.0f);
-}
 
 } // namespace object
 } // namespace simulation

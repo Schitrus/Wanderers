@@ -10,34 +10,30 @@
 /* External Includes */
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/euler_angles.hpp"
+#include "glm/gtx/vector_angle.hpp"
 
 /* STL Includes */
 #include <algorithm>
+#include <mutex>
+
+#include <iostream>
 
 namespace wanderers {
 namespace render {
 
-Camera::Camera() : position_{kDefaultStartingPosition}, yaw_{kDefaultStartingYaw}, pitch_{kDefaultStartingPitch}, roll_{kDefaultStartingRoll},
-                   direction_{ toDirection(yaw_, pitch_) },
-                   field_of_view_{ kDefaultFieldOfView }, aspect_ratio_{ kDefaultAspectRatio }, near_{ kDefaultNear }, far_{kDefaultFar},
-                   view_{glm::lookAt(position_, position_ + direction_, kUpVector)}, projection_{glm::perspective(field_of_view_, aspect_ratio_, near_, far_)} {}
+Camera::Camera() : CameraObject{}, CameraView{} {}
 
-Camera::Camera(glm::vec3 position, float yaw, float pitch, float roll) 
-             : position_{ position }, yaw_{ yaw }, pitch_{ pitch }, roll_{ roll },
-               direction_{ toDirection(yaw_, pitch_) },
-               field_of_view_{ kDefaultFieldOfView }, aspect_ratio_{ kDefaultAspectRatio }, near_{ kDefaultNear }, far_{ kDefaultFar },
-               view_{ glm::lookAt(position_, position_ + direction_, kUpVector) }, projection_{ glm::perspective(field_of_view_, aspect_ratio_, near_, far_) } {}
-
-glm::vec3 Camera::getPosition() { return position_; }
+Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up, float field_of_view, float aspect_ratio, float near, float far) 
+              : CameraObject{position, direction, up}, CameraView{field_of_view, aspect_ratio, near, far} {}
 
 /*
  * Camera getViewMatrix:
  * - Translate angles direction to vector direction.
  * - Create and return view matrix.
  */
-glm::mat4 Camera::getViewMatrix() { 
-    direction_ = toDirection(yaw_, pitch_);
-    view_ = glm::lookAt(position_, position_ + direction_, kUpVector);
+glm::mat4 Camera::getViewMatrix() {
+    view_ = glm::lookAt(position_, position_ + getDirection(), getUp());
     return view_;
 }
 
@@ -45,84 +41,36 @@ glm::mat4 Camera::getViewMatrix() {
  * Camera getProjectionMatrix
  * - Create and return perspective projection matrix.
  */
-glm::mat4 Camera::getProjectionMatrix() { 
+glm::mat4 Camera::getProjectionMatrix() {
     projection_ = glm::perspective(glm::radians(field_of_view_), aspect_ratio_, near_, far_);
     return projection_;
 }
 
-/*
- * Camera move:
- * - Increment the position with the movement in z direction parallel with the direction vector.
- * - Increment the position with the movement in x direction orthogonal to the direction and y vector.
- * - Increment the position with the movement in y direction orthogonal to the direction and cameras up direction.
- */
-void Camera::move(glm::vec3 movement) { 
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    position_ += -glm::normalize(direction_) * movement.z
-              +   glm::normalize(glm::cross(direction_, kUpVector)) * movement.x
-              +   glm::normalize(glm::cross(glm::cross(direction_, kUpVector), direction_)) * movement.y;
-}
-
-/*
- * Camera turnYaw:
- * - Increments the yaw in degrees but keep it in the interval of -360.0 - 360.0 .
- */
-void Camera::turnYaw(float angle) {
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    yaw_ += angle;
-    yaw_ = fmod(yaw_, 360.0f);
-}
-
-/*
- * Camera turnYaw:
- * - Increments the pitch in degrees but don't let it go below -89.0 or above 89.0 .
- */
-void Camera::turnPitch(float angle) {
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    pitch_ += angle;
-    pitch_ = std::max(std::min(pitch_, 89.0f), -89.0f);
-}
-
-/* Camera turnYaw:
- *  - Increments the roll in degrees but keep it in the interval of -360.0 - 360.0 .
- */
-void Camera::turnRoll(float angle) {
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    roll_ += angle;
-    roll_ = fmod(roll_, 360.0f);
-}
-
-void Camera::setPosition(glm::vec3 position) { 
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    position_ = position; 
-}
-
-void Camera::setAspectRatio(float aspect_ratio) {
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    aspect_ratio_ = aspect_ratio;
-}
-void Camera::setAspectRatio(int width, int height) {
-    std::lock_guard<std::mutex> guard(camera_mutex_);
-    aspect_ratio_ = static_cast<float>(width) / height;
-}
-
-/*
- * Camera toDirection:
- * - Translate the angles from degrees to radians.
- * - Use trigonemtric functions to translate the angles to directional vector vector.
- */
-glm::vec3 Camera::toDirection(float yaw, float pitch) {
-    return glm::vec3{sin(glm::radians(yaw)) * cos(glm::radians(pitch)),
-                     sin(glm::radians(pitch)),
-                     cos(glm::radians(yaw)) * cos(glm::radians(pitch))};
-}
-
 void Camera::lock() {
-    camera_mutex_.lock();
+    camera_object_mutex_.lock();
+    camera_view_mutex_.lock();
 }
 
 void Camera::unlock() {
-    camera_mutex_.unlock();
+    camera_view_mutex_.unlock();
+    camera_object_mutex_.unlock();
+}
+
+void Camera::withMutext(std::function<void(void)> func) {
+    assert(func);
+    std::lock_guard<std::mutex> view_guard{ camera_view_mutex_ };
+    std::lock_guard<std::mutex> object_guard{ camera_object_mutex_ };
+    func();
+}
+
+bool Camera::shouldClear() {
+    return getShouldClear();
+}
+void Camera::setShouldClear(bool should_clear) {
+    should_clear_ = should_clear;
+}
+bool Camera::getShouldClear() {
+    return should_clear_;
 }
 
 } // namespace render

@@ -7,6 +7,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "control/controller.h"
 
+/* Internal Includes */
+#include "control/camera_control.h"
+#include "control/simulation_control.h"
+
 /* STL Includes */
 #include <thread>
 
@@ -18,7 +22,7 @@ namespace control {
  * - Set input callbacks.
  * - Start controller thread.
  */
-Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::SpaceSimulation& simulation) : window_{ window }, camera_{ camera }, simulation_{ simulation },
+Controller::Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation) : ControlInterface{ window },
                                                              pressed_keys_{ std::size_t{kNumKeys} },
                                                              released_keys_{ std::size_t{kNumKeys} },
 	                                                         cursor_position_{} {
@@ -30,6 +34,9 @@ Controller::Controller(GLFWwindow* window, render::Camera& camera, simulation::S
 	glfwSetScrollCallback(window_, scrollCallback);
 	glfwSetCursorPosCallback(window_, cursorPositionCallback);
 	glfwSetKeyCallback(window_, keyCallback);
+
+	controls_.push_back(new CameraControl{ window, camera, simulation });
+	controls_.push_back(new SimulationControl{ window, simulation });
 
 	should_stop_ = false;
 	std::thread controller_thread{&Controller::runController, this};
@@ -52,7 +59,7 @@ Controller::~Controller() {
  * Controller initController: 
  * - Create Controller singleton if not created.
  */
-void Controller::initController(render::Camera& camera, simulation::SpaceSimulation& simulation) {
+void Controller::initController(render::Camera* camera, simulation::SpaceSimulation* simulation) {
 	if (controller_singleton_ == nullptr)
 		controller_singleton_ = new Controller{ glfwGetCurrentContext(), camera, simulation};
 }
@@ -128,9 +135,10 @@ void Controller::runController() {
  */
 void Controller::handleControls(double seconds) {
 	std::lock_guard<std::mutex> guard(controller_mutex_);
-	enactCursorPosition(seconds);
+	enactCursorPosition(cursor_position_.fetchDelta(), seconds);
 
-	enactScrollOffset(seconds);
+	enactScrollOffset(scroll_offset_, seconds);
+	scroll_offset_ = glm::vec2{ 0.0f };
 
 	for (int triggered_key : triggered_keys_)
 		enactKeyTrigger(triggered_key, seconds);
@@ -147,56 +155,33 @@ void Controller::handleControls(double seconds) {
 }
 
 void Controller::enactKeyTrigger(int key, double seconds) {
-	switch (key) {
-	case GLFW_KEY_SPACE:
-		simulation_.isPaused() ? simulation_.unpause() : simulation_.pause();
-		break;
-	}
+	for (ControlInterface* control : controls_)
+		control->enactKeyTrigger(key, seconds);
 }
 
 void Controller::enactKeyRelease(int key, double seconds) {
-	// No function for now.
+	for (ControlInterface* control : controls_)
+		control->enactKeyRelease(key, seconds);
 }
 
 void Controller::enactKeyPress(int key, double seconds) {
 	switch (key) {
-	case GLFW_KEY_W:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f,-1.0f });
-		break;
-	case GLFW_KEY_S:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 0.0f, 1.0f });
-		break;
-	case GLFW_KEY_A:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ -1.0f, 0.0f, 0.0f });
-		break;
-	case GLFW_KEY_D:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 1.0f, 0.0f, 0.0f });
-		break;
-	case GLFW_KEY_LEFT_SHIFT:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f, 1.0f, 0.0f });
-		break;
-	case GLFW_KEY_LEFT_CONTROL:
-		camera_.move(static_cast<float>(4.0 * seconds) * glm::vec3{ 0.0f,-1.0f, 0.0f });
-		break;
 	case GLFW_KEY_ESCAPE:
 		glfwSetWindowShouldClose(window_, GLFW_TRUE);
 		should_stop_ = true;
 	}
+	for (ControlInterface* control : controls_)
+		control->enactKeyPress(key, seconds);
 }
 
-void Controller::enactCursorPosition(double seconds) {
-	glm::vec2 delta{ cursor_position_.fetchDelta() };
-
-	int width, height;
-	glfwGetFramebufferSize(window_, &width, &height);
-
-	camera_.turnYaw(-delta.x/10.0f);
-	camera_.turnPitch(-delta.y/10.0f);
+void Controller::enactCursorPosition(glm::vec2 delta, double seconds) {
+	for (ControlInterface* control : controls_)
+		control->enactCursorPosition(delta, seconds);
 }
 
-void Controller::enactScrollOffset(double seconds) {
-	simulation_.setSpeed(simulation_.getSpeed() * pow(1.01f, scroll_offset_.y));
-	scroll_offset_ = glm::vec2{ 0.0f };
+void Controller::enactScrollOffset(glm::vec2 offset, double seconds) {
+	for (ControlInterface* control : controls_)
+		control->enactScrollOffset(offset, seconds);
 }
 
 /*

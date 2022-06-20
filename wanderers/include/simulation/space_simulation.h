@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Class that simulates a solar system.                                      *
+ * Class that simulates solar systems and stars.                             *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -12,6 +12,8 @@
 #include "simulation/object/orbital_system.h"
 #include "simulation/object/stars.h"
 
+#include "render/camera.h"
+
 /* STL Includes */
 #include <vector>
 
@@ -19,18 +21,18 @@ namespace wanderers {
 namespace simulation {
 
 /*
- * This class simulates a solar system.
+ * This class simulates solar systems and stars.
  */
 class SpaceSimulation {
 public:
-	SpaceSimulation();
+	SpaceSimulation(object::CameraObject* camera_object);
 
 	~SpaceSimulation();
 
 	/* Add solar system to the simulation. */
 	void addSolarSystem(object::OrbitalSystem* solar_system);
 
-	/* Add stars. */
+	/* Add group of stars to the simulation. */
 	void addStars(object::Stars* stars);
 
 	std::vector<object::OrbitalSystem*> getSolarSystems();
@@ -50,13 +52,26 @@ public:
 	void setSpeed(double simulation_speed);
 	double getSpeed();
 
+	unsigned int getCameraFocusId();
+
+	void setCameraFocusId(unsigned int focus_id);
+
+	unsigned int cycleCameraFocusId();
+
 private:
 	std::vector<object::OrbitalSystem*> solar_systems_;
 	std::vector<object::Stars*> group_of_stars_;
 
+	object::CameraObject* camera_object_;
+
+	/* Catalog of astronomical objects ordered after dependency and distance. */
+	std::vector<object::AstronomicalObject*> astrological_catalog_;
+
 	bool is_paused_;
 
 	double simulation_speed_;
+
+	unsigned int camera_focus_id_;
 };
 
 } // namespace simulation

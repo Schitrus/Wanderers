@@ -37,6 +37,14 @@ protected:
 	std::vector<glm::vec3>* generateSurface(std::vector<glm::vec3>* vertices, float roughness);
 };
 
+static Surface* getDefaultSurface() {
+	static Surface* surface;
+	if (!surface) {
+		surface = new Surface{ 3, 0.5 };
+	}
+	return surface;
+}
+
 } // namespace model
 } // namespace object
 } // namespace simulation

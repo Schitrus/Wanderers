@@ -7,44 +7,51 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 #include "simulation/object/orbital_system.h"
 
+#include <iostream>
+#include <algorithm>
+
 namespace wanderers {
 namespace simulation {
 namespace object {
 
-OrbitalSystem::OrbitalSystem(AstronomicalObject* orbitee) : orbitee_{orbitee},
-                                                            orbits_{} {}
+OrbitalSystem::OrbitalSystem() : OrbitalSystem{kAbstractAstronomicalObject} {}
 
-AstronomicalObject* OrbitalSystem::getOrbitee() {
-	return orbitee_;
+OrbitalSystem::OrbitalSystem(AstronomicalObject* center_object) 
+	: OrbitalSystem{ kAbstractAstronomicalObject, center_object } {}
+
+OrbitalSystem::OrbitalSystem(AstronomicalObject astronomical_object) 
+	: AstronomicalObject{ astronomical_object } {}
+
+OrbitalSystem::OrbitalSystem(AstronomicalObject astronomical_object, AstronomicalObject* center_object)
+	: OrbitalSystem{astronomical_object} {
+	addOrbit(center_object);
 }
 
-std::vector<Orbit*> OrbitalSystem::getOrbits() {
+std::vector<std::pair<AstronomicalObject*, Orbit*>> OrbitalSystem::getOrbits() {
 	return orbits_;
 }
 
-void OrbitalSystem::addOrbit(Orbit* orbit) { orbits_.push_back(orbit); }
+void OrbitalSystem::addOrbit(AstronomicalObject* object) {
+	addOrbit(object, new Orbit{ kNoOrbit });
+}
+
+void OrbitalSystem::addOrbit(AstronomicalObject* object, Orbit* orbit) {
+	orbit->setParent(this);
+	object->setParent(orbit);
+	orbits_.push_back(std::make_pair(object, orbit)); 
+}
 
 /*
  * OrbitalSystem elapseTime:
  * - If simulation is not paused:
- *   - Elapse time for the orbitee.
  *   - Elapse time for all orbits.
  */
 void OrbitalSystem::elapseTime(double seconds) {
-	orbitee_->elapseTime(seconds);
-	for (Orbit* orbit : orbits_)
-		orbit->elapseTime(seconds);
-}
-
-/*
- * OrbitalSystem Destructor:
- * - Destroy Orbitee.
- * - Destroy all orbits.
- */
-OrbitalSystem::~OrbitalSystem() {
-	delete orbitee_;
-	for (Orbit* orbit : orbits_)
-		delete orbit;
+	std::for_each(orbits_.begin(), orbits_.end(), 
+		[seconds](std::pair<AstronomicalObject*, Orbit*> current_orbit) {
+			current_orbit.first->elapseTime(seconds); 
+			current_orbit.second->elapseTime(seconds);  
+		});
 }
 
 } // namespace object

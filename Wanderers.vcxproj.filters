@@ -24,7 +24,7 @@
     <ClInclude Include="wanderers\include\render\shader\shader_program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wanderers\include\render\camera.h">
+    <ClInclude Include="wanderers\include\render\camera_view.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="wanderers\include\render\space_renderer.h">
@@ -69,6 +69,33 @@
     <ClInclude Include="wanderers\include\simulation\object\model\surface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\camera_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\control\camera_control.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\render\camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\control\control_interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\control\simulation_control.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\abstract_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\aggregate_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\common\orientation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wanderers\main.cpp">
@@ -86,7 +113,7 @@
     <ClCompile Include="wanderers\src\render\shader\shader_program.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wanderers\src\render\camera.cpp">
+    <ClCompile Include="wanderers\src\render\camera_view.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wanderers\src\render\space_renderer.cpp">
@@ -128,5 +155,35 @@
     <ClCompile Include="wanderers\src\simulation\object\model\surface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\camera_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\control\camera_control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\render\camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\control\control_interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\control\simulation_control.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\abstract_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\aggregate_object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\common\orientation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="doc\diagram.uml" />
   </ItemGroup>
 </Project>

@@ -19,40 +19,62 @@ namespace object {
  * This class represents an orbit of an astronimical object.
  * The object the orbitor orbits is irrelevant.
  */
-class Orbit {
-public:
-	Orbit(AstronomicalObject* object);
+class Orbit : public AstronomicalObject {
+public:	
+	Orbit(float eccentricity, float semimajor_axis, float inclination, float longitude_of_acending_node, float argument_of_periapsis, float true_anomaly, float angular_velocity);
 
-	Orbit(AstronomicalObject* object, float radius, float angular_velocity, glm::vec3 orbital_axis, float orbital_angle);
+	Orbit(float radius, float angular_velocity, float orbital_angle);
+	Orbit(float major_axis, float minor_axis, float angular_velocity, float orbital_angle);
 
-	~Orbit();
+	Orbit(float radius, float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face);
+	Orbit(float major_axis, float minor_axis, float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face);
 
-	AstronomicalObject* getOrbitor();
+	Orbit(AstronomicalObject astronomical_object, float major_axis, float minor_axis, float angular_velocity, float orbital_angle, glm::vec3 orbital_axis, glm::vec3 orbital_face);
+
+	Orbit(const Orbit& orbit) = default;
+
+	void setMajorAxis(float major_axis);
+	float getMajorAxis();
+
+	void setMinorAxis(float minor_axis);
+	float getMinorAxis();
+
+	void setAngularVelocity(float angular_velocity);
+	float getAngularVelocity();
+
+	void setOrbitalAngle(float orbital_angle);
+	float getOrbitalAngle();
+
+	void setOrbitalAxis(glm::vec3 orbital_axis);
+	glm::vec3 getOrbitalAxis() const;
+
+	void setOrbitalFace(glm::vec3 orbital_face);
+	glm::vec3 getOrbitalFace() const;
+
+	void setOrbitalSide(glm::vec3 orbital_side);
+	glm::vec3 getOrbitalSide() const;
 
 	/* Returns the matrix describing the object in it's current place in orbit. */
 	glm::mat4 getOrbitMatrix();
 
+	virtual glm::mat4 getMatrix();
+
 	/* Advance the simulation. */
-	void elapseTime(double seconds);
+	virtual void elapseTime(double seconds);
 
 private:
-	/* The object in orbit. */
-	AstronomicalObject* orbitor_;
+	float major_axis_;
+	float minor_axis_;
 
-	/* The radius of the orbit. */
-	float radius_;
-
-	/* The time in seconds it takes for the object to make one revolution. */
-	float angular_velocity_;
-	glm::vec3 orbital_axis_;
 	/* Current position in the orbit as an angle in degrees. */
+	float angular_velocity_;
 	float orbital_angle_;
 
-	static constexpr float kDefaultRadius{ 4.0f };
-	static constexpr float kDefaultAngularVelocity{ 10.0f };
-	static constexpr glm::vec3 kDefaultOrbitalAxis{0.0f, 1.0f, 0.0f};
-	static constexpr float kDefaultStartingOrbitalAngle{ 0.0f };
+	/* The time in seconds it takes for the object to make one revolution. */
+	common::Orientation orbital_orientation_;
 };
+
+static const Orbit kNoOrbit{0.0f, 0.0f, 0.0f};
 
 } // namespace simulation
 } // namespace object
