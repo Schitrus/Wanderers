@@ -44,7 +44,6 @@ void OrbitalSystem::addOrbit(AstronomicalObject* object, Orbit* orbit) {
 /*
  * OrbitalSystem elapseTime:
  * - If simulation is not paused:
- *   - Elapse time for the orbitee.
  *   - Elapse time for all orbits.
  */
 void OrbitalSystem::elapseTime(double seconds) {

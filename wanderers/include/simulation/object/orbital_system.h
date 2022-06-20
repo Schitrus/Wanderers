@@ -34,7 +34,7 @@ public:
 
 	std::vector<std::pair<AstronomicalObject*, Orbit*>> getOrbits();
 
-	/* Add and orbit to the orbital system. */
+	/* Add and orbit to the orbital system and set parent dependencies. */
 	void addOrbit(AstronomicalObject* object, Orbit* orbit);
 	void addOrbit(AstronomicalObject* object);
 

@@ -23,8 +23,6 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-// MAKE ROTATION ABSTRACT OBJECT
-
 /*
  * This class is the base for representation of astronomical objects in space simulation. 
  */
@@ -54,6 +52,7 @@ public:
 	void setAngularVelocity(float angular_velocity);
 	float getAngularVelocity();
 
+	/* The parent object that this object depends on. */
 	void setParent(AstronomicalObject* parent);
 	AstronomicalObject* getParent() const;
 
@@ -69,6 +68,7 @@ private:
 	/* Object that represents the physical representation of the astronomical object. */
 	AggregateObject* physical_object_;
 
+	/* Orientation of the rotation of the astronomical object. */
 	common::Orientation rotational_orientation_;
 
 	float rotational_angle_;

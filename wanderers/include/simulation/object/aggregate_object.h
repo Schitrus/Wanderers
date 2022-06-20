@@ -35,6 +35,7 @@ public:
 
 	std::vector<std::pair<Object*, glm::vec3>> getObjects();
 
+	/* Elapse time for all contained objects. */
 	virtual void elapseTime(double seconds);
 
 private:

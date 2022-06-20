@@ -15,6 +15,7 @@
 #include "common/orientation.h"
 #include "simulation/object/astronomical_object.h"
 
+/* STL Includes */
 #include <mutex>
 #include <functional>
 
@@ -54,11 +55,11 @@ public:
 	/* Moves the camera relative to it's position and direction. */
 	void move(glm::vec3 movement);
 
-	/* Changes the direction of the camera by rotating around the y axis. */
+	/* Changes the direction of the camera by rotating around the cameras up vector. */
 	void turnYaw(float yaw); 
-	/* Changes the direction of the camera by rotating around the x axis. */
+	/* Changes the direction of the camera by rotating around the cameras right vector. */
 	void turnPitch(float pitch);
-	/* Changes the direction of the camera by rotating around the z axis. */
+	/* Changes the direction of the camera by rotating around the cameras direction vector. */
 	void turnRoll(float roll);
 
 	CameraMode getCameraMode();
@@ -78,7 +79,7 @@ public:
 	void withMutext(std::function<void(void)> func);
 
 protected:
-
+	/* Updates the camera mode and camera focus. */
 	void modeUpdate(CameraMode mode, AstronomicalObject* focus);
 
 	/* The focus of the camera */
@@ -86,6 +87,7 @@ protected:
 	
 	CameraMode camera_mode_;
 
+	/* The movement speed of the camera. */
 	float speed_;
 
 	/* The position of the camera in world space. */

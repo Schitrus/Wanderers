@@ -67,91 +67,76 @@ void CameraObject::setRelativeDirection(glm::vec3 relative_direction) {
     relative_orientation_.setNormal(relative_direction);
 }
 
-/*
- * CameraObject move:
- * - Increment the position with the movement in z direction parallel with the direction vector.
- * - Increment the position with the movement in x direction orthogonal to the direction and y vector.
- * - Increment the position with the movement in y direction orthogonal to the direction and cameras up direction.
- */
-void CameraObject::move(glm::vec3 movement) {
-    if (camera_mode_ == CameraMode::Center) {
-        relative_position_ += relative_orientation_.focusRotation(glm::vec2{ movement }, relative_position_)
-                           +  relative_orientation_.translate(glm::vec3{0.0f, 0.0f, movement.z} * speed_ * glm::length(relative_position_));
 
-    } else if (camera_mode_ == CameraMode::Orbital) {
-        relative_position_ += relative_orientation_.translate(movement * speed_ * glm::length(relative_position_));
-    } else if (camera_mode_ == CameraMode::Rotational) {
-        relative_position_ += relative_orientation_.translate(movement * speed_ * glm::length(relative_position_));
-    } else {
+void CameraObject::move(glm::vec3 movement) {
+    switch (camera_mode_) {
+    case CameraMode::Free:
+        // Move in world position.
         position_ += orientation_.translate(movement * speed_);
+        break;
+    case CameraMode::Center:
+        // Rotate around focus object and move away/towards it.
+        relative_position_ += relative_orientation_.focusRotation(glm::vec2{ movement }, relative_position_)
+                           +  relative_orientation_.translate(glm::vec3{ 0.0f, 0.0f, movement.z } *speed_ * glm::length(relative_position_));
+        break;
+    case CameraMode::Orbital:
+    case CameraMode::Rotational:
+        // Move in relative position, increase movement according to distance from focus object.
+        relative_position_ += relative_orientation_.translate(movement * speed_ * glm::length(relative_position_));
+        break;
     }
 }
 
 void CameraObject::translate(glm::vec3 translation) {
     switch (camera_mode_) {
-    case CameraMode::Orbital:
-        relative_position_ += translation;
-        break;
-    default:
+    case CameraMode::Free:
         position_ += translation;
         break;
+    case CameraMode::Center:
+    case CameraMode::Orbital:
+    case CameraMode::Rotational:
+        relative_position_ += translation;
+        break;
     }
 }
 
-/*
- * CameraObject turnYaw:
- * - Increments the yaw in degrees but keep it in the interval of -360.0 - 360.0 .
- */
+
 void CameraObject::turnYaw(float yaw) {
-    if (camera_mode_ == CameraMode::Free) {
+    switch (camera_mode_) {
+    case CameraMode::Free:
         orientation_.tangentRotation(glm::radians(yaw));
-    }
-    else if (camera_mode_ == CameraMode::Center) {
+        break;
+    case CameraMode::Center:
+    case CameraMode::Orbital:
+    case CameraMode::Rotational:
         relative_orientation_.tangentRotation(glm::radians(yaw));
+        break;
     }
-    else if (camera_mode_ == CameraMode::Orbital) {
-        relative_orientation_.tangentRotation(glm::radians(yaw));
-    }
-    else if (camera_mode_ == CameraMode::Rotational) {
-        relative_orientation_.tangentRotation(glm::radians(yaw));
-    }
-    
 }
 
-/*
- * CameraObject turnPitch:
- * - Increments the pitch in degrees but don't let it go below -89.0 or above 89.0 .
- */
 void CameraObject::turnPitch(float pitch) {
-    if (camera_mode_ == CameraMode::Free) {
+    switch (camera_mode_) {
+    case CameraMode::Free:
         orientation_.bitangentRotation(glm::radians(pitch));
-    }
-    else if (camera_mode_ == CameraMode::Center) {
+        break;
+    case CameraMode::Center:
+    case CameraMode::Orbital:
+    case CameraMode::Rotational:
         relative_orientation_.bitangentRotation(glm::radians(pitch));
-    }
-    else if (camera_mode_ == CameraMode::Orbital) {
-        relative_orientation_.bitangentRotation(glm::radians(pitch));
-    } 
-    else if (camera_mode_ == CameraMode::Rotational) {
-        relative_orientation_.bitangentRotation(glm::radians(pitch));
+        break;
     }
 }
 
-/* CameraObject turnRoll:
- *  - Increments the roll in degrees but keep it in the interval of -360.0 - 360.0 .
- */
 void CameraObject::turnRoll(float roll) {
-    if (camera_mode_ == CameraMode::Free) {
+    switch (camera_mode_) {
+    case CameraMode::Free:
         orientation_.normalRotation(glm::radians(roll));
-    }
-    else if (camera_mode_ == CameraMode::Center) {
+        break;
+    case CameraMode::Center:
+    case CameraMode::Orbital:
+    case CameraMode::Rotational:
         relative_orientation_.normalRotation(glm::radians(roll));
-    }
-    else if (camera_mode_ == CameraMode::Orbital) {
-        relative_orientation_.normalRotation(glm::radians(roll));
-    }
-    else if (camera_mode_ == CameraMode::Rotational) {
-        relative_orientation_.normalRotation(glm::radians(roll));
+        break;
     }
 }
 
@@ -168,45 +153,32 @@ CameraObject::CameraMode CameraObject::cycleCameraMode() {
     setCameraMode(static_cast<CameraObject::CameraMode>((static_cast<int>(camera_mode_) + 1) % static_cast<int>(CameraObject::CameraMode::Count)));
     return camera_mode_;
 }
-
+/* Calculate the matrix of the focus object in world space. */
 glm::mat4 getFocusMatrix(AstronomicalObject* focus) {
-    AstronomicalObject* parent{ focus->getParent() };
     glm::mat4 matrix{ 1.0f };
-    while (parent != nullptr) {
-        matrix = parent->getMatrix() * matrix;
-        parent = parent->getParent();
+    if (focus != nullptr) {
+        AstronomicalObject* parent{ focus->getParent() };
+        while (parent != nullptr) {
+            matrix = parent->getMatrix() * matrix;
+            parent = parent->getParent();
+        }
     }
     return matrix;
 }
 
 void CameraObject::elapseTime(double seconds) {
-    if (camera_mode_ == CameraMode::Free) {
-        
-    }
-    else if (camera_mode_ == CameraMode::Center) {
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getPhysicalMatrix() };
-
-
-        position_ = world_matrix * glm::vec4{ relative_position_, 1.0f };
-
-        orientation_.transform(world_matrix, relative_orientation_);
-    } 
-    else if (camera_mode_ == CameraMode::Orbital){
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getPhysicalMatrix() };
-
-        position_ = world_matrix * glm::vec4{ relative_position_, 1.0f };
-
-        orientation_.transform(world_matrix, relative_orientation_);
-    } 
-    else if (camera_mode_ == CameraMode::Rotational) {
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getMatrix() };
-
-        position_ = world_matrix * glm::vec4{relative_position_, 1.0f};
-
+    glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) };
+    switch (camera_mode_) {
+    case CameraMode::Center:
+    case CameraMode::Orbital:
+        position_ = world_matrix * camera_focus_->getPhysicalMatrix() * glm::vec4{ relative_position_, 1.0f };
+        orientation_.transform(world_matrix * camera_focus_->getPhysicalMatrix(), relative_orientation_);
+       break;
+    case CameraMode::Rotational:
+        position_ = world_matrix * camera_focus_->getMatrix() * glm::vec4{ relative_position_, 1.0f };
         orientation_.transform(getFocusMatrix(camera_focus_) * camera_focus_->getRotationalMatrix(), relative_orientation_);
-
+        break;
     }
-    
 }
 
 void CameraObject::setCameraFocus(AstronomicalObject* camera_focus) {
@@ -226,15 +198,22 @@ void CameraObject::withMutext(std::function<void(void)> func) {
 
 void CameraObject::focus() {
     if (camera_mode_ == CameraMode::Free) {
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getPhysicalMatrix() };
+        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) };
 
-        setDirection(glm::vec3{ world_matrix * glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f } } - position_);
+        setDirection(glm::vec3{ world_matrix * camera_focus_->getPhysicalMatrix() * glm::vec4{ 0.0f, 0.0f, 0.0f, 1.0f } } - position_);
     }
     else {
         setRelativeDirection(-relative_position_);
     }
 }
-
+/*
+ * CameraObject modeUpdate.
+ * - Set relative position if not set.
+ * - Depending on the cameramode:
+ *   - Set speed.
+ *   - Set relative position.
+ *   - Set relative orientation.
+ */
 void CameraObject::modeUpdate(CameraMode mode, AstronomicalObject* focus) {
     if (glm::all(glm::equal(relative_position_, glm::vec3{ 0.0f }))) {
         if (glm::all(glm::equal(position_, glm::vec3{ 0.0f }))) {
@@ -244,35 +223,23 @@ void CameraObject::modeUpdate(CameraMode mode, AstronomicalObject* focus) {
         }
     }
 
-    if (mode == CameraMode::Free) {
+    glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) };
+
+    switch (mode) {
+    case CameraMode::Free:
         speed_ = 10.0f;
-    }
-    else if (mode == CameraMode::Center) {
+        break;
+    case CameraMode::Center:
+    case CameraMode::Orbital:
         speed_ = 0.5f;
-
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getPhysicalMatrix() };
-
-        relative_position_  = glm::vec3{ glm::inverse(world_matrix) * glm::vec4{ position_, 1.0f } };
-
-        relative_orientation_.transform(glm::inverse(world_matrix), orientation_);
-    }
-    else if (mode == CameraMode::Orbital) {
+        relative_position_ = glm::vec3{ glm::inverse(world_matrix * camera_focus_->getPhysicalMatrix()) * glm::vec4{ position_, 1.0f } };
+        relative_orientation_.transform(glm::inverse(world_matrix * camera_focus_->getPhysicalMatrix()), orientation_);
+        break;
+    case CameraMode::Rotational:
         speed_ = 0.25f;
-
-        glm::mat4 world_matrix{ getFocusMatrix(camera_focus_) * camera_focus_->getPhysicalMatrix() };
-
-        relative_position_  = glm::vec3{ glm::inverse(world_matrix) * glm::vec4{ position_, 1.0f } };
-
-        relative_orientation_.transform(glm::inverse(world_matrix), orientation_);
-    }
-    else if (mode == CameraMode::Rotational) {
-        speed_ = 0.1f;
-        
-        glm::mat4 world_matrix{getFocusMatrix(camera_focus_) * camera_focus_->getMatrix() };
-
-        relative_position_  = glm::vec3{ glm::inverse(world_matrix) * glm::vec4{ position_, 1.0f } };
-
-        relative_orientation_.transform(glm::inverse(world_matrix), orientation_);
+        relative_position_ = glm::vec3{ glm::inverse(world_matrix * camera_focus_->getMatrix()) * glm::vec4{ position_, 1.0f } };
+        relative_orientation_.transform(glm::inverse(world_matrix * camera_focus_->getMatrix()), orientation_);
+        break;
     }
 }
 

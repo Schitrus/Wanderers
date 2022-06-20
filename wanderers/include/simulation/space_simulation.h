@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Class that simulates a solar system.                                      *
+ * Class that simulates solar systems and stars.                             *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
@@ -21,7 +21,7 @@ namespace wanderers {
 namespace simulation {
 
 /*
- * This class simulates a solar system.
+ * This class simulates solar systems and stars.
  */
 class SpaceSimulation {
 public:
@@ -32,7 +32,7 @@ public:
 	/* Add solar system to the simulation. */
 	void addSolarSystem(object::OrbitalSystem* solar_system);
 
-	/* Add stars. */
+	/* Add group of stars to the simulation. */
 	void addStars(object::Stars* stars);
 
 	std::vector<object::OrbitalSystem*> getSolarSystems();
@@ -64,6 +64,7 @@ private:
 
 	object::CameraObject* camera_object_;
 
+	/* Catalog of astronomical objects ordered after dependency and distance. */
 	std::vector<object::AstronomicalObject*> astrological_catalog_;
 
 	bool is_paused_;

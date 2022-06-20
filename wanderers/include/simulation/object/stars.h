@@ -30,19 +30,25 @@ class Stars : public AstronomicalObject {
 public:
 	Stars(float temperature, float size, float distance, model::Points* points);
 
-	static model::Points* generateStars(int number_of_stars, float max_distance);
-
+	/* Generate a random direction in space. */
 	static glm::vec3 generateRandomDirection();
 
+	/* Generate arbitrary stars. */
+	static model::Points* generateStars(int number_of_stars, float max_distance);
+
+	/* Generate a star cluster. */
 	static model::Points* generateCluster(int number_of_stars, float angle, glm::vec3 direction = generateRandomDirection());
 
+	/* Generate stars in a galaxy disc. */
 	static model::Points* generateGalaxyDisc(int number_of_stars);
 
 	/* Get the color of the stars. Depends on the temperature. */
 	glm::vec3 getColor();
 	
+	/* Returns the number of stars. */
 	float getSize();
 
+	/* Returns the distance factor of the stars. */
 	float getDistance();
 
 	/* Advance the simulation. */

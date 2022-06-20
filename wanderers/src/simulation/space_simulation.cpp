@@ -28,6 +28,9 @@ namespace simulation {
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
+/* 
+ * Constructs a catalog of astronomical objects from the passed orbital system. 
+ */
 void constructCatalog(std::vector<object::AstronomicalObject*>& catalog, object::OrbitalSystem* system) {
 	for (std::pair<object::AstronomicalObject*, object::Orbit*> orbit : system->getOrbits()) {
 		const std::type_info& type{ typeid(*orbit.first) };
@@ -39,6 +42,13 @@ void constructCatalog(std::vector<object::AstronomicalObject*>& catalog, object:
 	}
 }
 
+/*
+ * SpaceSimulation: 
+ * - Generate solar system.
+ * - Generate stars.
+ * - Construct catalog.
+ * - Set camera focus to first object in catalog.
+ */
 SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_systems_{},
                                      group_of_stars_{},
 	                                 camera_object_{camera_object},
@@ -85,12 +95,6 @@ std::vector<object::Stars*> SpaceSimulation::getGroupOfStars() {
 	return group_of_stars_; 
 }
 
-/*
- * SpaceSimulation elapseTime:
- * - If simulation is not paused:
- *   - Elapse time for the orbitee.
- *   - Elapse time for all orbits.
- */
 void SpaceSimulation::elapseTime(double seconds) {
 	for (object::OrbitalSystem* solar_system : solar_systems_) {
 		solar_system->elapseTime(static_cast<int>(!is_paused_) * seconds * simulation_speed_);

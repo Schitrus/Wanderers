@@ -18,13 +18,13 @@ namespace wanderers {
 namespace simulation {
 namespace generator {
 
-/* Generates a solarsystem that stretches out as far out as the radius. */
+/* Generates the solarsystem. */
 object::OrbitalSystem* generateTheSolarSystem();
 
 /* Generates a solarsystem that stretches out as far out as the radius. */
 object::OrbitalSystem* generateSolarSystem(float radius);
 
-/* Generates a solar that has the given radius. */
+/* Generates a orbit within the lower and upper radius, sets angulare velocity accordingly to the velocity factor. */
 object::Orbit* generateOrbit(float lower_radius, float upper_radius, float velocity_factor);
 
 /* Generates a solar that has the given radius. */

@@ -29,20 +29,43 @@ Stars::Stars(float temperature, float size, float distance, model::Points* point
 
 // TODO: Move generation of stars
 
+
+glm::vec3 Stars::generateRandomDirection() {
+    std::uniform_real_distribution<float> angle(0.0f, 360.0f);
+    std::uniform_real_distribution<float> up(-1.0f, 1.0f);
+
+    float theta{ angle(randomizer) };
+    float z{ up(randomizer) };
+    return glm::normalize(glm::vec3{ sqrt(1 - z * z) * cos(glm::radians(theta)), sqrt(1 - z * z) * sin(glm::radians(theta)), z });
+}
+
+/*
+ * Stars generateStars.
+ * - Foreach star to be generated.
+ *   - Generate a random direction.
+ *   - Set star to the random direction times a random distance.
+ * - Return the stars.
+ */
 model::Points* Stars::generateStars(int number_of_stars, float max_distance) {
 	std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
 	std::uniform_real_distribution<float> angle(0.0f, 360.0f);
 	std::uniform_real_distribution<float> up(-1.0f, 1.0f);
 	std::uniform_real_distribution<float> distance(1.0f, max_distance);
 	for (int i = 0; i < number_of_stars; i++) {
-		float theta{ angle(randomizer) };
-		float z{ up(randomizer) };
-        glm::vec3 direction = glm::normalize(glm::vec3{ sqrt(1 - z * z) * cos(glm::radians(theta)), sqrt(1 - z * z) * sin(glm::radians(theta)), z });
+        glm::vec3 direction = generateRandomDirection();
         stars->at(i) = direction * distance(randomizer);
 	}
     return new model::Points{ stars };
 }
 
+/*
+ * Stars generateStars.
+ * - Foreach star to be generated.
+ *   - Generate a random direction.
+ *   - Focus the direction to a disc shape.
+ *   - Set star to the random direction.
+ * - Return the stars.
+ */
 model::Points* Stars::generateGalaxyDisc(int number_of_stars) {
     std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 1.0f);
@@ -62,16 +85,14 @@ model::Points* Stars::generateGalaxyDisc(int number_of_stars) {
     return new model::Points{ stars };
 }
 
-glm::vec3 Stars::generateRandomDirection() {
-    std::uniform_real_distribution<float> angle(0.0f, 360.0f);
-    std::uniform_real_distribution<float> up(-1.0f, 1.0f);
-
-    // cluster center
-    float theta{ angle(randomizer) };
-    float z{ up(randomizer) };
-    return glm::normalize(glm::vec3{ sqrt(1 - z * z) * cos(glm::radians(theta)), sqrt(1 - z * z) * sin(glm::radians(theta)), z });
-}
-
+/*
+ * Stars generateStars.
+ * - Foreach star to be generated.
+ *   - Generate deviation from the center vector whitin distance angle.
+ *   - Set direction of star according to the deviation.
+ *   - Set star to the direction.
+ * - Return the stars.
+ */
 model::Points* Stars::generateCluster(int number_of_stars, float distance_angle, glm::vec3 center) {
     std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 360.0f);

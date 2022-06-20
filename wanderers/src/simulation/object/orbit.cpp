@@ -119,10 +119,13 @@ glm::vec3 Orbit::getOrbitalSide() const {
 
 /*
  * Orbit getOrbitMatrix:
- * - Create matrix (matrix multiplication reverse order):
- *   - Move position to orbit distance.
- *   - Rotate position along current orbit angle.
- *   - Rotate whole orbit position along the orbital axis.
+ * - Invert scaling to avoid ellipse artifacts.
+ * - Invert rotate to avoid rotating the object in orbit.
+ * - Translate object to orbit distance (semi-minor axis).
+ * - Rotate object around the orbit.
+ * - Scale the orbit in one axis to make it elliptical.
+ * - Translate orbit to focus point.
+ * - Orient orbit according to oientation parameters.
  */
 glm::mat4 Orbit::getOrbitMatrix() {
     float normalized_major = minor_axis_ > 0.00001f ? major_axis_ / minor_axis_ : 1.0f;

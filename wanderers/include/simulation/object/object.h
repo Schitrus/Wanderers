@@ -21,7 +21,7 @@ namespace simulation {
 namespace object {
 
 /*
- * This class is representation for objects. 
+ * This class is representation for objects with a model. 
  */
 class Object : public AbstractObject {
 public:
@@ -32,6 +32,7 @@ public:
 	void setModel(model::Mesh* model);
 	model::Mesh* const getModel() const;
 
+	/* Binds/undbinds the model for rendering. */
 	void bind();
 	void unbind();
 

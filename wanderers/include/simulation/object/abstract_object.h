@@ -18,8 +18,6 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
-// MAKE ORIENTATION, FACE, SIDE ITS OWN CLASS CLASS
-
 /*
  * This class is the abstraction for objects. 
  */

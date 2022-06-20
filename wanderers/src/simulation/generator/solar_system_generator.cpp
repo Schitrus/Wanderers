@@ -53,13 +53,7 @@ glm::vec3 generateOrbitalAxis() {
 
 /*
  * generateSolarSystem:
- * - Generate solar with a radius between 0.5 and 4.0 .
- * - First planet system set at a distance twice the radius of the solar.
- * - Until at the edge of the solar system:
- *   - Generate planet system with a radius of between 25% and 200% that of the solar radius.
- *   - Add planet system to the solar system at the current distance.
- *   - increment the distance as big as the planet system.
- * - Return solar system.
+ * -
  */
 object::OrbitalSystem* generateSolarSystem(float radius) {
 	using rando = std::uniform_real_distribution<float>;
@@ -99,10 +93,10 @@ object::OrbitalSystem* generateSolarSystem(float radius) {
 
 /*
  * generateSolar:
- * - Randomize the temperature between 1,000K and 10,000K.
- * - Set the given radius.
- * - Randomize the spin of the solar.
- * - generateAxis.
+ * - Generate the physical object.
+ * - Generate the object parameters: Radius.
+ * - Generate the astronomical object: Rotational parameters.
+ * - Generate the Solar with a temperature between 1,000 and 10,000.
  */
 object::Solar* generateSolar(float radius) {
 	std::uniform_real_distribution<float> temperature(1000.0f, 10000.0f);
@@ -125,17 +119,7 @@ object::Solar* generateSolar(float radius) {
 
 /*
  * generatePlanetSystem:
- * - Generate planet with a radius between 10% and 35% that of the planet system radius.
- * - Create planet system with the planet as orbitee.
- * - Randomize number of moons:
- *   - Set moon radius as a fraction of remaining size of the planet system.
- *   - Generate moon.
- *   - Make orbit and add it to the planet system.
- *   - Increase distance from moon.
- * - Set the given orbit radius.
- * - Set the orbit speed as dependent to the sqrt of the orbit radius.
- * - Rotation set around the y axis.
- * - Start position around the orbit is randomized.
+ * - 
  */
 object::OrbitalSystem* generatePlanetSystem(float radius, float orbit_radius) {
 
@@ -163,6 +147,17 @@ object::OrbitalSystem* generatePlanetSystem(float radius, float orbit_radius) {
 	return new object::OrbitalSystem{};
 }
 
+/*
+ * generateOrbit:
+ * - Generates the parameters defining an orbit:
+ *   - Eccentricity.
+ *   - Semi-major axis.
+ *   - Inclination.
+ *   - Longitude of the acending node.
+ *   - Argument of periapsis.
+ *   - True anomaly.
+ *   - Angular velocity
+ */
 object::Orbit* generateOrbit(float lower_radius, float upper_radius, float velocity_factor) {
 	using rando = std::uniform_real_distribution<float>;
 
@@ -174,23 +169,23 @@ object::Orbit* generateOrbit(float lower_radius, float upper_radius, float veloc
 	float eccentricity = rando(0.0f, max_eccentricity)(randomizer);
 	eccentricity *= eccentricity;
 	float longitude_of_acending_node = angle(randomizer);
-	float argument_of_perihelion = angle(randomizer);
+	float argument_of_periapsis = angle(randomizer);
 	float inclination = angle(randomizer);
 	for (int i = 0; i < 6; i++) inclination *= prob(randomizer);
 	float true_anomaly = angle(randomizer);
 	float angular_velocity = 100.0f * velocity_factor/sqrt(semimajor_axis);
 	object::Orbit* orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
-											  argument_of_perihelion, true_anomaly, angular_velocity };
+											  argument_of_periapsis, true_anomaly, angular_velocity };
 
 	return orbit;
 }
 
 /*
  * generatePlanet:
- * - Randomize surface color.
- * - Set the given radius.
- * - Randomize the spin of the planet.
- * - Generate axis.
+ * - Generate the physical object.
+ * - Generate the object parameters: Radius.
+ * - Generate the astronomical object: Rotational parameters.
+ * - Generate the planet with random color.
  */
 object::Planet* generatePlanet(float radius) {
 	std::uniform_real_distribution<float> color(0.0f, 1.0f);

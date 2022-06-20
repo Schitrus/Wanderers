@@ -20,7 +20,7 @@ namespace object {
 namespace model {
 
 /*
- * Base class for represntation fo geometric shapes used in rendering.
+ * Base class for representation of geometric shapes used in rendering.
  */
 class Mesh {
 public:

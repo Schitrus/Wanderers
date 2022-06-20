@@ -69,9 +69,6 @@ glm::mat4 AbstractObject::getMatrix() {
 	glm::mat4 translation_matrix{ glm::translate(glm::mat4{1.0f}, position_) };
 	glm::mat4 scale_matrix{ glm::scale(glm::mat4{1.0f}, scale_)};
 	
-	//glm::mat4 orientation_matrix{ kUp == -getOrientation() ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), getFace()) : glm::orientation(kUp, getOrientation()) };
-	//glm::mat4 face_matrix{ kFace == -getFace() ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), getOrientation()) : glm::orientation(kFace, getFace()) };
-
 	return translation_matrix * scale_matrix * orientation_.orientationMatrix(common::kYOrientation);
 }
 

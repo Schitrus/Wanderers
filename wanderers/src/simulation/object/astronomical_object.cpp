@@ -100,6 +100,11 @@ glm::mat4 AstronomicalObject::getMatrix() {
 	return getRotationalMatrix() * getPhysicalMatrix();
 }
 
+/*
+ * AstronomicalObject elapseTime:
+ * - Increase rotational angle according to the velocity and time passed.
+ * - Elapse time for the contained physical object.
+ */
 void AstronomicalObject::elapseTime(double seconds) {
 	rotational_angle_ += angular_velocity_ * seconds;
 	rotational_angle_ = fmod(rotational_angle_, 360.0f);
