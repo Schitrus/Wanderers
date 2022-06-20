@@ -12,6 +12,7 @@
 #include "glm/glm.hpp"
 
 /* Internal Includes */
+#include "common/orientation.h"
 #include "simulation/object/abstract_object.h"
 #include "simulation/object/aggregate_object.h"
 
@@ -39,13 +40,13 @@ public:
 	AggregateObject* const getPhysicalObject();
 
 	void setRotationalAxis(glm::vec3 rotational_axis);
-	glm::vec3 getRotationalAxis();
+	glm::vec3 getRotationalAxis() const;
 
 	void setRotationalFace(glm::vec3 rotational_face);
-	glm::vec3 getRotationalFace();
+	glm::vec3 getRotationalFace() const;
 
 	void setRotationalSide(glm::vec3 rotational_side);
-	glm::vec3 getRotationalSide();
+	glm::vec3 getRotationalSide() const;
 
 	void setRotationalAngle(float rotational_angle);
 	float getRotationalAngle();
@@ -68,9 +69,7 @@ private:
 	/* Object that represents the physical representation of the astronomical object. */
 	AggregateObject* physical_object_;
 
-	glm::vec3 rotational_axis_;
-	glm::vec3 rotational_face_;
-	glm::vec3 rotational_side_;
+	common::Orientation rotational_orientation_;
 
 	float rotational_angle_;
 	float angular_velocity_;

@@ -11,6 +11,9 @@
 /* External Includes */
 #include "glm/glm.hpp"
 
+/* Internal Includes */
+#include "common/orientation.h"
+
 namespace wanderers {
 namespace simulation {
 namespace object {
@@ -58,13 +61,9 @@ public:
 	virtual void elapseTime(double seconds);
 
 protected:
-	glm::vec3 orthogonalize(glm::vec3 v1, glm::vec3 v2);
-
 	glm::vec3 position_;
 
-	glm::vec3 orientation_;
-	glm::vec3 face_;
-	glm::vec3 side_;
+	common::Orientation orientation_;
 
 	glm::vec3 scale_;
 

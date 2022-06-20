@@ -24,7 +24,7 @@ glm::vec3 Orientation::normalize(glm::vec3 normal) {
 	return glm::normalize(normal);
 }
 
-Orientation::Orientation() : Orientation(kFront, kUp) {}
+Orientation::Orientation() : Orientation(kUp, kFront) {}
 
 Orientation::Orientation(glm::vec3 normal, glm::vec3 tangent) 
 	: normal_{ normalize(normal) }, tangent_{ orthogonalize(tangent, normal_) }, bitangent_{ cross(normal_, tangent_) } {}
@@ -86,19 +86,31 @@ void Orientation::setNormal(glm::vec3 normal) {
     setAxis(normal, normal_, tangent_, bitangent_);
 }
 
-glm::vec3 Orientation::getNormal() { return normal_; }
+glm::vec3 Orientation::getNormal() const { return normal_; }
 
 void Orientation::setTangent(glm::vec3 tangent) {
     setAxis(tangent, tangent_, bitangent_, normal_);
 }
 
-glm::vec3 Orientation::getTangent() { return tangent_; }
+glm::vec3 Orientation::getTangent() const { return tangent_; }
 
 void Orientation::setBitangent(glm::vec3 bitangent) {
     setAxis(bitangent, bitangent_, normal_, tangent_);
 }
 
-glm::vec3 Orientation::getBitangent() { return bitangent_; }
+glm::vec3 Orientation::getBitangent() const { return bitangent_; }
+
+glm::mat4 Orientation::orientationMatrix() {
+    return orientationMatrix(kYOrientation);
+}
+
+
+glm::mat4 Orientation::orientationMatrix(Orientation from) {
+    glm::mat4 normal_matrix{ from.normal_ == -this->normal_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), from.tangent_) : glm::rotation(from.normal_, this->normal_) };
+    glm::vec3 rotated_tangent{ normal_matrix * glm::vec4{ from.tangent_, 0.0f } };
+    glm::mat4 tangent_matrix{ rotated_tangent == -this->tangent_ ? glm::rotate(glm::mat4{1.0f}, glm::radians(180.0f), this->normal_) : glm::rotation(rotated_tangent, this->tangent_) };
+    return tangent_matrix * normal_matrix;
+}
 
 } // namespace common
 } // namespace wanderers

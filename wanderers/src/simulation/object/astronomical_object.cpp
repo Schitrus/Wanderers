@@ -28,9 +28,7 @@ AstronomicalObject::AstronomicalObject(AbstractObject abstract_object, Aggregate
 									   glm::vec3 rotational_axis, glm::vec3 rotational_face)
 	: AbstractObject{ abstract_object }, physical_object_{ physical_object }, 
 	  rotational_angle_{ rotational_angle }, angular_velocity_{ angular_velocity },
-	  rotational_axis_{ glm::normalize(rotational_axis) }, 
-	  rotational_face_{ orthogonalize(rotational_face, rotational_axis_) },
-	  rotational_side_{ glm::cross(rotational_axis_, rotational_face_) },
+	  rotational_orientation_{rotational_axis, rotational_face},
 	  parent_{nullptr} {}
 
 void AstronomicalObject::setPhysicalObject(AggregateObject* physical_object) {
@@ -42,42 +40,28 @@ AggregateObject* const AstronomicalObject::getPhysicalObject() {
 }
 
 void AstronomicalObject::setRotationalAxis(glm::vec3 rotational_axis) {
-	if (glm::normalize(rotational_axis) != rotational_axis_) {
-		glm::mat4 rotation{ glm::orientation(rotational_axis_, glm::normalize(rotational_axis)) };
-		rotational_axis_ = glm::normalize(rotational_axis);
-		rotational_face_ = rotation * glm::vec4{ rotational_face_, 0.0f };
-		rotational_side_ = rotation * glm::vec4{ rotational_side_, 0.0f };
-	}
+	rotational_orientation_.setNormal(rotational_axis);
 }
 
-glm::vec3 AstronomicalObject::getRotationalAxis() {
-	return rotational_axis_;
+glm::vec3 AstronomicalObject::getRotationalAxis() const {
+	return rotational_orientation_.getNormal();
 }
 
 void AstronomicalObject::setRotationalFace(glm::vec3 rotational_face) {
-	if (glm::normalize(rotational_face) != rotational_face_) {
-		glm::mat4 rotation{ glm::orientation(rotational_face_, glm::normalize(rotational_face)) };
-		rotational_face_ = glm::normalize(rotational_face);
-		rotational_side_ = rotation * glm::vec4{ rotational_side_, 0.0f };
-		rotational_axis_ = rotation * glm::vec4{ rotational_axis_, 0.0f };
-	}
+	rotational_orientation_.setTangent(rotational_face);
+
 }
 
-glm::vec3 AstronomicalObject::getRotationalFace() {
-	return rotational_face_;
+glm::vec3 AstronomicalObject::getRotationalFace() const {
+	return rotational_orientation_.getTangent();
 }
 
 void AstronomicalObject::setRotationalSide(glm::vec3 rotational_side) {
-	if (glm::normalize(rotational_side) != rotational_side_) {
-		glm::mat4 rotation{ glm::orientation(rotational_side_, glm::normalize(rotational_side)) };
-		rotational_side_ = glm::normalize(rotational_side);
-		rotational_axis_ = rotation * glm::vec4{ rotational_axis_, 0.0f };
-		rotational_face_ = rotation * glm::vec4{ rotational_face_, 0.0f };
-	}
+	rotational_orientation_.setBitangent(rotational_side);
 }
 
-glm::vec3 AstronomicalObject::getRotationalSide() {
-	return rotational_side_;
+glm::vec3 AstronomicalObject::getRotationalSide() const {
+	return rotational_orientation_.getBitangent();
 }
 
 void AstronomicalObject::setRotationalAngle(float rotational_angle) {
@@ -105,7 +89,7 @@ AstronomicalObject* AstronomicalObject::getParent() const {
 }
 
 glm::mat4 AstronomicalObject::getRotationalMatrix() {
-	return glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), rotational_axis_);
+	return glm::rotate(glm::mat4{ 1.0f }, glm::radians(rotational_angle_), getRotationalAxis());
 }
 
 glm::mat4 AstronomicalObject::getPhysicalMatrix() {

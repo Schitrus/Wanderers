@@ -46,13 +46,13 @@ public:
 	float getOrbitalAngle();
 
 	void setOrbitalAxis(glm::vec3 orbital_axis);
-	glm::vec3 getOrbitalAxis();
+	glm::vec3 getOrbitalAxis() const;
 
 	void setOrbitalFace(glm::vec3 orbital_face);
-	glm::vec3 getOrbitalFace();
+	glm::vec3 getOrbitalFace() const;
 
 	void setOrbitalSide(glm::vec3 orbital_side);
-	glm::vec3 getOrbitalSide();
+	glm::vec3 getOrbitalSide() const;
 
 	/* Returns the matrix describing the object in it's current place in orbit. */
 	glm::mat4 getOrbitMatrix();
@@ -71,9 +71,7 @@ private:
 	float orbital_angle_;
 
 	/* The time in seconds it takes for the object to make one revolution. */
-	glm::vec3 orbital_axis_;
-	glm::vec3 orbital_face_;
-	glm::vec3 orbital_side_;
+	common::Orientation orbital_orientation_;
 };
 
 static const Orbit kNoOrbit{0.0f, 0.0f, 0.0f};

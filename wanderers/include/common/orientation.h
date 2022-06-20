@@ -43,13 +43,16 @@ public:
 	glm::vec3 bitangentRotation(float angle_in_radians, glm::vec3 point = kOrigo);
 
 	void setNormal(glm::vec3 normal);
-	glm::vec3 getNormal();
+	glm::vec3 getNormal() const;
 
 	void setTangent(glm::vec3 tangent);
-	glm::vec3 getTangent();
+	glm::vec3 getTangent() const;
 
 	void setBitangent(glm::vec3 bitangent);
-	glm::vec3 getBitangent();
+	glm::vec3 getBitangent() const;
+
+	glm::mat4 orientationMatrix();
+	glm::mat4 orientationMatrix(Orientation from);
 
 protected:
 
@@ -61,6 +64,10 @@ protected:
 	glm::vec3 tangent_;
 	glm::vec3 bitangent_;
 };
+
+static const Orientation kXOrientation{Orientation::kRight, Orientation::kUp};
+static const Orientation kYOrientation{Orientation::kUp, Orientation::kFront};
+static const Orientation kZOrientation{Orientation::kFront, Orientation::kUp};
 
 } // namespace common
 } // namespace wanderers
