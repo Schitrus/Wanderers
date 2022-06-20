@@ -36,6 +36,7 @@ public:
 	/* Returns matrix describing the projection of the camera. NOTE: perspective projection. */
 	glm::mat4 getProjectionMatrix();
 
+	/* Functions to control the clearing before rendering. */
 	bool shouldClear();
 	void setShouldClear(bool should_clear);
 	bool getShouldClear();

@@ -29,7 +29,7 @@ SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram* shader, render::Came
  * - Adapt the camera to the window size.
  * - Get the view and projection matrix.
  * - Set the viewport.
- * - Clear the screen.
+ * - Clear the screen if it is set to.
  * - Use the shader.
  * - Enable OpenGL pipline operations.
  */
@@ -43,7 +43,6 @@ void SpaceRenderer::preRender() {
 		camera_->setAspectRatio(render_width_, render_height_);
 	}
 	
-
 	view_ = camera_->getViewMatrix();
 	projection_ = camera_->getProjectionMatrix();
 
@@ -74,8 +73,10 @@ void SpaceRenderer::postRender() {
 
 /*
  * SpaceRenderer render SpaceSimulation:
- * - Render the solar system.
- * - Render the stars.
+ * - Do prerender operation.
+ * - Render solar system.s
+ * - Render stars.
+ * - Do postrender operation.
  */
 void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 	preRender();
@@ -90,7 +91,14 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 /*
  * SpaceRenderer render Stars:
- * - Render the solar system.
+ * - For each physical star model.
+ *   - Bind the model
+ *   - Calculate transformation matrix for the model.
+ *   - Set uniforms.
+ *   - Enable OpenGL pipline operations.
+ *   - Render.
+ *   - Disable OpenGL pipline operations.
+ *   - unbind model.
  */
 void SpaceRenderer::render(simulation::object::Stars* stars) {
 	simulation::object::AggregateObject* star_object{ stars->getPhysicalObject() };
@@ -111,7 +119,9 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		glDepthRange(1.0f, 1.0f);
 		glDepthFunc(GL_LEQUAL);
 		glPointSize(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()));
+		
 		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
+		
 		glDepthFunc(GL_LESS);
 		glDepthRange(0.0f, 1.0f);
 
@@ -121,16 +131,16 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 
 /*
  * SpaceRenderer render OrbitalSystem:
- * - Set the shaders light position.
- * - Set the shaders camera position.
- * - Render the orbitee.
- * - Render each orbit.
+ * - Calculate system matrix.
+ * - Set uniforms.
+ * - Foreach orbit:
+ *   - Render.
  */
 void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform) {
+	glm::mat4 system_matrix{ transform * orbital_system->getMatrix() };
+
 	shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
 	shader_->setUniform(camera_->getPosition(), "camera_position");
-
-	glm::mat4 system_matrix{ transform * orbital_system->getMatrix() };
 
 	for (std::pair<simulation::object::AstronomicalObject*, simulation::object::Orbit*> orbit : orbital_system->getOrbits()) {
 		render(orbit.first, system_matrix * orbit.second->getMatrix());
@@ -139,11 +149,12 @@ void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, gl
 
 /*
  * SpaceRenderer render Solar:
- * - Bind the solar model.
- * - Calculate the solar transformation matrix.
- * - Set uniforms specific to the Solar.
- * - Draw.
- * - Unbind the solar model.
+ * - Calculate transformation matrix for the models.
+ * - For each physical solar model.
+ *   - Bind the model
+ *   - Set uniforms.
+ *   - Render.
+ *   - unbind model.
  */
 void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform) {
 	simulation::object::AggregateObject* solar_object{ solar->getPhysicalObject() };
@@ -165,11 +176,12 @@ void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform
 
 /*
  * SpaceRenderer render Planet:
- * - Bind the planet model.
- * - Calculate the planet transformation matrix.
- * - Set uniforms specific to the Planet.
- * - Draw.
- * - Unbind the planet model.
+ * - Calculate transformation matrix for the models.
+ * - For each physical planet model.
+ *   - Bind the model
+ *   - Set uniforms.
+ *   - Render.
+ *   - unbind model.
  */
 void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transform) {
 	simulation::object::AggregateObject* planet_object{ planet->getPhysicalObject() };
@@ -193,7 +205,6 @@ void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transfo
  * SpaceRenderer render AstronomicalObject:
  * - Get the type of the object.
  * - Render the object depending on the type.
- * - Do nothing if the type is not renderable.
  */
 void SpaceRenderer::render(simulation::object::AstronomicalObject* object, glm::mat4 transform) {
 	const std::type_info& object_type{ typeid(*object) };
