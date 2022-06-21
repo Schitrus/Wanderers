@@ -56,24 +56,35 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 	                                 is_paused_{false},
 	                                 simulation_speed_{1.0f},
 	camera_focus_id_{ 0 } {
-	addSolarSystem(simulation::generator::generateTheSolarSystem());
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 	std::uniform_real_distribution<float> size(0.2f, 2.0f);
 	std::uniform_real_distribution<float> cluster_count(0.0f, 5.0f);
 	std::uniform_real_distribution<float> cluster_radius(0.2f, 2.0f);
-	for (int i = 0; i < 100; i++) {
+	std::uniform_real_distribution<float> distance_multiplier(1.0f, 3.0f);
+
+	addSolarSystem(generator::generateTheSolarSystem());
+	for (int i = 0; i < 25; i++) {
+		object::OrbitalSystem* system = generator::generateSolarSystem(10.0f);
+		system->setPosition(object::Stars::generateRandomDirection() * 5000.0f * distance_multiplier(randomizer));
+		system->setOrientation(object::Stars::generateRandomDirection());
+		addSolarSystem(system);
+	}
+
+	for (int i = 0; i < 10; i++) {
 		std::cout << "Group: " << i << std::endl;
-		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100) });
-		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(100) });
+		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(1000, 100) });
+		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(1000) });
 		float radius = cluster_radius(randomizer);
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
-		for (int j = 0; j < 10; j++) {
+		for (int j = 0; j < 25; j++) {
 			float count = cluster_count(randomizer);
 			addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 10'000, object::Stars::generateCluster(count, radius, cluster_center) });
 		}
 	}
 
-	constructCatalog(astrological_catalog_, solar_systems_.at(0));
+	for (object::OrbitalSystem* system : solar_systems_) {
+		constructCatalog(astrological_catalog_, system);
+	}
 
 	camera_object_->withMutext([this]() { camera_object_->setCameraFocus(astrological_catalog_.at(0)); });
 }

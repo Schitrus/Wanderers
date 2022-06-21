@@ -22,7 +22,7 @@ namespace wanderers {
 namespace render {
 
 SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram* shader, render::Camera* camera)
-	: shader_{ shader }, camera_{ camera }, view_{}, projection_{} { }
+	: shader_{ shader }, camera_{ camera }, view_{}, projection_{}, show_orbits_{ false } { }
 
 /*
  * SpaceRenderer preRender:
@@ -129,12 +129,26 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 	}
 }
 
+glm::vec3 getOrbitColor(simulation::object::AstronomicalObject* object) {
+	glm::vec3 color{1.0f};
+	const std::type_info& object_type{ typeid(*object) };
+	if (object_type == typeid(simulation::object::Solar))
+		color = dynamic_cast<simulation::object::Solar*>(object)->getColor();
+	else if (object_type == typeid(simulation::object::Planet))
+		color = dynamic_cast<simulation::object::Planet*>(object)->getColor();
+	else if (object_type == typeid(simulation::object::OrbitalSystem))
+		color = getOrbitColor(dynamic_cast<simulation::object::OrbitalSystem*>(object)->getOrbits().at(0).first);
+
+	return color;
+}
+
 /*
  * SpaceRenderer render OrbitalSystem:
  * - Calculate system matrix.
  * - Set uniforms.
  * - Foreach orbit:
- *   - Render.
+ *   - Render the object in orbit.
+ *   - Render the orbit.
  */
 void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, glm::mat4 transform) {
 	glm::mat4 system_matrix{ transform * orbital_system->getMatrix() };
@@ -143,7 +157,37 @@ void SpaceRenderer::render(simulation::object::OrbitalSystem* orbital_system, gl
 	shader_->setUniform(camera_->getPosition(), "camera_position");
 
 	for (std::pair<simulation::object::AstronomicalObject*, simulation::object::Orbit*> orbit : orbital_system->getOrbits()) {
-		render(orbit.first, system_matrix * orbit.second->getMatrix());
+		render(orbit.first, system_matrix * orbit.second->getMatrix());		
+		if (showOrbits()) {
+			render(orbit.second, getOrbitColor(orbit.first), system_matrix);
+		}
+	}
+}
+
+/*
+ * SpaceRenderer render Orbit:
+ * - Calculate transformation matrix for the models.
+ * - For each physical solar model.
+ *   - Bind the model
+ *   - Set uniforms.
+ *   - Render.
+ *   - unbind model.
+ */
+void SpaceRenderer::render(simulation::object::Orbit* orbit, glm::vec3 color, glm::mat4 transform) {
+	simulation::object::AggregateObject* orbit_object{ orbit->getPhysicalObject() };
+
+	glm::mat4 agg_model{ transform * orbit->getOrbitMatrix() };
+	for (std::pair<simulation::object::Object*, glm::vec3> object : orbit_object->getObjects()) {
+		object.first->bind();
+
+		glm::mat4 obj_model{ agg_model * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix() };
+		shader_->setUniform(obj_model, "model");
+		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(color, "color");
+		shader_->setUniform(true, "is_sun");
+
+		glDrawArrays(GL_LINES, 0, object.first->getModel()->size());
+		object.first->unbind();
 	}
 }
 
@@ -214,6 +258,18 @@ void SpaceRenderer::render(simulation::object::AstronomicalObject* object, glm::
 		render(dynamic_cast<simulation::object::Planet*>(object), transform);
 	else if (object_type == typeid(simulation::object::OrbitalSystem))
 		render(dynamic_cast<simulation::object::OrbitalSystem*>(object), transform);
+}
+
+bool SpaceRenderer::showOrbits() {
+	return getShowOrbits();
+}
+
+void SpaceRenderer::setShowOrbits(bool show_orbits) {
+	show_orbits_ = show_orbits;
+}
+
+bool SpaceRenderer::getShowOrbits() {
+	return show_orbits_;
 }
 
 } // namespace render
