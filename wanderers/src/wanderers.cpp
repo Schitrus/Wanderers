@@ -85,7 +85,7 @@ void run() {
 	gladLoadGL(glfwGetProcAddress);
 	
 	// Setup simulation.
-	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f, 0.0f, 1.0f}, 60.0f, 1.0f, 0.1f, 10000.0f } };
+	render::Camera* camera{ new render::Camera{glm::vec3{0.0f, 25.0f, 0.0f}, glm::vec3{0.0f, -1.0f, 0.0f}, glm::vec3{0.0f, 0.0f, 1.0f}, 60.0f, 1.0f, 0.1f, 100000.0f } };
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	
 	// Setup render engine.
@@ -95,7 +95,7 @@ void run() {
 	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
 	
 	// Setup controller
-	control::Controller::initController(camera, space_simulation);
+	control::Controller::initController(camera, space_simulation, space_renderer);
 	
 	// Render loop until exit is requested.
 	renderLoop(space_simulation, space_renderer);

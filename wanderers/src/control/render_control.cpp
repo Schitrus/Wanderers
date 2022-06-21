@@ -1,11 +1,11 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * Implementation of the Simulation control class.                           *
+ * Implementation of the Render control class.                               *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include "control/simulation_control.h"
+#include "control/render_control.h"
 
 /* External Includes */
 #include "glm/ext.hpp"
@@ -21,33 +21,32 @@
 namespace wanderers {
 namespace control {
 
-SimulationControl::SimulationControl(GLFWwindow* window, simulation::SpaceSimulation* simulation) : ControlInterface{ window }, simulation_{ simulation } {}
+RenderControl::RenderControl(GLFWwindow* window, render::SpaceRenderer* renderer) : ControlInterface{ window }, renderer_{ renderer } {}
 
-void SimulationControl::enactKeyTrigger(int key, double seconds) {
+void RenderControl::enactKeyTrigger(int key, double seconds) {
 	switch (key) {
-	// SPACE: Pause/resume simulation.
-	case GLFW_KEY_SPACE:
-		simulation_->isPaused() ? simulation_->unpause() : simulation_->pause();
+	// O: Show/hide orbits.
+	case GLFW_KEY_O:
+		renderer_->setShowOrbits(!renderer_->getShowOrbits());
 		break;
 	}
 
 }
 
-void SimulationControl::enactKeyRelease(int key, double seconds) {
+void RenderControl::enactKeyRelease(int key, double seconds) {
 	// No function for now.
 }
 
-void SimulationControl::enactKeyPress(int key, double seconds) {
+void RenderControl::enactKeyPress(int key, double seconds) {
 	// No function for now.
 }
 
-void SimulationControl::enactCursorPosition(glm::vec2 delta, double seconds) {
+void RenderControl::enactCursorPosition(glm::vec2 delta, double seconds) {
 	// No function for now.
 }
 
-void SimulationControl::enactScrollOffset(glm::vec2 offset, double seconds) {
-	// Increase/decrease simulation speed.
-	simulation_->setSpeed(simulation_->getSpeed() * pow(1.01f, offset.y));
+void RenderControl::enactScrollOffset(glm::vec2 offset, double seconds) {
+	// No function for now
 }
 
 } // namespace control

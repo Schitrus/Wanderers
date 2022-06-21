@@ -125,7 +125,8 @@ void Mesh::unbind() { glBindVertexArray(0);  }
  * - Generate Buffers.
  */
 Mesh::Mesh(std::vector<glm::vec3>* vertices, unsigned int mesh_type) 
-	: vertices_{ vertices }, normals_{ mesh_type == GL_POINTS ? vertices : smoothNormals(vertices_, generateNormals(vertices_, mesh_type)) } {
+	: vertices_{ vertices }, normals_{ mesh_type != GL_TRIANGLES ? vertices : smoothNormals(vertices_, generateNormals(vertices_, mesh_type)) },
+	  VAO_{ 0 }, vertex_VBO_{ 0 }, normal_VBO_{ 0 } {
 	generateBuffers();
 }
 

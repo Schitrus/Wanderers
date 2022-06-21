@@ -23,6 +23,7 @@
     <ClInclude Include="wanderers\include\control\camera_control.h" />
     <ClInclude Include="wanderers\include\control\controller.h" />
     <ClInclude Include="wanderers\include\control\control_interface.h" />
+    <ClInclude Include="wanderers\include\control\render_control.h" />
     <ClInclude Include="wanderers\include\control\simulation_control.h" />
     <ClInclude Include="wanderers\include\render\camera.h" />
     <ClInclude Include="wanderers\include\render\camera_view.h" />
@@ -34,6 +35,7 @@
     <ClInclude Include="wanderers\include\simulation\object\aggregate_object.h" />
     <ClInclude Include="wanderers\include\simulation\object\astronomical_object.h" />
     <ClInclude Include="wanderers\include\simulation\object\camera_object.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\circle.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\points.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\mesh.h" />
@@ -53,6 +55,7 @@
     <ClCompile Include="wanderers\main.cpp" />
     <ClCompile Include="wanderers\src\control\controller.cpp" />
     <ClCompile Include="wanderers\src\control\control_interface.cpp" />
+    <ClCompile Include="wanderers\src\control\render_control.cpp" />
     <ClCompile Include="wanderers\src\control\simulation_control.cpp" />
     <ClCompile Include="wanderers\src\render\camera.cpp" />
     <ClCompile Include="wanderers\src\render\camera_view.cpp" />
@@ -64,6 +67,7 @@
     <ClCompile Include="wanderers\src\simulation\object\aggregate_object.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\camera_object.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\circle.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\points.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\mesh.cpp" />

@@ -96,6 +96,12 @@
     <ClInclude Include="wanderers\include\common\orientation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\model\circle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\control\render_control.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wanderers\main.cpp">
@@ -180,6 +186,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="wanderers\src\common\orientation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\model\circle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\control\render_control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

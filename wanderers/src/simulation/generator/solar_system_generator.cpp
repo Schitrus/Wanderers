@@ -173,7 +173,7 @@ object::Orbit* generateOrbit(float lower_radius, float upper_radius, float veloc
 	float inclination = angle(randomizer);
 	for (int i = 0; i < 6; i++) inclination *= prob(randomizer);
 	float true_anomaly = angle(randomizer);
-	float angular_velocity = 100.0f * velocity_factor/sqrt(semimajor_axis);
+	float angular_velocity = 1000.0f * velocity_factor/( semimajor_axis* semimajor_axis);
 	object::Orbit* orbit = new object::Orbit{ eccentricity, semimajor_axis, inclination, longitude_of_acending_node,
 											  argument_of_periapsis, true_anomaly, angular_velocity };
 

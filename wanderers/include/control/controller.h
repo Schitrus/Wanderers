@@ -15,6 +15,7 @@
 /* Internal Includes */
 #include "render/camera.h"
 #include "simulation/space_simulation.h"
+#include "render/space_renderer.h"
 #include "control/control_interface.h"
 
 /* STL Includes */
@@ -26,6 +27,8 @@
 namespace wanderers {
 namespace control {
 
+// TODO: Only accept abstract controllers instead of specific simulation and render and camera types.
+
 /* 
  * Class for which to store key and mouse input changes and interpret them
  *   in the context of the program.
@@ -33,7 +36,7 @@ namespace control {
 class Controller : public ControlInterface{
 public:
 	/* Intitializes the controller singleton and start controller thread. */
-	static void initController(render::Camera* camera, simulation::SpaceSimulation* simulation);
+	static void initController(render::Camera* camera, simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer);
 	/* Deinitializes the controller singleton and stops the controller thread. */
 	static void deinitController();
 
@@ -81,7 +84,7 @@ private:
 	std::mutex controller_mutex_;
 
 	/* Constructor for singleton. */
-	Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation);
+	Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer);
 
 	/* Run the controller handling loop. */
 	void runController();

@@ -10,6 +10,7 @@
 
 /* Internal Includes */
 #include "simulation/object/astronomical_object.h"
+#include "simulation/object/model/circle.h"
 
 namespace wanderers {
 namespace simulation {
@@ -74,7 +75,13 @@ private:
 	common::Orientation orbital_orientation_;
 };
 
-static const Orbit kNoOrbit{0.0f, 0.0f, 0.0f};
+static AstronomicalObject getOrbitTrailObject(){
+	return AstronomicalObject{ kDefaultObject, new AggregateObject{new Object{model::getCircle()}} };
+};
+
+static Orbit getNoOrbit() {
+	return Orbit{ 0.0f, 0.0f, 0.0f };;
+}
 
 } // namespace simulation
 } // namespace object

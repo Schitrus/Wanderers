@@ -32,7 +32,7 @@ std::vector<std::pair<AstronomicalObject*, Orbit*>> OrbitalSystem::getOrbits() {
 }
 
 void OrbitalSystem::addOrbit(AstronomicalObject* object) {
-	addOrbit(object, new Orbit{ kNoOrbit });
+	addOrbit(object, new Orbit{getNoOrbit()});
 }
 
 void OrbitalSystem::addOrbit(AstronomicalObject* object, Orbit* orbit) {

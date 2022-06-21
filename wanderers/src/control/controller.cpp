@@ -10,6 +10,7 @@
 /* Internal Includes */
 #include "control/camera_control.h"
 #include "control/simulation_control.h"
+#include "control/render_control.h"
 
 /* STL Includes */
 #include <thread>
@@ -22,7 +23,7 @@ namespace control {
  * - Set input callbacks.
  * - Start controller thread.
  */
-Controller::Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation) : ControlInterface{ window },
+Controller::Controller(GLFWwindow* window, render::Camera* camera, simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer) : ControlInterface{ window },
                                                              pressed_keys_{ std::size_t{kNumKeys} },
                                                              released_keys_{ std::size_t{kNumKeys} },
 	                                                         cursor_position_{} {
@@ -37,6 +38,7 @@ Controller::Controller(GLFWwindow* window, render::Camera* camera, simulation::S
 
 	controls_.push_back(new CameraControl{ window, camera, simulation });
 	controls_.push_back(new SimulationControl{ window, simulation });
+	controls_.push_back(new RenderControl{ window, renderer });
 
 	should_stop_ = false;
 	std::thread controller_thread{&Controller::runController, this};
@@ -59,9 +61,9 @@ Controller::~Controller() {
  * Controller initController: 
  * - Create Controller singleton if not created.
  */
-void Controller::initController(render::Camera* camera, simulation::SpaceSimulation* simulation) {
+void Controller::initController(render::Camera* camera, simulation::SpaceSimulation* simulation, render::SpaceRenderer* renderer) {
 	if (controller_singleton_ == nullptr)
-		controller_singleton_ = new Controller{ glfwGetCurrentContext(), camera, simulation};
+		controller_singleton_ = new Controller{ glfwGetCurrentContext(), camera, simulation, renderer};
 }
 
 /*
