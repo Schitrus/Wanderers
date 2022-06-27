@@ -29,6 +29,16 @@ ShaderProgram::ShaderProgram(std::string vertex_path, std::string fragment_path)
 	shaders_.push_back(fragment_shader);
 }
 
+ShaderProgram::ShaderProgram(std::string vertex_path, std::string geometry_path, std::string fragment_path) : program_id_{ 0 }, shaders_{} {
+	Shader vertex_shader{ GL_VERTEX_SHADER, vertex_path };
+	Shader geometry_shader{ GL_GEOMETRY_SHADER , geometry_path };
+	Shader fragment_shader{ GL_FRAGMENT_SHADER, fragment_path };
+
+	shaders_.push_back(vertex_shader);
+	shaders_.push_back(geometry_shader);
+	shaders_.push_back(fragment_shader);
+}
+
 /*
  * SahderProgram link:
  * - Read and compiles the shaders.
@@ -70,6 +80,10 @@ void ShaderProgram::setUniform(glm::vec3 vector, const char* name) {
 
 void ShaderProgram::setUniform(int integer, const char* name) {
 	glUniform1i(glGetUniformLocation(program_id_, name), integer);
+}
+
+void ShaderProgram::setUniform(float decimal, const char* name) {
+	glUniform1f(glGetUniformLocation(program_id_, name), decimal);
 }
 
 GLuint ShaderProgram::getProgramID() {

@@ -36,6 +36,8 @@ public:
 	/* Returns normals as individual float values. */
 	float* normalsData();
 
+	float* vecData(std::vector<glm::vec3>* vecData);
+
 	/* Returns the byte size of the vertices. NOTE: normals have same size as vertices for the moment. */
 	int size();
 
@@ -62,7 +64,7 @@ private:
 	std::vector<glm::vec3>* vertices_;
 	std::vector<glm::vec3>* normals_;
 
-	void generateBuffers();
+	void generateBuffers(unsigned int mesh_type);
 };
 
 } // namespace model

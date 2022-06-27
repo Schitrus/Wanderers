@@ -28,7 +28,7 @@ namespace model {
  */
 class Points : public Mesh {
 public:
-	Points(std::vector<glm::vec3>* points);
+	Points(std::vector<glm::vec3>* points, std::vector<glm::vec3>* colors = nullptr);
 
 };
 

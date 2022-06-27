@@ -75,11 +75,15 @@ std::vector<glm::vec3>* Mesh::getVertices() { return vertices_; }
 std::vector<glm::vec3>* Mesh::getNormals() { return normals_; }
 
 float* Mesh::verticesData() {
-	return reinterpret_cast<float*>(&vertices_->data()[0]);
+	return vecData(vertices_);
 }
 
 float* Mesh::normalsData() {
-	return reinterpret_cast<float*>(&normals_->data()[0]);
+	return vecData(normals_);
+}
+
+float* Mesh::vecData(std::vector<glm::vec3>* vec_data) {
+	return reinterpret_cast<float*>(&vec_data->data()[0]);
 }
 
 int Mesh::size() {
@@ -93,7 +97,7 @@ int Mesh::size() {
  * - Generate VBO for normals and bind it.
  * - unbind VAO.
  */
-void Mesh::generateBuffers() {
+void Mesh::generateBuffers(unsigned int mesh_type) {
 	glGenVertexArrays(1, &VAO_);
 	glBindVertexArray(VAO_);
 
@@ -104,12 +108,16 @@ void Mesh::generateBuffers() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glGenBuffers(1, &normal_VBO_);
-	glBindBuffer(GL_ARRAY_BUFFER, normal_VBO_);
-	glBufferData(GL_ARRAY_BUFFER, size(), normalsData(), GL_STATIC_DRAW);
+	if (mesh_type == GL_TRIANGLES) {
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(1);
+		glGenBuffers(1, &normal_VBO_);
+		glBindBuffer(GL_ARRAY_BUFFER, normal_VBO_);
+		glBufferData(GL_ARRAY_BUFFER, size(), normalsData(), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+
+	}
 
 	glBindVertexArray(0);
 }
@@ -125,9 +133,9 @@ void Mesh::unbind() { glBindVertexArray(0);  }
  * - Generate Buffers.
  */
 Mesh::Mesh(std::vector<glm::vec3>* vertices, unsigned int mesh_type) 
-	: vertices_{ vertices }, normals_{ mesh_type != GL_TRIANGLES ? vertices : smoothNormals(vertices_, generateNormals(vertices_, mesh_type)) },
+	: vertices_{ vertices }, normals_{ mesh_type != GL_TRIANGLES ? nullptr : smoothNormals(vertices_, generateNormals(vertices_, mesh_type)) },
 	  VAO_{ 0 }, vertex_VBO_{ 0 }, normal_VBO_{ 0 } {
-	generateBuffers();
+	generateBuffers(mesh_type);
 }
 
 Mesh::~Mesh() {

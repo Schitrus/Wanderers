@@ -21,6 +21,31 @@ namespace wanderers {
 namespace simulation {
 namespace object {
 
+/*
+ * Stars getColor:
+ * - Approximates rgb values of the black body radiation that is dependant on the temperature.
+ *   Based on the the Stefan–Boltzmann law.
+ */
+glm::vec3 temperatureToRGB(float temperature) {
+    glm::vec3 color;
+    if (temperature <= 6600) {
+        color.r = 1.0;
+        color.g = glm::clamp((99.4708025861 * log(temperature / 100.0) - 161.1195681661) / 255.0, 0.0, 1.0);
+        if (temperature <= 1900) {
+            color.b = 0.0;
+        }
+        else {
+            color.b = glm::clamp((138.5177312231 * log(temperature / 100 - 10.0) - 305.0447927307) / 255.0, 0.0, 1.0);
+        }
+    }
+    else {
+        color.r = glm::clamp((329.698727446 * pow(temperature / 100.0 - 60.0, -0.1332047592)) / 255.0, 0.0, 1.0);
+        color.g = glm::clamp((288.1221695283 * pow(temperature / 100.0 - 60.0, -0.0755148492)) / 255.0, 0.0, 1.0);
+        color.b = 1.0;
+    }
+    return color;
+}
+
 /* Random generator with seed set as the time of execution. */
 static std::default_random_engine randomizer(std::chrono::system_clock::now().time_since_epoch().count());
 
@@ -49,14 +74,19 @@ glm::vec3 Stars::generateRandomDirection() {
  */
 model::Points* Stars::generateStars(int number_of_stars, float max_distance, glm::vec3 position) {
 	std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
+    std::vector<glm::vec3>* star_color = new std::vector<glm::vec3>(number_of_stars);
+
 	std::uniform_real_distribution<float> angle(0.0f, 360.0f);
 	std::uniform_real_distribution<float> up(-1.0f, 1.0f);
 	std::uniform_real_distribution<float> distance(1.0f, max_distance);
+    std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
+
 	for (int i = 0; i < number_of_stars; i++) {
         glm::vec3 direction = generateRandomDirection();
         stars->at(i) = direction * distance(randomizer) + position;
+        star_color->at(i) = temperatureToRGB(temperature(randomizer));
 	}
-    return new model::Points{ stars };
+    return new model::Points{ stars, star_color };
 }
 
 /*
@@ -68,11 +98,13 @@ model::Points* Stars::generateStars(int number_of_stars, float max_distance, glm
  * - Return the stars.
  */
 model::Points* Stars::generateGalaxyDisc(int number_of_stars, float max_distance, glm::vec3 axis, glm::vec3 position) {
-    std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
+    std::vector<glm::vec3>* star_position = new std::vector<glm::vec3>(number_of_stars);
+    std::vector<glm::vec3>* star_color = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 1.0f);
     std::uniform_real_distribution<float> up(0.0f, 1.0f);
     std::uniform_real_distribution<float> sign(0.0f, 1.0f);
     std::uniform_real_distribution<float> distance(0.0f, 1.0f);
+    std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
     int core_depth = 5;
     for (int i = 0; i < number_of_stars; i++) {
         float theta{ angle(randomizer) };
@@ -119,11 +151,11 @@ model::Points* Stars::generateGalaxyDisc(int number_of_stars, float max_distance
 
         star_pos = glm::rotation(glm::vec3{ 0.0, 1.0f, 0.0f }, glm::normalize(axis)) * glm::vec4{star_pos, 1.0f};
 
-        stars->at(i) = star_pos + position;
-
+        star_position->at(i) = star_pos + position;
+        star_color->at(i) = temperatureToRGB(temperature(randomizer));
     }
 
-    return new model::Points{ stars };
+    return new model::Points{ star_position, star_color };
 }
 
 /*
@@ -138,6 +170,7 @@ model::Points* Stars::generateCluster(int number_of_stars, float distance_angle,
     std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 360.0f);
     std::uniform_real_distribution<float> distance(0.0f, 1.0f);
+    std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
 
     for (int i = 0; i < number_of_stars; i++) {
         float theta{ angle(randomizer) };
@@ -157,29 +190,8 @@ model::Points* Stars::generateCluster(int number_of_stars, float distance_angle,
 
 void Stars::elapseTime(double seconds) { }
 
-/*
- * Stars getColor:
- * - Approximates rgb values of the black body radiation that is dependant on the temperature.
- *   Based on the the Stefan–Boltzmann law.
- */
 glm::vec3 Stars::getColor() {
-    glm::vec3 color;
-    if (temperature_ <= 6600) {
-        color.r = 1.0;
-        color.g = glm::clamp((99.4708025861 * log(temperature_ / 100.0) - 161.1195681661) / 255.0, 0.0, 1.0);
-        if (temperature_ <= 1900) {
-            color.b = 0.0;
-        }
-        else {
-            color.b = glm::clamp((138.5177312231 * log(temperature_ / 100 - 10.0) - 305.0447927307) / 255.0, 0.0, 1.0);
-        }
-    }
-    else {
-        color.r = glm::clamp((329.698727446 * pow(temperature_ / 100.0 - 60.0, -0.1332047592)) / 255.0, 0.0, 1.0);
-        color.g = glm::clamp((288.1221695283 * pow(temperature_ / 100.0 - 60.0, -0.0755148492)) / 255.0, 0.0, 1.0);
-        color.b = 1.0;
-    }
-    return color;
+    return temperatureToRGB(temperature_);
 }
 
 float Stars::getSize() { return size_; }

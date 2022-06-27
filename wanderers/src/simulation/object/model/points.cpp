@@ -16,7 +16,23 @@ namespace simulation {
 namespace object {
 namespace model {
 
-Points::Points(std::vector<glm::vec3>* points) : Mesh(points, GL_POINTS) { }
+Points::Points(std::vector<glm::vec3>* points, std::vector<glm::vec3>* colors) 
+	: Mesh(points, GL_POINTS) { 
+	if (colors != nullptr) {
+		bind();
+
+		unsigned int tmp_VBO;
+
+		glGenBuffers(1, &tmp_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, tmp_VBO);
+		glBufferData(GL_ARRAY_BUFFER, size(), vecData(colors), GL_STATIC_DRAW);
+
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(1);
+
+		unbind();
+	}
+}
 
 
 } // namespace model

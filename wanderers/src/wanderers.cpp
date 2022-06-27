@@ -89,10 +89,7 @@ void run() {
 	simulation::SpaceSimulation* space_simulation = new simulation::SpaceSimulation{camera};
 	
 	// Setup render engine.
-	render::shader::ShaderProgram* shader{ new render::shader::ShaderProgram{"shaders/vertex.glsl", "shaders/fragment.glsl"} };
-	shader->link();
-	
-	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ shader, camera };
+	render::SpaceRenderer* space_renderer = new render::SpaceRenderer{ camera };
 	
 	// Setup controller
 	control::Controller::initController(camera, space_simulation, space_renderer);

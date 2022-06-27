@@ -31,7 +31,7 @@ namespace render {
  */
 class SpaceRenderer {
 public:
-	SpaceRenderer(render::shader::ShaderProgram* shader, render::Camera* camera);
+	SpaceRenderer(render::Camera* camera);
 
 	/* Does some pre render operations. Has to be done befor each render iteration.*/
 	void preRender();
@@ -66,7 +66,9 @@ private:
 	int render_width_{};
 	int render_height_{};
 
+	// TODO: make map
 	render::shader::ShaderProgram* shader_;
+	render::shader::ShaderProgram* star_shader_;
 
 	render::Camera* camera_;
 

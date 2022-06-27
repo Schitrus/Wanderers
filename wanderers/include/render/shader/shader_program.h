@@ -32,6 +32,7 @@ namespace shader {
 class ShaderProgram{
 public:
 	ShaderProgram(std::string vertex_path, std::string fragment_path);
+	ShaderProgram(std::string vertex_path, std::string geometry_path, std::string fragment_path);
 
 	/* Links shaders and creates */
 	int link();
@@ -43,6 +44,7 @@ public:
 	void setUniform(glm::mat4 matrix, const char* name);
 	void setUniform(glm::vec3 vector, const char* name);
 	void setUniform(int integer, const char* name);
+	void setUniform(float decimal, const char* name);
 
 	unsigned int getProgramID();
 private:

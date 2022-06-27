@@ -21,8 +21,13 @@
 namespace wanderers {
 namespace render {
 
-SpaceRenderer::SpaceRenderer(render::shader::ShaderProgram* shader, render::Camera* camera)
-	: shader_{ shader }, camera_{ camera }, view_{}, projection_{}, show_orbits_{ false } { }
+SpaceRenderer::SpaceRenderer(render::Camera* camera)
+	: camera_{ camera }, view_{}, projection_{}, show_orbits_{ false } {
+	shader_ = new render::shader::ShaderProgram{"shaders/vertex.glsl", "shaders/fragment.glsl"};
+	shader_->link();
+	star_shader_ = new render::shader::ShaderProgram{"shaders/star_vertex.glsl", "shaders/star_geometry.glsl", "shaders/star_fragment.glsl"};
+	star_shader_->link();
+}
 
 /*
  * SpaceRenderer preRender:
@@ -50,10 +55,6 @@ void SpaceRenderer::preRender() {
 	if (camera_->shouldClear()) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-
-	shader_->use();
-
-	glEnable(GL_DEPTH_TEST);
 }
 
 /*
@@ -64,8 +65,6 @@ void SpaceRenderer::preRender() {
  */
 void SpaceRenderer::postRender() {
 	camera_->unlock();
-
-	glDisable(GL_DEPTH_TEST);
 
 	glfwSwapBuffers(glfwGetCurrentContext());
 	glfwPollEvents();
@@ -81,10 +80,19 @@ void SpaceRenderer::postRender() {
 void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 	preRender();
 
+	glEnable(GL_DEPTH_TEST);
+
+	star_shader_->use();
+
 	for (simulation::object::Stars* stars : space_simulation->getGroupOfStars())
 		render(stars);
+	
+	shader_->use();
+
 	for (simulation::object::OrbitalSystem* solar_system : space_simulation->getSolarSystems())
 		render(solar_system);
+
+	glDisable(GL_DEPTH_TEST);
 
 	postRender();
 }
@@ -112,16 +120,14 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		object.first->bind();
 
 		glm::mat4 obj_model{ glm::mat4{ 1.0f } /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/ };
-		shader_->setUniform(obj_model, "model");
-		shader_->setUniform(proj * view * obj_model, "MVP");
-		shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
-		shader_->setUniform(camera_position, "camera_position");
-		shader_->setUniform(stars->getColor() * 0.8f  * static_cast<float>(0.5f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.5f), "color");
-		shader_->setUniform(true, "is_sun");
+		star_shader_->setUniform(view, "view");
+		star_shader_->setUniform(proj, "projection");
+		star_shader_->setUniform(static_cast<float>(glfwGetTime()), "time_point");
+		star_shader_->setUniform(camera_->getAspectRatio(), "aspect_ratio");
 
 		glDepthRange(1.0f, 1.0f);
 		glDepthFunc(GL_LEQUAL);
-		glPointSize(stars->getSize()  * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()) );
+		//glPointSize(stars->getSize()  * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()) );
 		
 		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
 		
