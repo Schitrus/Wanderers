@@ -69,16 +69,70 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		system->setOrientation(object::Stars::generateRandomDirection());
 		addSolarSystem(system);
 	}
-
-	for (int i = 0; i < 10; i++) {
-		std::cout << "Group: " << i << std::endl;
-		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(1000, 100) });
-		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000, object::Stars::generateGalaxyDisc(1000) });
+	
+	for (int i = 0; i < 100; i++) {
+		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 100, object::Stars::generateStars(1000, 100000) });
+		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100000) });
+		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 1'000'000, object::Stars::generateGalaxyDisc(1'000, 100, glm::vec3{0.0f, 1.0f, 0.0f}) });
+	
 		float radius = cluster_radius(randomizer);
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
+
 		for (int j = 0; j < 25; j++) {
 			float count = cluster_count(randomizer);
-			addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 10'000, object::Stars::generateCluster(count, radius, cluster_center) });
+			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
+		}
+	}
+	for (int i = 0; i < 25; i++) {
+
+		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_pos = 500.0f * size(randomizer) * object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_axis = object::Stars::generateRandomDirection();
+		float galaxy_size = 10 * size(randomizer);
+		for (int j = 0; j < 25; j++) {
+			float count = cluster_count(randomizer);
+			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 10'000'000, object::Stars::generateGalaxyDisc(10, galaxy_size, galaxy_axis, galaxy_pos) });
+			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
+
+
+		}
+	}
+
+	for (int i = 0; i < 100; i++) {
+
+		glm::vec3 galaxy_pos = 500.0f * size(randomizer) * object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_axis = object::Stars::generateRandomDirection();
+		float galaxy_size = 15 * size(randomizer);
+		for (int j = 0; j < 8; j++) {
+			float count = cluster_count(randomizer);
+			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
+
+
+		}
+	}
+	for (int i = 0; i < 100; i++) {
+		glm::vec3 galaxy_pos = 500.0f * size(randomizer) * object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_axis = object::Stars::generateRandomDirection();
+		float galaxy_size = 30 * size(randomizer);
+		for (int j = 0; j < 4; j++) {
+			float count = cluster_count(randomizer);
+			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 1'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
+
+
+		}
+	}
+	for (int i = 0; i < 100; i++) {
+		glm::vec3 galaxy_pos = 500.0f * size(randomizer) * object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_axis = object::Stars::generateRandomDirection();
+		float galaxy_size = 50 * size(randomizer);
+		for (int j = 0; j < 2; j++) {
+			float count = cluster_count(randomizer);
+			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 10'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
+
+
 		}
 	}
 

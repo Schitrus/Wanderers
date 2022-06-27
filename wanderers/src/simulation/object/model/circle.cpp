@@ -16,7 +16,7 @@ namespace simulation {
 namespace object {
 namespace model {
 
-Circle::Circle() : Circle{ 1000 } {}
+Circle::Circle() : Circle{ 250 } {}
 
 Circle::Circle(int num_of_points) : Mesh(generateCircle(num_of_points), GL_LINES) { }
 

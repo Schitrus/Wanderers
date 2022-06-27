@@ -10,6 +10,7 @@
 /* External Includes */
 #include "glm/ext.hpp"
 #include "glm/gtx/rotate_vector.hpp"
+#include "glm/gtx/vector_angle.hpp"
 
 /* STL Includes */
 #include <random>
@@ -46,14 +47,14 @@ glm::vec3 Stars::generateRandomDirection() {
  *   - Set star to the random direction times a random distance.
  * - Return the stars.
  */
-model::Points* Stars::generateStars(int number_of_stars, float max_distance) {
+model::Points* Stars::generateStars(int number_of_stars, float max_distance, glm::vec3 position) {
 	std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
 	std::uniform_real_distribution<float> angle(0.0f, 360.0f);
 	std::uniform_real_distribution<float> up(-1.0f, 1.0f);
 	std::uniform_real_distribution<float> distance(1.0f, max_distance);
 	for (int i = 0; i < number_of_stars; i++) {
         glm::vec3 direction = generateRandomDirection();
-        stars->at(i) = direction * distance(randomizer);
+        stars->at(i) = direction * distance(randomizer) + position;
 	}
     return new model::Points{ stars };
 }
@@ -66,11 +67,12 @@ model::Points* Stars::generateStars(int number_of_stars, float max_distance) {
  *   - Set star to the random direction.
  * - Return the stars.
  */
-model::Points* Stars::generateGalaxyDisc(int number_of_stars) {
+model::Points* Stars::generateGalaxyDisc(int number_of_stars, float max_distance, glm::vec3 axis, glm::vec3 position) {
     std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 1.0f);
     std::uniform_real_distribution<float> up(0.0f, 1.0f);
     std::uniform_real_distribution<float> sign(0.0f, 1.0f);
+    std::uniform_real_distribution<float> distance(0.0f, 1.0f);
     int core_depth = 5;
     for (int i = 0; i < number_of_stars; i++) {
         float theta{ angle(randomizer) };
@@ -78,10 +80,49 @@ model::Points* Stars::generateGalaxyDisc(int number_of_stars) {
         float s{ sign(randomizer) > 0.5f ? 1.0f : -1.0f };
         float st{ sign(randomizer) > 0.5f ? 1.0f : -1.0f };
         float current_core_depth = (i % core_depth) + 1;
-        stars->at(i) = glm::vec3{ sqrt(1 - z * z) * cos(glm::radians(st * (1 - pow(theta, 1.0f/current_core_depth)) * 180.0f)), 
-                                  s * (1 - 0.5f * current_core_depth / core_depth) * (0.1f * z + 0.7f * pow(z, 2.0f) + 0.2f * pow(z, 4.0f)), 
-                                  sqrt(1 - z * z) * sin(glm::radians(st * (1 - pow(theta, 1.0f / current_core_depth)) * 180.0f)) };
+        //stars->at(i) = glm::vec3{ sqrt(1 - z * z) * cos(glm::radians(st * (1 - pow(theta, 1.0f/current_core_depth)) * 180.0f)), 
+        //                          s * (1 - 0.5f * current_core_depth / core_depth) * (0.1f * z + 0.7f * pow(z, 2.0f) + 0.2f * pow(z, 4.0f)), 
+        //                          sqrt(1 - z * z) * sin(glm::radians(st * (1 - pow(theta, 1.0f / current_core_depth)) * 180.0f)) } * distance(randomizer);
+
+        glm::vec3 dir = generateRandomDirection();
+        dir = glm::normalize(dir);
+        dir.y = 0.5f * dir.y;
+
+        //float dis = distance(randomizer);
+        //dis = pow(dis, 255.0f);
+        //if (dis < 0.00001f)
+        //    continue;
+        //
+        //float h_param = pow(0.5f + pow(0.5f * (1 + cos(glm::radians(180.0f * dis))), 8.0f) + 0.5f * (1 - dis), 1.5f);
+        //
+        //std::uniform_real_distribution<float> height(-h_param, h_param);
+        //
+        //float height_factor = distance(randomizer);
+        //height_factor = pow(height_factor, 5.0f);
+        //float h = height(randomizer);
+        //dir = dir * dis * max_distance;
+        //dir.y = 0.1f * h * height_factor * max_distance;
+
+        float dist = 1.0f/cbrt(1.0f-distance(randomizer)) - 1.0f;
+        float up_dist = distance(randomizer);
+        up_dist = 0.3f/sqrt(1.0f - up_dist) + 0.7f * up_dist - 0.3f;
+
+        dir.y *= 1.0f / (pow(2.0f * dist, 2.0f) + 1.0f);
+        dir.y += 0.1f * (distance(randomizer) >= 0.5f ? 1.0f : -1.0f) * std::max(0.0f, 1.0f / (pow(0.1f * dist, 2.0f) + 1.0f) * up_dist - 1.0f) ;
+
+
+        if (dist > 1.0f) {
+            dist = log(dist) + 1.0f;
+        }
+
+        glm::vec3 star_pos = dir * max_distance * dist;
+
+        star_pos = glm::rotation(glm::vec3{ 0.0, 1.0f, 0.0f }, glm::normalize(axis)) * glm::vec4{star_pos, 1.0f};
+
+        stars->at(i) = star_pos + position;
+
     }
+
     return new model::Points{ stars };
 }
 
@@ -93,7 +134,7 @@ model::Points* Stars::generateGalaxyDisc(int number_of_stars) {
  *   - Set star to the direction.
  * - Return the stars.
  */
-model::Points* Stars::generateCluster(int number_of_stars, float distance_angle, glm::vec3 center) {
+model::Points* Stars::generateCluster(int number_of_stars, float distance_angle, float dis, glm::vec3 center, glm::vec3 position) {
     std::vector<glm::vec3>* stars = new std::vector<glm::vec3>(number_of_stars);
     std::uniform_real_distribution<float> angle(0.0f, 360.0f);
     std::uniform_real_distribution<float> distance(0.0f, 1.0f);
@@ -108,7 +149,8 @@ model::Points* Stars::generateCluster(int number_of_stars, float distance_angle,
                                                                glm::vec3{ 1.0f, 0.0f, 0.0f })));
         glm::vec3 deviation = glm::normalize(glm::rotate(center, glm::radians(dist * dist * distance_angle), normal));
         deviation = glm::normalize(glm::rotate(deviation, glm::radians(rot), center));
-        stars->at(i) = deviation;
+        glm::vec3 v = generateRandomDirection() * sin(glm::radians(distance_angle)) * distance(randomizer);
+        stars->at(i) = (center + v) * dis + position;
     }
     return new model::Points{ stars };
 }

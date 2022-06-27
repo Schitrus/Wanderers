@@ -34,13 +34,13 @@ public:
 	static glm::vec3 generateRandomDirection();
 
 	/* Generate arbitrary stars. */
-	static model::Points* generateStars(int number_of_stars, float max_distance);
+	static model::Points* generateStars(int number_of_stars, float max_distance, glm::vec3 position = glm::vec3{ 33.0f, 4.0f, 12.0f });
 
 	/* Generate a star cluster. */
-	static model::Points* generateCluster(int number_of_stars, float angle, glm::vec3 direction = generateRandomDirection());
+	static model::Points* generateCluster(int number_of_stars, float angle, float max_distance, glm::vec3 direction, glm::vec3 position = glm::vec3{ 33.0f, 4.0f, 12.0f });
 
 	/* Generate stars in a galaxy disc. */
-	static model::Points* generateGalaxyDisc(int number_of_stars);
+	static model::Points* generateGalaxyDisc(int number_of_stars, float max_distance, glm::vec3 axis, glm::vec3 position = glm::vec3{33.0f, 4.0f, 12.0f});
 
 	/* Get the color of the stars. Depends on the temperature. */
 	glm::vec3 getColor();

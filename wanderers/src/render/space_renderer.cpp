@@ -104,21 +104,24 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 	simulation::object::AggregateObject* star_object{ stars->getPhysicalObject() };
 
 	glm::vec3 camera_position{ camera_->getPosition() };
-	glm::mat4 agg_model{ glm::translate(glm::mat4{1.0f}, camera_position * (1.0f - 1.0f / stars->getDistance())) /* * star_object->getMatrix()*/ };
+	glm::vec3 relative_position{ camera_position / stars->getDistance() };
+	glm::mat4 view{ glm::lookAt(relative_position, relative_position + camera_->getDirection(), camera_->getUp()) };
+	glm::mat4 proj{ glm::perspective(glm::radians(camera_->getFieldOfView()), camera_->getAspectRatio(), 10.0f, 100000.0f) };
+	glm::mat4 agg_model{ glm::translate(glm::mat4{1.0f}, relative_position) /* * star_object->getMatrix()*/ };
 	for (std::pair<simulation::object::Object*, glm::vec3> object : star_object->getObjects()) {
 		object.first->bind();
 
-		glm::mat4 obj_model{ agg_model /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/};
+		glm::mat4 obj_model{ glm::mat4{ 1.0f } /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/ };
 		shader_->setUniform(obj_model, "model");
-		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(proj * view * obj_model, "MVP");
 		shader_->setUniform(glm::vec3(0.0f, 0.0f, 0.0f), "light_position");
 		shader_->setUniform(camera_position, "camera_position");
-		shader_->setUniform(stars->getColor() * 0.8f * static_cast<float>(0.25f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.75f), "color");
+		shader_->setUniform(stars->getColor() * 0.8f  * static_cast<float>(0.5f * sin(stars->getSize() * glfwGetTime() + 10.0f * stars->getSize()) + 0.5f), "color");
 		shader_->setUniform(true, "is_sun");
 
 		glDepthRange(1.0f, 1.0f);
 		glDepthFunc(GL_LEQUAL);
-		glPointSize(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()));
+		glPointSize(stars->getSize()  * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()) );
 		
 		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
 		
