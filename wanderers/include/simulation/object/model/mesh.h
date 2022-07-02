@@ -32,11 +32,11 @@ public:
 	std::vector<glm::vec3>* getNormals();
 
 	/* Returns vertices as individual float values. */
-	float* verticesData();
+	glm::vec3* verticesData();
 	/* Returns normals as individual float values. */
-	float* normalsData();
+	glm::vec3* normalsData();
 
-	float* vecData(std::vector<glm::vec3>* vecData);
+	glm::vec3* vecData(std::vector<glm::vec3>* vecData);
 
 	/* Returns the byte size of the vertices. NOTE: normals have same size as vertices for the moment. */
 	int size();

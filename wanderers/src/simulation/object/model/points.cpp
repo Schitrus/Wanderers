@@ -29,6 +29,7 @@ Points::Points(std::vector<glm::vec3>* points, std::vector<glm::vec3>* colors)
 
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(1);
+		glVertexAttribDivisor(1, 1);
 
 		unbind();
 	}

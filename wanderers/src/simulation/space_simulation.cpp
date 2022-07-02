@@ -71,10 +71,10 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 	}
 	
 	for (int i = 0; i < 100; i++) {
-		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 100, object::Stars::generateStars(1000, 100000) });
+		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 100, object::Stars::generateStars(100, 100000) });
 		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100000) });
 		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 1'000'000, object::Stars::generateGalaxyDisc(1'000, 100, glm::vec3{0.0f, 1.0f, 0.0f}) });
-	
+	    /*
 		float radius = cluster_radius(randomizer);
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
 
@@ -82,7 +82,9 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 			float count = cluster_count(randomizer);
 			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
 		}
+		*/
 	}
+	
 	for (int i = 0; i < 25; i++) {
 
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
@@ -135,6 +137,8 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 
 		}
 	}
+
+	
 
 	for (object::OrbitalSystem* system : solar_systems_) {
 		constructCatalog(astrological_catalog_, system);

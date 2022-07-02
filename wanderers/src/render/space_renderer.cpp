@@ -86,6 +86,8 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 	for (simulation::object::Stars* stars : space_simulation->getGroupOfStars())
 		render(stars);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
 	
 	shader_->use();
 
@@ -122,17 +124,19 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		glm::mat4 obj_model{ glm::mat4{ 1.0f } /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/ };
 		star_shader_->setUniform(view, "view");
 		star_shader_->setUniform(proj, "projection");
+		star_shader_->setUniform(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()), "star_size");
 		star_shader_->setUniform(static_cast<float>(glfwGetTime()), "time_point");
 		star_shader_->setUniform(camera_->getAspectRatio(), "aspect_ratio");
 
-		glDepthRange(1.0f, 1.0f);
-		glDepthFunc(GL_LEQUAL);
-		//glPointSize(stars->getSize()  * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()) );
+		//glDepthRange(1.0f, 1.0f);
+		//glDepthFunc(GL_LEQUAL);
 		
-		glDrawArrays(GL_POINTS, 0, object.first->getModel()->size());
+		//glDrawArrays(GL_POINTS, 0, object.first->getModel()->size() / 12);
 		
-		glDepthFunc(GL_LESS);
-		glDepthRange(0.0f, 1.0f);
+		glDrawArraysInstanced(GL_POINTS, 0, 1, object.first->getModel()->size() / 12);
+
+		//glDepthFunc(GL_LESS);
+		//glDepthRange(0.0f, 1.0f);
 
 		object.first->unbind();
 	}

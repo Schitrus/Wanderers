@@ -43,6 +43,7 @@ glm::vec3 temperatureToRGB(float temperature) {
         color.g = glm::clamp((288.1221695283 * pow(temperature / 100.0 - 60.0, -0.0755148492)) / 255.0, 0.0, 1.0);
         color.b = 1.0;
     }
+
     return color;
 }
 

@@ -74,16 +74,16 @@ std::vector<glm::vec3>* Mesh::getVertices() { return vertices_; }
 
 std::vector<glm::vec3>* Mesh::getNormals() { return normals_; }
 
-float* Mesh::verticesData() {
+glm::vec3* Mesh::verticesData() {
 	return vecData(vertices_);
 }
 
-float* Mesh::normalsData() {
+glm::vec3* Mesh::normalsData() {
 	return vecData(normals_);
 }
 
-float* Mesh::vecData(std::vector<glm::vec3>* vec_data) {
-	return reinterpret_cast<float*>(&vec_data->data()[0]);
+glm::vec3* Mesh::vecData(std::vector<glm::vec3>* vec_data) {
+	return reinterpret_cast<glm::vec3*>(&vec_data->data()[0]);
 }
 
 int Mesh::size() {
@@ -107,6 +107,10 @@ void Mesh::generateBuffers(unsigned int mesh_type) {
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	if (mesh_type == GL_POINTS) {
+		glVertexAttribDivisor(0, 1);
+	}
 
 	if (mesh_type == GL_TRIANGLES) {
 
