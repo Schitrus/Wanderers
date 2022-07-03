@@ -1,12 +1,13 @@
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *                                                                           *
- * This base class is the basis for geometric shapes.                        *
+ * This class holds the frame used in frame rendering.                       *
  *                                                                           *
  * Copyright (c) 2022 Karl Andersson                                         *
  *                                                                           *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#ifndef WANDERERS_SIMULATION_OBJECT_MODEL_MESH_H_
-#define WANDERERS_SIMULATION_OBJECT_MODEL_MESH_H_
+#ifndef WANDERERS_SIMULATION_OBJECT_MODEL_FRAME_H_
+#define WANDERERS_SIMULATION_OBJECT_MODEL_FRAME_H_
 
 /* External Includes */
 #include "glm/glm.hpp"
@@ -19,26 +20,22 @@ namespace simulation {
 namespace object {
 namespace model {
 
-// TODO: Make mesh templated with vec size (vec3, vec2 etc...)
+// TODO: Make inherit mesh (when mesh is templated)
 
 /*
- * Base class for representation of geometric shapes used in rendering.
+ * Class for representing the frame used in frame rendering.
  */
-class Mesh {
+class Frame {
 public:
-	Mesh(std::vector<glm::vec3>* vertices, unsigned int mesh_type);
+	Frame();
 
 	/* Returns vertices as vectors. */
-	std::vector<glm::vec3>* getVertices();
-	/* Returns normals as vectors. */
-	std::vector<glm::vec3>* getNormals();
+	std::vector<glm::vec2>* getVertices();
 
 	/* Returns vertices as individual float values. */
-	glm::vec3* verticesData();
-	/* Returns normals as individual float values. */
-	glm::vec3* normalsData();
+	glm::vec2* verticesData();
 
-	glm::vec3* vecData(std::vector<glm::vec3>* vecData);
+	glm::vec2* vecData(std::vector<glm::vec2>* vec_data);
 
 	/* Returns the byte size of the vertices. NOTE: normals have same size as vertices for the moment. */
 	int size();
@@ -48,25 +45,18 @@ public:
 	/* Unbinds the buffers. */
 	void unbind();
 
-	~Mesh();
+	~Frame();
 private:
-	/* Generates the normals. */
-	std::vector<glm::vec3>* generateNormals(std::vector<glm::vec3>* vertices, unsigned mesh_type);
-
-	/* Smooths the normals. */
-	std::vector<glm::vec3>* smoothNormals(std::vector<glm::vec3>* vertices, std::vector<glm::vec3>* normals);
-
 	/* Vertex array object, storing the various buffers. */
 	unsigned int VAO_;
 	/* Vertex buffer object, storing vertices. */
 	unsigned int vertex_VBO_;
-	/* Vertex buffer object, storing normals. */
-	unsigned int normal_VBO_;
+	unsigned int coord_VBO_;
 
-	std::vector<glm::vec3>* vertices_;
-	std::vector<glm::vec3>* normals_;
+	std::vector<glm::vec2>* vertices_;
+	std::vector<glm::vec2>* coords_;
 
-	void generateBuffers(unsigned int mesh_type);
+	void generateBuffers();
 };
 
 } // namespace model
@@ -74,4 +64,4 @@ private:
 } // namespace simulation
 } // namespace wanderers
 
-#endif // WANDERERS_SIMULATION_OBJECT_MODEL_MESH_H_
+#endif // WANDERERS_SIMULATION_OBJECT_MODEL_FRAME_H_

@@ -27,6 +27,14 @@ SpaceRenderer::SpaceRenderer(render::Camera* camera)
 	shader_->link();
 	star_shader_ = new render::shader::ShaderProgram{"shaders/star_vertex.glsl", "shaders/star_geometry.glsl", "shaders/star_fragment.glsl"};
 	star_shader_->link();
+	frame_shader_ = new render::shader::ShaderProgram{ "shaders/blur_vertex.glsl", "shaders/blur_fragment.glsl" };
+	frame_shader_->link();
+
+	frame_ = new simulation::object::model::Frame();
+
+	glfwGetFramebufferSize(glfwGetCurrentContext(), &render_width_, &render_height_);
+
+	render_ = new FrameBuffer(render_width_, render_height_);
 }
 
 /*
@@ -51,10 +59,13 @@ void SpaceRenderer::preRender() {
 	view_ = camera_->getViewMatrix();
 	projection_ = camera_->getProjectionMatrix();
 
+	render_->bind();
 	glViewport(0, 0, render_width_, render_height_);
 	if (camera_->shouldClear()) {
+		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
+	render_->unbind();
 }
 
 /*
@@ -66,8 +77,23 @@ void SpaceRenderer::preRender() {
 void SpaceRenderer::postRender() {
 	camera_->unlock();
 
+	glDisable(GL_DEPTH_TEST);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	frame_shader_->use();
+	frame_shader_->setUniform(render_width_, "width");
+	frame_shader_->setUniform(render_height_, "height");
+	frame_->bind();
+	render_->bindTexture();
+	glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "frame"), 0);
+	glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "strength"), 1);
+	glDrawArrays(GL_TRIANGLES, 0, frame_->size());
+	render_->unbindTexture();
+	frame_->unbind();
+	glEnable(GL_DEPTH_TEST);
+
+
 	glfwSwapBuffers(glfwGetCurrentContext());
-	glfwPollEvents();
 }
 
 /*
@@ -79,6 +105,8 @@ void SpaceRenderer::postRender() {
  */
 void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 	preRender();
+
+	render_->bind();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -96,7 +124,11 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 	glDisable(GL_DEPTH_TEST);
 
+	render_->unbind();
+
 	postRender();
+
+	glfwPollEvents();
 }
 
 /*

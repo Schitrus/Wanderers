@@ -102,6 +102,12 @@
     <ClInclude Include="wanderers\include\control\render_control.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="wanderers\include\render\frame_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="wanderers\include\simulation\object\model\frame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wanderers\main.cpp">
@@ -194,8 +200,19 @@
     <ClCompile Include="wanderers\src\control\render_control.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="wanderers\src\render\frame_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="wanderers\src\simulation\object\model\frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\diagram.uml" />
+    <None Include="wanderers\shaders\star_fragment.glsl" />
+    <None Include="wanderers\shaders\star_vertex.glsl" />
+    <None Include="wanderers\shaders\star_geometry.glsl" />
+    <None Include="wanderers\shaders\blur_vertex.glsl" />
+    <None Include="wanderers\shaders\blur_fragment.glsl" />
   </ItemGroup>
 </Project>

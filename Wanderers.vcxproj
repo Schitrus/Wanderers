@@ -27,6 +27,7 @@
     <ClInclude Include="wanderers\include\control\simulation_control.h" />
     <ClInclude Include="wanderers\include\render\camera.h" />
     <ClInclude Include="wanderers\include\render\camera_view.h" />
+    <ClInclude Include="wanderers\include\render\frame_buffer.h" />
     <ClInclude Include="wanderers\include\render\shader\shader.h" />
     <ClInclude Include="wanderers\include\render\shader\shader_program.h" />
     <ClInclude Include="wanderers\include\render\space_renderer.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="wanderers\include\simulation\object\model\points.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\icosahedron.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\mesh.h" />
+    <ClInclude Include="wanderers\include\simulation\object\model\frame.h" />
     <ClInclude Include="wanderers\include\simulation\object\model\surface.h" />
     <ClInclude Include="wanderers\include\simulation\object\object.h" />
     <ClInclude Include="wanderers\include\simulation\object\orbit.h" />
@@ -59,6 +61,7 @@
     <ClCompile Include="wanderers\src\control\simulation_control.cpp" />
     <ClCompile Include="wanderers\src\render\camera.cpp" />
     <ClCompile Include="wanderers\src\render\camera_view.cpp" />
+    <ClCompile Include="wanderers\src\render\frame_buffer.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader.cpp" />
     <ClCompile Include="wanderers\src\render\shader\shader_program.cpp" />
     <ClCompile Include="wanderers\src\render\space_renderer.cpp" />
@@ -68,6 +71,7 @@
     <ClCompile Include="wanderers\src\simulation\object\astronomical_object.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\camera_object.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\circle.cpp" />
+    <ClCompile Include="wanderers\src\simulation\object\model\frame.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\points.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\icosahedron.cpp" />
     <ClCompile Include="wanderers\src\simulation\object\model\mesh.cpp" />
@@ -83,6 +87,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="doc\diagram.uml" />
+    <None Include="wanderers\shaders\blur_fragment.glsl" />
+    <None Include="wanderers\shaders\blur_vertex.glsl" />
+    <None Include="wanderers\shaders\star_fragment.glsl" />
+    <None Include="wanderers\shaders\star_geometry.glsl" />
+    <None Include="wanderers\shaders\star_vertex.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

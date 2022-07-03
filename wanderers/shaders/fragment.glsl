@@ -1,5 +1,6 @@
 #version 460 core
-out vec4 frag_color;
+layout (location = 0) out vec4 frag_color;
+layout (location = 1) out vec4 light_strength;
 
 uniform vec3 color;
 uniform vec3 light_position;
@@ -30,4 +31,5 @@ void main(){
     //frag_color = vec4(mix(mix(mix(object_color, up_color, model_position.y), down_color, -model_position.y), front_color, model_position.x), 1.0f);
 
     frag_color = vec4(object_color, 1.0f);
+    light_strength = vec4(is_sun ? 50.0f : 0.0f);
 } 

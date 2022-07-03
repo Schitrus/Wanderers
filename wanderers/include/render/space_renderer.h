@@ -14,8 +14,10 @@
 /* Internal Includes*/
 #include "render/shader/shader_program.h"
 #include "render/camera.h"
+#include "render/frame_buffer.h"
 
 #include "simulation/space_simulation.h"
+#include "simulation/object/model/frame.h"
 #include "simulation/object/orbital_system.h"
 #include "simulation/object/orbit.h"
 #include "simulation/object/solar.h"
@@ -67,10 +69,15 @@ private:
 	int render_height_{};
 
 	// TODO: make map
-	render::shader::ShaderProgram* shader_;
-	render::shader::ShaderProgram* star_shader_;
 
-	render::Camera* camera_;
+	FrameBuffer* render_;
+	simulation::object::model::Frame* frame_;
+	
+	shader::ShaderProgram* shader_;
+	shader::ShaderProgram* star_shader_;
+	shader::ShaderProgram* frame_shader_;
+
+	Camera* camera_;
 
 	glm::mat4 projection_;
 	glm::mat4 view_;
