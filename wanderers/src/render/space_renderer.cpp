@@ -108,13 +108,16 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 	render_->bind();
 
-	glEnable(GL_DEPTH_TEST);
+	glDisable(GL_DEPTH_TEST);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 
 	star_shader_->use();
 
 	for (simulation::object::Stars* stars : space_simulation->getGroupOfStars())
 		render(stars);
 
+	glEnable(GL_DEPTH_TEST);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	
 	shader_->use();
@@ -122,7 +125,7 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 	for (simulation::object::OrbitalSystem* solar_system : space_simulation->getSolarSystems())
 		render(solar_system);
 
-	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_BLEND);
 
 	render_->unbind();
 
