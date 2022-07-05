@@ -159,6 +159,7 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		glm::mat4 obj_model{ glm::mat4{ 1.0f } /* * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix()*/ };
 		star_shader_->setUniform(view, "view");
 		star_shader_->setUniform(proj, "projection");
+		star_shader_->setUniform(stars->getDistance(), "star_distance");
 		star_shader_->setUniform(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()), "star_size");
 		star_shader_->setUniform(static_cast<float>(glfwGetTime()), "time_point");
 		star_shader_->setUniform(camera_->getAspectRatio(), "aspect_ratio");

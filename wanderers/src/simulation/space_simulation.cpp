@@ -57,7 +57,7 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 	                                 simulation_speed_{1.0f},
 	camera_focus_id_{ 0 } {
 	std::uniform_real_distribution<float> temperature(4000.0f, 10000.0f);
-	std::uniform_real_distribution<float> size(0.2f, 2.0f);
+	std::uniform_real_distribution<float> size(0.0f, 1.0f);
 	std::uniform_real_distribution<float> cluster_count(0.0f, 5.0f);
 	std::uniform_real_distribution<float> cluster_radius(0.2f, 2.0f);
 	std::uniform_real_distribution<float> distance_multiplier(1.0f, 3.0f);
@@ -69,11 +69,25 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		system->setOrientation(object::Stars::generateRandomDirection());
 		addSolarSystem(system);
 	}
+
+	for (object::OrbitalSystem* system : getSolarSystems()) {
+		object::Solar* solar = dynamic_cast<object::Solar*>(system->getOrbits().at(0).first);
+		
+		glm::vec3 position = system->getPosition() / 10.0f;
+		float temperature = solar->getTemperature();
+		float size = std::max(std::max(solar->getScale().x, solar->getScale().y), solar->getScale().z);
+		addStars(new object::Stars{ temperature, size, 10, new object::model::Points(new std::vector<glm::vec3>{position}, new std::vector<glm::vec3>{solar->getColor()}) });
+	}
+
+	auto star_size1 = [](float size) { return 1.0f + pow(size, 2.0f)*4.0f; };
+	auto star_size2 = [](float size) { return 1.0f + pow(size, 3.0f)*4.0f; };
+	auto star_size3 = [](float size) { return 0.75f + pow(size, 12.0f)*3.0f; };
+	auto star_size4 = [](float size) { return 0.5f + pow(size, 12.0f)*1.0f; };
 	
 	for (int i = 0; i < 100; i++) {
-		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 100, object::Stars::generateStars(100, 100000) });
-		addStars(new object::Stars{ temperature(randomizer), 1.5f * size(randomizer), 1'000, object::Stars::generateStars(100, 100000) });
-		addStars(new object::Stars{ temperature(randomizer), size(randomizer), 1'000'000, object::Stars::generateGalaxyDisc(1'000, 100, glm::vec3{0.0f, 1.0f, 0.0f}) });
+		addStars(new object::Stars{ temperature(randomizer), star_size1(size(randomizer)), 100, object::Stars::generateStars(100, 100000) });
+		addStars(new object::Stars{ temperature(randomizer), star_size2(size(randomizer)), 1'000, object::Stars::generateStars(100, 100000) });
+		addStars(new object::Stars{ temperature(randomizer), star_size3(size(randomizer)), 1'000'000, object::Stars::generateGalaxyDisc(100, 100, glm::vec3{0.0f, 1.0f, 0.0f}) });
 	    /*
 		float radius = cluster_radius(randomizer);
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
@@ -84,16 +98,18 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		}
 		*/
 	}
+
 	
-	for (int i = 0; i < 25; i++) {
+	
+	for (int i = 0; i < 50; i++) {
 
 		glm::vec3 cluster_center = object::Stars::generateRandomDirection();
-		glm::vec3 galaxy_pos = 500.0f * size(randomizer) * object::Stars::generateRandomDirection();
+		glm::vec3 galaxy_pos = 1000.0f * size(randomizer) * object::Stars::generateRandomDirection();
 		glm::vec3 galaxy_axis = object::Stars::generateRandomDirection();
 		float galaxy_size = 10 * size(randomizer);
 		for (int j = 0; j < 25; j++) {
 			float count = cluster_count(randomizer);
-			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 10'000'000, object::Stars::generateGalaxyDisc(10, galaxy_size, galaxy_axis, galaxy_pos) });
+			addStars(new object::Stars{ temperature(randomizer), star_size4(size(randomizer)), 10'000'000, object::Stars::generateGalaxyDisc(100, galaxy_size, galaxy_axis, galaxy_pos) });
 			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
 
 
@@ -107,7 +123,7 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		float galaxy_size = 15 * size(randomizer);
 		for (int j = 0; j < 8; j++) {
 			float count = cluster_count(randomizer);
-			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 100'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			addStars(new object::Stars{ temperature(randomizer), star_size4(size(randomizer)), 100'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
 			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
 
 
@@ -119,7 +135,7 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		float galaxy_size = 30 * size(randomizer);
 		for (int j = 0; j < 4; j++) {
 			float count = cluster_count(randomizer);
-			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 1'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			addStars(new object::Stars{ temperature(randomizer), star_size4(size(randomizer)), 1'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
 			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
 
 
@@ -131,7 +147,7 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		float galaxy_size = 50 * size(randomizer);
 		for (int j = 0; j < 2; j++) {
 			float count = cluster_count(randomizer);
-			addStars(new object::Stars{ temperature(randomizer), size(randomizer), 10'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
+			addStars(new object::Stars{ temperature(randomizer), star_size4(size(randomizer)), 10'000'000'000, object::Stars::generateGalaxyDisc(1, galaxy_size, galaxy_axis, galaxy_pos) });
 			//addStars(new object::Stars{ temperature(randomizer), size(randomizer) * radius * 0.5f, 1'000'000, object::Stars::generateCluster(count, radius, 100, cluster_center) });
 
 
