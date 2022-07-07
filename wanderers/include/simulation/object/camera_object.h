@@ -42,6 +42,8 @@ public:
 	glm::vec3 getUp();
 	glm::vec3 getRight();
 
+	glm::vec3 getRelativePosition();
+
 	void setPosition(glm::vec3 position);
 	void setDirection(glm::vec3 direction);
 	void setUp(glm::vec3 up);

@@ -46,6 +46,10 @@ glm::vec3 CameraObject::getRight() {
     return orientation_.getBitangent(); 
 }
 
+glm::vec3 CameraObject::getRelativePosition() {
+    return relative_position_;
+}
+
 
 void CameraObject::setPosition(glm::vec3 position) {
     position_ = position;
@@ -77,12 +81,12 @@ void CameraObject::move(glm::vec3 movement) {
     case CameraMode::Center:
         // Rotate around focus object and move away/towards it.
         relative_position_ += relative_orientation_.focusRotation(glm::vec2{ movement }, relative_position_)
-                           +  relative_orientation_.translate(glm::vec3{ 0.0f, 0.0f, movement.z } *speed_ * glm::length(relative_position_));
+                           +  relative_orientation_.translate(glm::vec3{ 0.0f, 0.0f, movement.z } * speed_ * (glm::length(relative_position_) - 1.0f));
         break;
     case CameraMode::Orbital:
     case CameraMode::Rotational:
         // Move in relative position, increase movement according to distance from focus object.
-        relative_position_ += relative_orientation_.translate(movement * speed_ * glm::length(relative_position_));
+        relative_position_ += relative_orientation_.translate(movement * speed_ * (glm::length(relative_position_) - 1.0f));
         break;
     }
 }

@@ -59,13 +59,13 @@ void SpaceRenderer::preRender() {
 	view_ = camera_->getViewMatrix();
 	projection_ = camera_->getProjectionMatrix();
 
-	render_->bind();
+	//render_->bind();
 	glViewport(0, 0, render_width_, render_height_);
 	if (camera_->shouldClear()) {
 		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-	render_->unbind();
+	//render_->unbind();
 }
 
 /*
@@ -77,20 +77,20 @@ void SpaceRenderer::preRender() {
 void SpaceRenderer::postRender() {
 	camera_->unlock();
 
-	glDisable(GL_DEPTH_TEST);
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	frame_shader_->use();
-	frame_shader_->setUniform(render_width_, "width");
-	frame_shader_->setUniform(render_height_, "height");
-	frame_->bind();
-	render_->bindTexture();
-	glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "frame"), 0);
-	glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "strength"), 1);
-	glDrawArrays(GL_TRIANGLES, 0, frame_->size());
-	render_->unbindTexture();
-	frame_->unbind();
-	glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
+	//glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	//glClear(GL_COLOR_BUFFER_BIT);
+	//frame_shader_->use();
+	//frame_shader_->setUniform(render_width_, "width");
+	//frame_shader_->setUniform(render_height_, "height");
+	//frame_->bind();
+	//render_->bindTexture();
+	//glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "frame"), 0);
+	//glUniform1i(glGetUniformLocation(frame_shader_->getProgramID(), "strength"), 1);
+	//glDrawArrays(GL_TRIANGLES, 0, frame_->size());
+	//render_->unbindTexture();
+	//frame_->unbind();
+	//glEnable(GL_DEPTH_TEST);
 
 
 	glfwSwapBuffers(glfwGetCurrentContext());
@@ -106,7 +106,7 @@ void SpaceRenderer::postRender() {
 void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 	preRender();
 
-	render_->bind();
+	//render_->bind();
 
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -127,7 +127,7 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 	glDisable(GL_BLEND);
 
-	render_->unbind();
+	//render_->unbind();
 
 	postRender();
 
@@ -279,19 +279,30 @@ void SpaceRenderer::render(simulation::object::Solar* solar, glm::mat4 transform
 void SpaceRenderer::render(simulation::object::Planet* planet, glm::mat4 transform) {
 	simulation::object::AggregateObject* planet_object{ planet->getPhysicalObject() };
 	
+	glm::mat4 projection{ projection_ };
+	if (camera_->getCameraFocus()->getObjectId() == planet->getObjectId()) {
+		glm::vec3 scale_vector = camera_->getCameraFocus()->getScale();
+		float scale = glm::max(scale_vector.x, scale_vector.y, scale_vector.z);
+		projection = glm::perspective(glm::radians(camera_->getFieldOfView()), camera_->getAspectRatio(), 0.0025f * scale, scale * glm::length(camera_->getRelativePosition()));
+		glDepthRange(0.0f, 0.1f);
+		//glDepthFunc(GL_ALWAYS);
+	}
+
 	glm::mat4 agg_model{ transform * planet->getMatrix() * planet_object->getMatrix() };
 	for (std::pair<simulation::object::Object*, glm::vec3> object : planet_object->getObjects()) {
 		object.first->bind();
 
 		glm::mat4 obj_model{ agg_model * glm::translate(glm::mat4{1.0f}, object.second) * object.first->getMatrix() };
 		shader_->setUniform(obj_model, "model");
-		shader_->setUniform(projection_ * view_ * obj_model, "MVP");
+		shader_->setUniform(projection * view_ * obj_model, "MVP");
 		shader_->setUniform(planet->getColor(), "color");
 		shader_->setUniform(false, "is_sun");
 
 		glDrawArrays(GL_TRIANGLES, 0, object.first->getModel()->size());
 		object.first->unbind();
 	}
+	glDepthRange(0.0f, 1.0f);
+	glDepthFunc(GL_LESS);
 }
 
 /*

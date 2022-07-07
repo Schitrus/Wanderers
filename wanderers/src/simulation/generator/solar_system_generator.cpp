@@ -233,7 +233,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	// MERCURY
 	{
 		// planet physical object
-		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ new object::model::Surface(*object::model::getDefaultSurface(), glm::vec3(0.4f, 0.2f, 0.2f)) } } };
 
 		// planet
 		float planet_radius{ 0.25f };
@@ -265,7 +265,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 
 	{
 		// planet physical object
-		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ new object::model::Surface(*object::model::getDefaultSurface(), glm::vec3(0.9f, 0.6f, 0.5f)) } } };
 
 
 		// planet
@@ -278,7 +278,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		float planet_rot_angle_velocity{ 360.0f / -243.0f };
 		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
 												 planet_rot_axis, object::AbstractObject::kFace };
-		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.9f, 0.5f } };
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 1.0f, 0.95f, 0.7f } };
 
 		// planet orbit
 		constexpr float eccentricity = 0.006772f;
@@ -300,7 +300,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		object::OrbitalSystem* planet_system = new object::OrbitalSystem{};
 
 		// planet physical object
-		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ new object::model::Surface(*object::model::getDefaultSurface(), glm::vec3(0.0f, 0.4f, 0.0f)) } } };
 
 		// planet
 		float planet_radius{ 0.65f };
@@ -312,14 +312,14 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		float planet_rot_angle_velocity{ 360.0f / 1.0f };
 		object::AstronomicalObject planet_astro{ planet_ao, planet_object, planet_rot_angle, planet_rot_angle_velocity,
 												 planet_rot_axis, object::AbstractObject::kFace };
-		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.25f, 0.65f, 1.0f } };
+		object::Planet* planet = new object::Planet{ planet_astro, glm::vec3{ 0.10f, 0.35f, 0.5f } };
 
 		planet_system->addOrbit(planet);
 
 		// MOON
 		{
 			// planet physical object
-			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+			object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ new object::model::Surface(*object::model::getDefaultSurface(), glm::vec3(0.45f, 0.45f, 0.45f)) } } };
 
 			// planet
 			float planet_radius{ 0.17f };

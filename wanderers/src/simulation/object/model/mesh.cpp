@@ -126,9 +126,14 @@ void Mesh::generateBuffers(unsigned int mesh_type) {
 	glBindVertexArray(0);
 }
 
-void Mesh::bind() { glBindVertexArray(VAO_); }
+void Mesh::bind() { 
+	glBindVertexArray(VAO_); 
+	//glBindTexture(GL_TEXTURE_3D, texture_);
+}
 
-void Mesh::unbind() { glBindVertexArray(0);  }
+void Mesh::unbind() { 
+	glBindVertexArray(0);  
+}
 
 /*
  * Mesh Constructor:

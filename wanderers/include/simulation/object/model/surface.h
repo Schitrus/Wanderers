@@ -30,11 +30,18 @@ class Surface : public Icosahedron {
 public:
 	Surface();
 
+	Surface(const Surface& surface, glm::vec3 color);
+
 	Surface(int sub_division_level, float roughness);
+
+	void bind();
+	void unbind();
 
 protected:
 	/* Generates the Surface. */
 	std::vector<glm::vec3>* generateSurface(std::vector<glm::vec3>* vertices, float roughness);
+
+	unsigned int surface_texture_;
 };
 
 static Surface* getDefaultSurface() {

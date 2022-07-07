@@ -8,10 +8,12 @@ uniform mat4 model;
 out vec3 normal_frag;
 out vec3 position_frag;
 out vec3 model_position;
+out vec3 texture_coord;
 
 void main(){
     gl_Position = MVP * vec4(position, 1.0f);
     position_frag = vec3(model * vec4(position, 1.0f));
     normal_frag = mat3(transpose(inverse(model))) * normal;
     model_position = position;
+    texture_coord = 0.5f * position + vec3(0.5f); 
 }

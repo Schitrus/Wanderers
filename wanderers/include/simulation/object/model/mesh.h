@@ -44,9 +44,9 @@ public:
 	int size();
 
 	/* Binds the buffers for rendering. */
-	void bind();
+	virtual void bind();
 	/* Unbinds the buffers. */
-	void unbind();
+	virtual void unbind();
 
 	~Mesh();
 private:
