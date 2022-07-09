@@ -5,7 +5,8 @@ layout (triangle_strip, max_vertices = 12) out;
 
 uniform float aspect_ratio;
 uniform float star_size;
-uniform float star_distance;
+
+uniform mat4 projection;
 
 in VertOut{
     vec3 vcolor;
@@ -22,18 +23,17 @@ void circle(vec4 position){
     float max_points = 4.0f;
     for(int i = 0; i < max_points; i++){
         float z = position.z;
-        float dist = 1.0f / log(log(log(10.0f * star_distance)));
-        vec2 p1 = star_size * 0.01f * z * vec2(sin(float(i) * 2.0f*PI / max_points) / aspect_ratio, cos(float(i) * 2.0f*PI / max_points));
-        vec2 p2 = star_size * 0.01f * z * vec2(sin(float(i + 1) * 2.0f*PI / max_points) / aspect_ratio, cos(float(i + 1) * 2.0f*PI / max_points));
-        gl_Position = position + vec4(p1, 0.0f, 0.0f); 
+        vec2 p1 = star_size * 0.01f * z * vec2(sin(float(i) * 2.0f*PI / max_points), cos(float(i) * 2.0f*PI / max_points));
+        vec2 p2 = star_size * 0.01f * z * vec2(sin(float(i + 1) * 2.0f*PI / max_points), cos(float(i + 1) * 2.0f*PI / max_points));
+        gl_Position = projection * (position + vec4(p1, 0.0f, 0.0f)); 
         geo_color = geo_in[0].vcolor;
         geo_uv = vec2(sin(float(i) * 2.0f*PI / max_points), cos(float(i) * 2.0f*PI / max_points));
         EmitVertex();
-        gl_Position =  position; 
+        gl_Position = projection * position; 
         geo_color = geo_in[0].vcolor * 2.0f;
         geo_uv = vec2(0, 0);
         EmitVertex();
-        gl_Position = position + vec4(p2, 0.0f, 0.0f);
+        gl_Position = projection * (position + vec4(p2, 0.0f, 0.0f));
         geo_color = geo_in[0].vcolor;
         geo_uv = vec2(sin(float(i + 1) * 2.0f*PI / max_points), cos(float(i + 1) * 2.0f*PI / max_points));
         EmitVertex();

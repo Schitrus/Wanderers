@@ -10,6 +10,7 @@
 /* External Includes */
 #include "glad/gl.h"
 #include "glfw/glfw3.h"
+#include "glm/ext.hpp"
 
 namespace wanderers {
 namespace simulation {
@@ -20,9 +21,62 @@ namespace model {
 
 Icosahedron::Icosahedron() : Icosahedron{ 0 } {}
 
+unsigned int generateTexture(glm::vec3 color) {
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_3D, texture);
+
+	unsigned int length = 32;
+
+	unsigned char* data = new unsigned char[length * length * length * 4];
+	glm::vec3 seed_vec{ static_cast<float>(glfwGetTime()) * 10000.0f };
+	for (int z = 0; z < length; z++) {
+		for (int y = 0; y < length; y++) {
+			for (int x = 0; x < length; x++) {
+				int index = 4 * (z * length * length + y * length + x);
+				glm::vec3 coord{ x, y, z };
+				float perlin = glm::perlin(0.2f * coord + seed_vec)
+					+ 0.3f * glm::perlin(coord + seed_vec)
+					+ 0.15f * glm::perlin(2.0f * coord + seed_vec)
+					+ 0.05f * glm::perlin(4.0f * coord + seed_vec);
+				data[index] = 255 * (0.5f * perlin + 0.5f) * color.x;
+				data[index + 1] = 255 * (0.5f * perlin + 0.5f) * color.y;
+				data[index + 2] = 255 * (0.5f * perlin + 0.5f) * color.z;
+				data[index + 3] = 255 * (0.5f * perlin + 0.5f);
+			}
+		}
+	}
+
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, length, length, length, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	return texture;
+}
+
+Icosahedron::Icosahedron(Icosahedron const& Icosahedron, glm::vec3 color) : Icosahedron{ Icosahedron } {
+	texture_ = generateTexture(color);
+}
+
 Icosahedron::Icosahedron(int sub_division_level) : Icosahedron(subDivide(generateIcosahedron(), sub_division_level)) { }
 
-Icosahedron::Icosahedron(std::vector<glm::vec3>* vertices) : Mesh(vertices, GL_TRIANGLES) {}
+Icosahedron::Icosahedron(std::vector<glm::vec3>* vertices) : Mesh(vertices, GL_TRIANGLES), texture_{ generateTexture(glm::vec3(1.0f)) } {}
+
+void Icosahedron::bind() {
+	Mesh::bind();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, texture_);
+}
+
+void Icosahedron::unbind() {
+	glBindTexture(GL_TEXTURE_3D, 0);
+	Mesh::unbind();
+}
 
 // TODO: Make algorithm for generating icosahedron instead of having it hardcoded.
 

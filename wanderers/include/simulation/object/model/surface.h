@@ -40,8 +40,6 @@ public:
 protected:
 	/* Generates the Surface. */
 	std::vector<glm::vec3>* generateSurface(std::vector<glm::vec3>* vertices, float roughness);
-
-	unsigned int surface_texture_;
 };
 
 static Surface* getDefaultSurface() {

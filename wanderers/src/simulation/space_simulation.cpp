@@ -79,10 +79,10 @@ SpaceSimulation::SpaceSimulation(object::CameraObject* camera_object) : solar_sy
 		addStars(new object::Stars{ temperature, size, 10, new object::model::Points(new std::vector<glm::vec3>{position}, new std::vector<glm::vec3>{solar->getColor()}) });
 	}
 
-	auto star_size1 = [](float size) { return 1.0f + pow(size, 2.0f)*4.0f; };
-	auto star_size2 = [](float size) { return 1.0f + pow(size, 3.0f)*4.0f; };
-	auto star_size3 = [](float size) { return 0.75f + pow(size, 12.0f)*3.0f; };
-	auto star_size4 = [](float size) { return 0.5f + pow(size, 12.0f)*1.0f; };
+	auto star_size1 = [](float size) { return 0.5f + pow(size, 4.0f)*4.0f; };
+	auto star_size2 = [](float size) { return 0.5f + pow(size, 9.0f)*4.0f; };
+	auto star_size3 = [](float size) { return 0.5f + pow(size, 24.0f)*3.0f; };
+	auto star_size4 = [](float size) { return 0.5f + pow(size, 24.0f)*1.0f; };
 	
 	for (int i = 0; i < 100; i++) {
 		addStars(new object::Stars{ temperature(randomizer), star_size1(size(randomizer)), 100, object::Stars::generateStars(100, 100000) });

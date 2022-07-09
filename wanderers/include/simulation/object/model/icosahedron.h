@@ -30,9 +30,14 @@ class Icosahedron : public Mesh {
 public:
 	Icosahedron();
 
+	Icosahedron(Icosahedron const& icosahedron, glm::vec3 color);
+
 	Icosahedron(int sub_division_level);
 
 	Icosahedron(std::vector<glm::vec3>* vertices);
+
+	virtual void bind();
+	virtual void unbind();
 
 protected:
 	/* Generates the Icosahedron. */
@@ -40,6 +45,8 @@ protected:
 
 	/* Increases the number of triangles 4^n times. */
 	std::vector<glm::vec3>* subDivide(std::vector<glm::vec3>* vertices, int level);
+
+	unsigned int texture_;
 };
 
 /*

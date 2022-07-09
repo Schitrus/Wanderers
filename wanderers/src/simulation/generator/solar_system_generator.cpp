@@ -468,7 +468,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 		// planet physical object
-		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getIcosahedron() } } };
 
 		// planet
 		float planet_radius{ 3.0f };
@@ -633,7 +633,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 		object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 		// planet physical object
-		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+		object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getIcosahedron() } } };
 
 		// planet
 		float planet_radius{ 2.0f };
@@ -896,7 +896,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 	// planet physical object
-	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getIcosahedron() } } };
 
 	// planet
 	float planet_radius{ 1.3f };
@@ -1093,7 +1093,7 @@ object::OrbitalSystem* generateTheSolarSystem() {
 	object::OrbitalSystem* planet_system = new object::OrbitalSystem{ };
 
 	// planet physical object
-	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getDefaultSurface() } } };
+	object::AggregateObject* planet_object{ new object::AggregateObject{ new object::Object{ object::model::getIcosahedron() } } };
 
 	// planet
 	float planet_radius{ 1.3f };

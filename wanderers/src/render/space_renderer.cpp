@@ -108,6 +108,8 @@ void SpaceRenderer::render(simulation::SpaceSimulation* space_simulation) {
 
 	//render_->bind();
 
+	std::cout << "FoV: " << camera_->getFieldOfView() << std::endl;
+
 	glDisable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
@@ -160,7 +162,7 @@ void SpaceRenderer::render(simulation::object::Stars* stars) {
 		star_shader_->setUniform(view, "view");
 		star_shader_->setUniform(proj, "projection");
 		star_shader_->setUniform(stars->getDistance(), "star_distance");
-		star_shader_->setUniform(stars->getSize() * (render_width_ / 2000.0f) * sqrt(60.0f / camera_->getFieldOfView()), "star_size");
+		star_shader_->setUniform(stars->getSize() * cos(0.5f * glm::radians(camera_->getFieldOfView())), "star_size");
 		star_shader_->setUniform(static_cast<float>(glfwGetTime()), "time_point");
 		star_shader_->setUniform(camera_->getAspectRatio(), "aspect_ratio");
 

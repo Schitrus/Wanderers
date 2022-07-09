@@ -5,14 +5,12 @@ layout (location = 1) in vec3 color;
 uniform mat4 view;
 uniform mat4 projection;
 
-uniform float star_distance;
-
 out VertOut{
     vec3 vcolor;
 } vert_out;
 
 void main(){
     vec4 view_pos = view * vec4(position, 1.0f);
-    gl_Position = projection * view_pos;
+    gl_Position = view_pos;
     vert_out.vcolor = color;
 }
